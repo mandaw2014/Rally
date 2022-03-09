@@ -17,11 +17,6 @@ class Car(Entity):
         camera.position = (20, 30, -50)
         camera.rotation = (35, -20, 0)
 
-        # self.wheel1 = Entity(model = "sphere", color = color.white, scale = (0.4, 0.5, 0.3), parent = self, x = self.x + 0.5, y = self.y - 30.5, z = self.z + 0.25)
-        # self.wheel2 = Entity(model = "sphere", color = color.white, scale = (0.4, 0.5, 0.3), parent = self, x = self.x + 0.5, y = self.y - 30.5, z = self.z - 0.25)
-        # self.wheel3 = Entity(model = "sphere", color = color.white, scale = (0.4, 0.5, 0.3), parent = self, x = self.x - 0.5, y = self.y - 30.5, z = self.z + 0.25)
-        # self.wheel4 = Entity(model = "sphere", color = color.white, scale = (0.4, 0.5, 0.3), parent = self, x = self.x - 0.5, y = self.y - 30.5, z = self.z - 0.25)
-
         self.speed = 0
         self.velocity_y = 0
         self.rotation_speed = rotation_speed
@@ -43,19 +38,6 @@ class Car(Entity):
         camera.add_script(camera_follow)
 
         self.pivot.position = self.position
-
-        # if self.pivot.rotation_x > self.rotation_x:
-        #     self.drift_length += 20 * time.dt
-        # if self.pivot.rotation_x < self.rotation_x:
-        #     self.drift_length -= 20 * time.dt
-        # if self.pivot.rotation_y > self.rotation_y:
-        #     self.drift_length += 20 * time.dt
-        # if self.pivot.rotation_y < self.rotation_y:
-        #     self.drift_length -= 20 * time.dt
-        # if self.pivot.rotation_z > self.rotation_z:
-        #     self.drift_length += 20 * time.dt
-        # if self.pivot.rotation_z < self.rotation_z:
-        #     self.drift_length -= 20 * time.dt
 
         if self.pivot.rotation_x != self.rotation_x:
             if self.pivot.rotation_x > self.rotation_x:
@@ -172,5 +154,29 @@ class Car(Entity):
         camera.x = self.x + 20
         camera.z = self.z - 50
         camera.y = self.y + 25
+
+        """
+
+        """
+
+        Old Car
+
+        self.wheel1 = Entity(model = "sphere", color = color.white, scale = (0.4, 0.5, 0.3), parent = self, x = self.x + 0.5, y = self.y - 30.5, z = self.z + 0.25)
+        self.wheel2 = Entity(model = "sphere", color = color.white, scale = (0.4, 0.5, 0.3), parent = self, x = self.x + 0.5, y = self.y - 30.5, z = self.z - 0.25)
+        self.wheel3 = Entity(model = "sphere", color = color.white, scale = (0.4, 0.5, 0.3), parent = self, x = self.x - 0.5, y = self.y - 30.5, z = self.z + 0.25)
+        self.wheel4 = Entity(model = "sphere", color = color.white, scale = (0.4, 0.5, 0.3), parent = self, x = self.x - 0.5, y = self.y - 30.5, z = self.z - 0.25)
+        
+        if self.pivot.rotation_x > self.rotation_x:
+            self.drift_length += 20 * time.dt
+        if self.pivot.rotation_x < self.rotation_x:
+            self.drift_length -= 20 * time.dt
+        if self.pivot.rotation_y > self.rotation_y:
+            self.drift_length += 20 * time.dt
+        if self.pivot.rotation_y < self.rotation_y:
+            self.drift_length -= 20 * time.dt
+        if self.pivot.rotation_z > self.rotation_z:
+            self.drift_length += 20 * time.dt
+        if self.pivot.rotation_z < self.rotation_z:
+            self.drift_length -= 20 * time.dt
 
         """
