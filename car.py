@@ -7,9 +7,9 @@ class Car(Entity):
         super().__init__(
             model = "car",
             color = color.white,
-            texture = "white_cube",
             position = position,
-            collider = "mesh",
+            rotation = (0, 65, 0),
+            collider = "box",
             scale = (1, 1, 1)
         )
 
@@ -33,7 +33,20 @@ class Car(Entity):
 
         self.slope = 99999999999999999999999999999999999999999999999
 
+        self.timer_running = False
+        self.count = 0.0
+        self.timer = Text(text = str(round(self.count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (0, 0.43))
+        self.timer.disable()
+
     def update(self):
+        if self.timer_running == True:
+            self.timer.enable()
+            self.count += time.dt
+            self.timer.text = str(round(self.count, 1))
+        elif self.timer_running == False:
+            self.count = self.count
+            self.timer.text = str(round(self.count, 1))
+
         camera_follow = SmoothFollow(target = self, offset = (20, 40, -50), speed = self.camera_speed)
         camera.add_script(camera_follow)
 
@@ -68,12 +81,12 @@ class Car(Entity):
                 self.speed += self.acceleration * 50 * time.dt
         else:
             if ground_check.hit:
-                self.speed -= self.friction * time.dt
+                self.speed -= self.friction * 50 * time.dt
             self.rotation_speed -= 5 * time.dt
 
         if held_keys["s"]:
-            self.speed -= 0.1
-            self.rotation -= 0.01 + self.speed * time.dt
+            self.speed -= 10 * time.dt
+            # self.rotation_speed -= 0.01 + self.speed * time.dt
         # else:
         #     self.speed += 0.8
 
