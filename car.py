@@ -1,10 +1,11 @@
 from ursina import *
+from ursina import curve
 from particles import ParticleSystem
 
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
 class Car(Entity):
-    def __init__(self, position = (0, 0, 0), topspeed = 25, acceleration = 0.7, friction = 0.3, rotation_speed = 1.8, camera_speed = 0.05, drift_speed = 25):
+    def __init__(self, position = (0, 0, 0), topspeed = 25, acceleration = 0.4, friction = 0.6, rotation_speed = 1.8, camera_speed = 0.05, drift_speed = 25):
         super().__init__(
             model = "car",
             color = color.white,
@@ -24,6 +25,7 @@ class Car(Entity):
         self.camera_speed = camera_speed
         self.acceleration = acceleration
         self.friction = friction
+        self.pivot_rotation_distance = 1
 
         self.pivot = Entity()
         self.pivot.position = self.position
@@ -37,93 +39,93 @@ class Car(Entity):
 
         self.timer_running = False
         self.count = 0.0
+        self.highscore_count = self.count
         self.last_count = self.count
         self.reset_count = 0.0
-        self.timer = Text(text = str(round(self.count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (0, 0.43))
-        self.last_count_timer = Text(text = str(round(self.last_count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (0, 0.43))
-        self.last_count_timer.disable()
+        self.timer = Text(text = "", origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
+        self.highscore = Text(text = "", origin = (0, 0), size = 0.05, scale = (0.6, 0.6), position = (-0.7, 0.38))
+        self.reset_count_timer = Text(text = str(round(self.reset_count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
 
     def update(self):
-        self.count += time.dt
-        self.reset_count += time.dt
+        if self.timer_running == True:
+            self.count += time.dt
+            self.reset_count += time.dt
         self.timer.text = str(round(self.count, 1))
-        self.last_count_timer.text = str(round(self.last_count, 1))
+        self.reset_count_timer.text = str(round(self.reset_count, 1))
+
+        if self.count <= self.highscore_count and self.count >= 10:
+            self.highscore_count = self.last_count
+        if self.highscore_count <= 13:
+            self.highscore_count = self.last_count
+        
+        self.highscore.text = str(round(self.highscore_count, 1))
 
         camera_follow = SmoothFollow(target = self, offset = (20, 40, -50), speed = self.camera_speed)
         camera.add_script(camera_follow)
 
         self.pivot.position = self.position
 
-        if self.pivot.rotation_x != self.rotation_x:
-            if self.pivot.rotation_x > self.rotation_x:
-                self.pivot.rotation_x -= (self.drift_speed * ((self.pivot.rotation_x - self.rotation_x) / 40)) * time.dt
-            if self.pivot.rotation_x < self.rotation_x:
-                self.pivot.rotation_x += (self.drift_speed * ((self.rotation_x - self.pivot.rotation_x) / 40)) * time.dt
         if self.pivot.rotation_y != self.rotation_y:
             if self.pivot.rotation_y > self.rotation_y:
                 self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
+                self.speed += self.pivot_rotation_distance / 7 * time.dt
+                self.rotation_speed += 1 * time.dt
             if self.pivot.rotation_y < self.rotation_y:
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
-        if self.pivot.rotation_z != self.rotation_z:
-            if self.pivot.rotation_z > self.rotation_z:
-                self.pivot.rotation_z -= (self.drift_speed * ((self.pivot.rotation_z - self.rotation_z) / 40)) * time.dt
-            if self.pivot.rotation_z < self.rotation_z:
-                self.pivot.rotation_z += (self.drift_speed * ((self.rotation_z - self.pivot.rotation_z) / 40)) * time.dt
+                self.speed -= self.pivot_rotation_distance / 7 * time.dt
+                self.rotation_speed += 1 * time.dt
 
-        ground_check = raycast(origin = self.position, direction = self.down, distance = 4, ignore = [self, ], traverse_target = self.sand_track)
+        ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, ], traverse_target = self.sand_track)
+
+        self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
 
         if held_keys["w"]:
             if ground_check.hit:
                 self.speed += self.acceleration * 50 * time.dt
-                # particles = ParticleSystem(position = Vec3(self.x, self.y - 2, self.z), color = color.hex("925B3A"), rotation_y = random.random() * 360)
-                # particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
+                self.particles = ParticleSystem(position = Vec3(self.x, self.y - 2, self.z), color = color.hex("925B3A"), rotation_y = random.random() * 360)
+                self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
         else:
             if ground_check.hit:
                 self.speed -= self.friction * 50 * time.dt
             self.rotation_speed -= 5 * time.dt
+            if self.speed == 0:
+                self.rotation_speed = 0
 
         if held_keys["s"]:
             self.speed -= 10 * time.dt
-            # self.rotation_speed -= 0.01 + self.speed * time.dt
-        # else:
-        #     self.speed += 0.8
 
         if self.speed != 0:
             if held_keys["a"]:
                 self.rotation_y -= self.rotation_speed * 50 * time.dt
-                self.speed -= 25 * time.dt
-                self.rotation_speed += 0.5 * time.dt
             elif held_keys["d"]:
                 self.rotation_y += self.rotation_speed * 50 * time.dt
-                self.speed -= 25 * time.dt
-                self.rotation_speed += 0.5 * time.dt
             else:
                 self.rotation_speed -= 5
-            
-            # self.speed -= 0.5 * self.drift_length * time.dt
 
         if self.speed >= self.topspeed:
             self.speed = self.topspeed
+        if self.speed <= 5:
+            self.pivot.rotation = self.rotation
         if self.speed <= 0:
             self.speed = 0
             self.pivot.rotation = self.rotation
 
         if self.rotation_speed >= 5:
             self.rotation_speed = 5
-        if self.rotation_speed <= 1.8:
-            self.rotation_speed = 1.8
+        if self.rotation_speed <= 1.2:
+            self.rotation_speed = 1.2
 
         movementY = self.velocity_y * time.dt
         direction = (0, sign(movementY), 0)
 
-        y_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_y * 3 + abs(movementY), ignore = [self, ], traverse_target = self.sand_track)
+        y_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_y * 4 + abs(movementY), ignore = [self, ], traverse_target = self.sand_track)
 
         if y_ray.hit:
             self.jump_count = 0
             self.velocity_y = 0
         else:
             self.y += movementY
-            self.velocity_y -= 1 * time.dt * 25
+            self.velocity_y -= 1 - self.speed / 2 * time.dt
 
         movementX = self.pivot.forward[0] * self.speed * time.dt
         movementZ = self.pivot.forward[2] * self.speed * time.dt
@@ -160,8 +162,8 @@ class Car(Entity):
 
     def reset_timer(self):
         self.count = self.reset_count
-        self.last_count_timer.disable()
         self.timer.enable()
+        self.reset_count_timer.disable()
 
         """
 
