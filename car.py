@@ -5,7 +5,7 @@ from particles import ParticleSystem
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
 class Car(Entity):
-    def __init__(self, position = (0, 0, 0), topspeed = 25, acceleration = 0.4, friction = 0.6, rotation_speed = 1.8, camera_speed = 0.05, drift_speed = 25):
+    def __init__(self, position = (0, 0, 0), topspeed = 25, acceleration = 0.4, friction = 0.6, rotation_speed = 1.8, camera_speed = 0.05, drift_speed = 30):
         super().__init__(
             model = "car",
             color = color.white,
@@ -33,7 +33,7 @@ class Car(Entity):
 
         self.drift_speed = drift_speed
 
-        self.slope = 99999999999999999999999999999999999999999999999
+        self.slope = 200
 
         self.sand_track = None
 
@@ -68,14 +68,14 @@ class Car(Entity):
         if self.pivot.rotation_y != self.rotation_y:
             if self.pivot.rotation_y > self.rotation_y:
                 self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
-                self.speed += self.pivot_rotation_distance / 7 * time.dt
-                self.rotation_speed += 1 * time.dt
+                self.speed += self.pivot_rotation_distance / 5 * time.dt
+                self.rotation_speed += 1.5 * time.dt
             if self.pivot.rotation_y < self.rotation_y:
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
-                self.speed -= self.pivot_rotation_distance / 7 * time.dt
-                self.rotation_speed += 1 * time.dt
+                self.speed -= self.pivot_rotation_distance / 5 * time.dt
+                self.rotation_speed += 1.5 * time.dt
 
-        ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, ], traverse_target = self.sand_track)
+        ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line])
 
         self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
 
@@ -97,18 +97,26 @@ class Car(Entity):
         if self.speed != 0:
             if held_keys["a"]:
                 self.rotation_y -= self.rotation_speed * 50 * time.dt
+                self.drift_speed -= 30 * time.dt
             elif held_keys["d"]:
                 self.rotation_y += self.rotation_speed * 50 * time.dt
+                self.drift_speed -= 30 * time.dt
             else:
                 self.rotation_speed -= 5
+                self.drift_speed += 30 * time.dt
 
         if self.speed >= self.topspeed:
             self.speed = self.topspeed
-        if self.speed <= 5:
+        if self.speed <= 10:
             self.pivot.rotation = self.rotation
         if self.speed <= 0:
             self.speed = 0
             self.pivot.rotation = self.rotation
+
+        if self.drift_speed <= 20:
+            self.drift_speed = 20
+        if self.drift_speed >= 40:
+            self.drift_speed = 40
 
         if self.rotation_speed >= 5:
             self.rotation_speed = 5
@@ -118,7 +126,7 @@ class Car(Entity):
         movementY = self.velocity_y * time.dt
         direction = (0, sign(movementY), 0)
 
-        y_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_y * 4 + abs(movementY), ignore = [self, ], traverse_target = self.sand_track)
+        y_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_y * 4 + abs(movementY), ignore = [self, self.sand_track.finish_line])
 
         if y_ray.hit:
             self.jump_count = 0
@@ -132,33 +140,36 @@ class Car(Entity):
 
         if movementX != 0:
             direction = (sign(movementX), 0, 0)
-            x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 2 + abs(movementX), ignore = [self, ], thickness = (1, 1), traverse_target = self.sand_track)
+            x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 2 + abs(movementX), ignore = [self, self.sand_track.finish_line], thickness = (1, 1))
 
             if not x_ray.hit:
                 self.x += movementX
             else:
-                top_x_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_x / 2 + math.tan(math.radians(self.slope)), ignore = [self, ], traverse_target = self.sand_track)
+                top_x_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_x / 2, ignore = [self, self.sand_track.finish_line])
 
                 if not top_x_ray.hit:
-                    self.x += movementX
-                    height_ray = raycast(origin = self.world_position + (sign(movementX) * self.scale_x / 2, -self.scale_y / 2, 0), direction = (0, 1, 0), ignore = [self, ], traverse_target = self.sand_track)
-                    if height_ray.hit:
-                        self.y += height_ray.distance
+                    if top_x_ray.distance < self.slope:
+                        self.x += movementX
+                    height_ray = raycast(origin = self.world_position + (sign(movementX) * self.scale_x / 2, -self.scale_y / 2, 0), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line])
+                    if height_ray.distance < self.slope:
+                            self.y += height_ray.distance
 
         if movementZ != 0:
             direction = (0, 0, sign(movementZ))
-            z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 2 + abs(movementZ), ignore = [self, ], thickness = (1, 1), traverse_target = self.sand_track)
+            z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 2 + abs(movementZ), ignore = [self, self.sand_track.finish_line], thickness = (1, 1))
 
             if not z_ray.hit:
                 self.z += movementZ
             else:
-                top_z_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_z / 2 + math.tan(math.radians(self.slope)), ignore = [self, ], traverse_target = self.sand_track)
+                top_z_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_z / 2, ignore = [self, self.sand_track.finish_line])
 
                 if not top_z_ray.hit:
-                    self.z += movementZ
-                    height_ray = raycast(origin = self.world_position + (0, -self.scale_y / 2, sign(movementZ) * self.scale_z / 2), direction = (0, 1, 0), ignore = [self, ], traverse_target = self.sand_track)
+                    if top_z_ray.distance < self.slope:
+                        self.z += movementZ
+                    height_ray = raycast(origin = self.world_position + (0, -self.scale_y / 2, sign(movementZ) * self.scale_z / 2), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line])
                     if height_ray.hit:
-                        self.y += height_ray.distance
+                        if height_ray.distance < self.slope:
+                            self.y += height_ray.distance
 
     def reset_timer(self):
         self.count = self.reset_count
@@ -166,19 +177,14 @@ class Car(Entity):
         self.reset_count_timer.disable()
 
         """
-
         Old Camera Mechanics:
-
         camera.x = self.x + 20
         camera.z = self.z - 50
         camera.y = self.y + 25
-
         """
 
         """
-
         Old Car
-
         self.wheel1 = Entity(model = "sphere", color = color.white, scale = (0.4, 0.5, 0.3), parent = self, x = self.x + 0.5, y = self.y - 30.5, z = self.z + 0.25)
         self.wheel2 = Entity(model = "sphere", color = color.white, scale = (0.4, 0.5, 0.3), parent = self, x = self.x + 0.5, y = self.y - 30.5, z = self.z - 0.25)
         self.wheel3 = Entity(model = "sphere", color = color.white, scale = (0.4, 0.5, 0.3), parent = self, x = self.x - 0.5, y = self.y - 30.5, z = self.z + 0.25)
@@ -196,5 +202,4 @@ class Car(Entity):
             self.drift_length += 20 * time.dt
         if self.pivot.rotation_z < self.rotation_z:
             self.drift_length -= 20 * time.dt
-
         """
