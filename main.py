@@ -26,7 +26,6 @@ def update():
         car.reset_count_timer.enable()
         invoke(car.reset_timer, delay = 3)
     if car.intersects(sand_track.boundaries):
-        car.speed -= 5 * time.dt
-        car.forward -= 100 * time.dt
+        car.speed = 10
 
 app.run()

@@ -33,7 +33,7 @@ class Car(Entity):
 
         self.drift_speed = drift_speed
 
-        self.slope = 200
+        self.slope = 250
 
         self.sand_track = None
 
