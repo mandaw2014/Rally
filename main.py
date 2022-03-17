@@ -2,7 +2,6 @@ from ursina import *
 from car import Car
 
 app = Ursina()
-window.vsync = True
 
 car = Car((0, 10, 4), topspeed = 30)
 
@@ -24,7 +23,17 @@ def update():
         car.reset_count = 0.0
         car.timer.disable()
         car.reset_count_timer.enable()
+
+        if car.last_count <= car.highscore_count and car.last_count >= 10:
+            car.highscore_count = car.last_count
+        if car.highscore_count <= 13:
+            car.highscore_count = car.last_count
+
+        with open("highscore.txt", "w") as highscore:
+            highscore.write(str(car.highscore_count))
+
         invoke(car.reset_timer, delay = 3)
+
     if car.intersects(sand_track.boundaries):
         car.speed = 10
 

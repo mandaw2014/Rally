@@ -33,18 +33,23 @@ class Car(Entity):
 
         self.drift_speed = drift_speed
 
-        self.slope = 250
+        self.slope = 500
 
         self.sand_track = None
 
         self.timer_running = False
         self.count = 0.0
-        self.highscore_count = self.count
+        self.highscore_count = 0.0
         self.last_count = self.count
         self.reset_count = 0.0
         self.timer = Text(text = "", origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
         self.highscore = Text(text = "", origin = (0, 0), size = 0.05, scale = (0.6, 0.6), position = (-0.7, 0.38))
         self.reset_count_timer = Text(text = str(round(self.reset_count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
+
+        with open("highscore.txt", "r") as highscore:
+            self.highscore_count = highscore.read()
+
+        self.highscore_count = float(self.highscore_count)
 
     def update(self):
         if self.timer_running == True:
@@ -52,11 +57,6 @@ class Car(Entity):
             self.reset_count += time.dt
         self.timer.text = str(round(self.count, 1))
         self.reset_count_timer.text = str(round(self.reset_count, 1))
-
-        if self.count <= self.highscore_count and self.count >= 10:
-            self.highscore_count = self.last_count
-        if self.highscore_count <= 13:
-            self.highscore_count = self.last_count
         
         self.highscore.text = str(round(self.highscore_count, 1))
 
@@ -102,8 +102,8 @@ class Car(Entity):
                 self.rotation_y += self.rotation_speed * 50 * time.dt
                 self.drift_speed -= 30 * time.dt
             else:
-                self.rotation_speed -= 5
-                self.drift_speed += 30 * time.dt
+                self.rotation_speed -= 50 * time.dt
+                self.drift_speed += 1 * time.dt
 
         if self.speed >= self.topspeed:
             self.speed = self.topspeed
@@ -132,7 +132,7 @@ class Car(Entity):
             self.jump_count = 0
             self.velocity_y = 0
         else:
-            self.y += movementY
+            self.y += movementY * 50 * time.dt
             self.velocity_y -= 1 - self.speed / 2 * time.dt
 
         movementX = self.pivot.forward[0] * self.speed * time.dt
@@ -148,8 +148,8 @@ class Car(Entity):
                 top_x_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_x / 2, ignore = [self, self.sand_track.finish_line])
 
                 if not top_x_ray.hit:
-                    if top_x_ray.distance < self.slope:
-                        self.x += movementX
+                    # if top_x_ray.distance < self.slope:
+                    self.x += movementX
                     height_ray = raycast(origin = self.world_position + (sign(movementX) * self.scale_x / 2, -self.scale_y / 2, 0), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line])
                     if height_ray.distance < self.slope:
                             self.y += height_ray.distance
@@ -164,8 +164,8 @@ class Car(Entity):
                 top_z_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_z / 2, ignore = [self, self.sand_track.finish_line])
 
                 if not top_z_ray.hit:
-                    if top_z_ray.distance < self.slope:
-                        self.z += movementZ
+                    # if top_z_ray.distance < self.slope:
+                    self.z += movementZ
                     height_ray = raycast(origin = self.world_position + (0, -self.scale_y / 2, sign(movementZ) * self.scale_z / 2), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line])
                     if height_ray.hit:
                         if height_ray.distance < self.slope:
