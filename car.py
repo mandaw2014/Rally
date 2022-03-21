@@ -1,6 +1,7 @@
 from ursina import *
 from ursina import curve
 from particles import ParticleSystem
+from highscore import *
 
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
@@ -46,8 +47,7 @@ class Car(Entity):
         self.highscore = Text(text = "", origin = (0, 0), size = 0.05, scale = (0.6, 0.6), position = (-0.7, 0.38))
         self.reset_count_timer = Text(text = str(round(self.reset_count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
 
-        with open("highscore.txt", "r") as highscore:
-            self.highscore_count = highscore.read()
+        self.highscore_count = load_highscore("highscore")
 
         self.highscore_count = float(self.highscore_count)
 
