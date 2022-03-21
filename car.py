@@ -1,7 +1,6 @@
 from ursina import *
 from ursina import curve
 from particles import ParticleSystem
-from highscore import *
 
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
@@ -47,7 +46,8 @@ class Car(Entity):
         self.highscore = Text(text = "", origin = (0, 0), size = 0.05, scale = (0.6, 0.6), position = (-0.7, 0.38))
         self.reset_count_timer = Text(text = str(round(self.reset_count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
 
-        self.highscore_count = load_highscore("highscore")
+        with open("highscore.txt", "r") as highscore:
+            self.highscore_count = highscore.read()
 
         self.highscore_count = float(self.highscore_count)
 
@@ -97,13 +97,13 @@ class Car(Entity):
         if self.speed != 0:
             if held_keys["a"]:
                 self.rotation_y -= self.rotation_speed * 50 * time.dt
-                self.drift_speed -= 30 * time.dt
+                self.drift_speed -= 1
             elif held_keys["d"]:
                 self.rotation_y += self.rotation_speed * 50 * time.dt
-                self.drift_speed -= 30 * time.dt
+                self.drift_speed -= 1
             else:
-                self.rotation_speed -= 50 * time.dt
-                self.drift_speed += 1 * time.dt
+                self.rotation_speed -= 3
+                self.drift_speed += 0.01
 
         if self.speed >= self.topspeed:
             self.speed = self.topspeed
@@ -133,7 +133,7 @@ class Car(Entity):
             self.velocity_y = 0
         else:
             self.y += movementY * 50 * time.dt
-            self.velocity_y -= 1 - self.speed / 2 * time.dt
+            self.velocity_y -= 1
 
         movementX = self.pivot.forward[0] * self.speed * time.dt
         movementZ = self.pivot.forward[2] * self.speed * time.dt
@@ -152,7 +152,7 @@ class Car(Entity):
                     self.x += movementX
                     height_ray = raycast(origin = self.world_position + (sign(movementX) * self.scale_x / 2, -self.scale_y / 2, 0), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger])
                     if height_ray.distance < self.slope:
-                            self.y += height_ray.distance
+                        self.y += height_ray.distance
 
         if movementZ != 0:
             direction = (0, 0, sign(movementZ))
@@ -170,8 +170,6 @@ class Car(Entity):
                     if height_ray.hit:
                         if height_ray.distance < self.slope * 10:
                             self.y += height_ray.distance
-                        else:
-                            self.speed = 10
 
     def reset_timer(self):
         self.count = self.reset_count
