@@ -1,5 +1,6 @@
 from ursina import *
 from car import Car
+import GameData
 
 app = Ursina()
 
@@ -38,8 +39,7 @@ def update():
         if car.highscore_count <= 13:
             car.highscore_count = car.last_count
 
-        with open("highscore.txt", "w") as highscore:
-            highscore.write(str(car.highscore_count))
+        GameData.WriteGameData("Highscore", car.highscore_count)
 
         sand_track.wall1.enable()
         sand_track.wall2.enable()
