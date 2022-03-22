@@ -1,12 +1,14 @@
 from ursina import *
 from car import Car
+import os
 
 app = Ursina()
+window.borderless = False
 
 car = Car((0, 10, 4), topspeed = 30)
 
 sand_track = Entity(model = "sand_track.obj", texture = "sand_track.png", position = (-80, -50, -75), scale = (10, 10, 10), collider = "mesh")
-sand_track.finish_line = Entity(position = (24, -43.5, 7), collider = "box", rotation = (0, -251, 0), scale = (20, 5, 3), visible = False)
+sand_track.finish_line = Entity(position = (24, -44.5, 7), collider = "box", rotation = (0, -251, 0), scale = (20, 5, 3), visible = False)
 sand_track.boundaries = Entity(model = "sand_track_bounds.obj", collider = "mesh", position = (-80, -50, -75), scale = (10, 10, 10), visible = False)
 
 sand_track.wall1 = Entity(model = "cube", position = (-29, 450, -39.8), rotation = (0, 313, 0), collider = "box", scale = (5, 2000, 40), visible = False)
@@ -38,14 +40,17 @@ def update():
         if car.highscore_count <= 13:
             car.highscore_count = car.last_count
 
-        with open("highscore.txt", "w") as highscore:
-            highscore.write(str(car.highscore_count))
+        path = os.path.dirname(os.path.abspath(__file__))
+        highscore = os.path.join(path, "./highscore.txt")
+
+        with open(highscore, "w") as hs:
+            hs.write(str(car.highscore_count))
 
         sand_track.wall1.enable()
         sand_track.wall2.enable()
         sand_track.wall3.disable()
         sand_track.wall4.disable()
-
+ 
         invoke(car.reset_timer, delay = 3)
 
     if car.intersects(sand_track.boundaries):

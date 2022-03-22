@@ -18,6 +18,11 @@ class Car(Entity):
         camera.position = (20, 30, -50)
         camera.rotation = (35, -20, 0)
 
+        self.original_camera_position = camera.position
+        self.shake_duration = 2.0
+        self.shake_amount = 0.1
+        self.can_shake = False
+
         self.speed = 0
         self.velocity_y = 0
         self.rotation_speed = rotation_speed
@@ -46,8 +51,11 @@ class Car(Entity):
         self.highscore = Text(text = "", origin = (0, 0), size = 0.05, scale = (0.6, 0.6), position = (-0.7, 0.38))
         self.reset_count_timer = Text(text = str(round(self.reset_count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
 
-        with open("highscore.txt", "r") as highscore:
-            self.highscore_count = highscore.read()
+        path = os.path.dirname(os.path.abspath(__file__))
+        highscore = os.path.join(path, "./highscore.txt")
+
+        with open(highscore, "r") as hs:
+            self.highscore_count = hs.read()
 
         self.highscore_count = float(self.highscore_count)
 
@@ -90,6 +98,7 @@ class Car(Entity):
             self.rotation_speed -= 5 * time.dt
             if self.speed == 0:
                 self.rotation_speed = 0
+            self.shake_amount -= 1 * time.dt
 
         if held_keys["s"]:
             self.speed -= 10 * time.dt
@@ -109,8 +118,8 @@ class Car(Entity):
             self.speed = self.topspeed
         if self.speed <= 10:
             self.pivot.rotation = self.rotation
-        if self.speed <= 0:
-            self.speed = 0
+        if self.speed <= 0.1:
+            self.speed = 0.1
             self.pivot.rotation = self.rotation
 
         if self.drift_speed <= 20:
@@ -122,6 +131,20 @@ class Car(Entity):
             self.rotation_speed = 5
         if self.rotation_speed <= 1.2:
             self.rotation_speed = 1.2
+
+        if self.speed >= 10:
+            self.can_shake = True
+            self.shake_amount += self.speed / 1500 * time.dt
+        else:
+            self.shake_amount -= 1 * time.dt
+
+        if self.shake_amount <= 0:
+            self.shake_amount = 0
+        if self.shake_amount >= 0.08:
+            self.shake_amount = 0.08
+
+        if self.can_shake:
+            self.shake_camera()
 
         movementY = self.velocity_y * time.dt
         direction = (0, sign(movementY), 0)
@@ -203,3 +226,11 @@ class Car(Entity):
         if self.pivot.rotation_z < self.rotation_z:
             self.drift_length -= 20 * time.dt
         """
+
+    def update_camera_pos(self):
+        self.original_camera_position = camera.position
+
+    def shake_camera(self):
+        camera.x += random.randint(-1, 1) * self.shake_amount
+        camera.y += random.randint(-1, 1) * self.shake_amount
+        camera.z += random.randint(-1, 1) * self.shake_amount
