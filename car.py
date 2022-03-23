@@ -140,8 +140,8 @@ class Car(Entity):
 
         if self.shake_amount <= 0:
             self.shake_amount = 0
-        if self.shake_amount >= 0.08:
-            self.shake_amount = 0.08
+        if self.shake_amount >= 0.04:
+            self.shake_amount = 0.04
 
         if self.can_shake:
             self.shake_camera()

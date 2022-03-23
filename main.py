@@ -2,10 +2,13 @@ from ursina import *
 from car import Car
 import os
 
+from main_menu import MainMenu
+
 app = Ursina()
 window.borderless = False
 
 car = Car((0, 10, 4), topspeed = 30)
+car.disable()
 
 sand_track = Entity(model = "sand_track.obj", texture = "sand_track.png", position = (-80, -50, -75), scale = (10, 10, 10), collider = "mesh")
 sand_track.finish_line = Entity(position = (24, -44.5, 7), collider = "box", rotation = (0, -251, 0), scale = (20, 5, 3), visible = False)
@@ -22,10 +25,12 @@ car.sand_track = sand_track
 
 camera.clip_plane_far = 250
 
+main_menu = MainMenu(car)
+
 PointLight(parent = camera, color = color.white, position = (0, 10, -1.5))
 AmbientLight(color = color.rgba(100, 100, 100, 0.1))
 
-Sky()
+# Sky()
 
 def update():
     if car.intersects(sand_track.finish_line):
