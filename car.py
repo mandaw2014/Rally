@@ -44,7 +44,7 @@ class Car(Entity):
 
         self.timer_running = False
         self.count = 0.0
-        self.highscore_count = 0.0
+        self.highscore_count = None
         self.last_count = self.count
         self.reset_count = 0.0
         self.timer = Text(text = "", origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
@@ -98,7 +98,7 @@ class Car(Entity):
             self.rotation_speed -= 5 * time.dt
             if self.speed == 0:
                 self.rotation_speed = 0
-            self.shake_amount -= 1 * time.dt
+            self.shake_amount -= 0.001 * time.dt
 
         if held_keys["s"]:
             self.speed -= 10 * time.dt
@@ -132,16 +132,16 @@ class Car(Entity):
         if self.rotation_speed <= 1.2:
             self.rotation_speed = 1.2
 
-        if self.speed >= 10:
+        if self.speed >= 1:
             self.can_shake = True
-            self.shake_amount += self.speed / 1500 * time.dt
+            self.shake_amount += self.speed / 5000 * time.dt
         else:
-            self.shake_amount -= 1 * time.dt
+            self.shake_amount -= 0.1 * time.dt
 
         if self.shake_amount <= 0:
             self.shake_amount = 0
-        if self.shake_amount >= 0.04:
-            self.shake_amount = 0.04
+        if self.shake_amount >= 0.03:
+            self.shake_amount = 0.03
 
         if self.can_shake:
             self.shake_camera()

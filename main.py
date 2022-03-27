@@ -40,10 +40,14 @@ def update():
         car.timer.disable()
         car.reset_count_timer.enable()
 
-        if car.last_count <= car.highscore_count and car.last_count >= 10:
-            car.highscore_count = car.last_count
-        if car.highscore_count <= 13:
-            car.highscore_count = car.last_count
+        if car.highscore_count == 0:
+            if car.last_count >= 10:
+                car.highscore_count = car.last_count
+        if car.last_count <= car.highscore_count:
+            if car.last_count >= 10.0:
+                car.highscore_count = car.last_count
+            if car.highscore_count <= 13:
+                car.highscore_count = car.last_count
 
         path = os.path.dirname(os.path.abspath(__file__))
         highscore = os.path.join(path, "./highscore.txt")
@@ -66,5 +70,11 @@ def update():
         sand_track.wall2.disable()
         sand_track.wall3.enable()
         sand_track.wall4.enable()
+
+def input(key):
+    if main_menu.main_menu.enabled == False:
+        if key == "escape":
+            main_menu.pause_menu.enabled = not main_menu.pause_menu.enabled
+            mouse.locked = not mouse.locked  
 
 app.run()

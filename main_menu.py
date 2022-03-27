@@ -8,12 +8,17 @@ class MainMenu(Entity):
         )
 
         self.main_menu = Entity(parent = self, enabled = True)
+        self.pause_menu = Entity(parent = self, enabled = False)
         self.car = car
 
         def start():
             self.car.enable()
             mouse.locked = True
             self.main_menu.disable()
+
+        def resume():
+            mouse.locked = True
+            self.pause_menu.disable()
 
         def reset_highscore():
             path = os.path.dirname(os.path.abspath(__file__))
@@ -38,3 +43,10 @@ class MainMenu(Entity):
         quit_button.on_click = application.quit
         start_button.on_click = Func(start)
         reset_highsore_button.on_click = Func(reset_highscore)
+
+        p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
+        p_reset_highsore_button = Button(text = "R e s e t - H i g h s c o r e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)
+        p_quit_button = Button(text = "Q u i t", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.13, parent = self.pause_menu)
+        p_quit_button.on_click = application.quit
+        p_reset_highsore_button.on_click = Func(reset_highscore)
+        p_resume_button.on_click = Func(resume)
