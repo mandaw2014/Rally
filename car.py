@@ -8,7 +8,6 @@ class Car(Entity):
     def __init__(self, position = (0, 0, 0), topspeed = 25, acceleration = 0.4, friction = 0.6, rotation_speed = 1.0, camera_speed = 0.05, drift_speed = 30):
         super().__init__(
             model = "car",
-            color = color.white,
             position = position,
             rotation = (0, 65, 0),
             collider = "box",

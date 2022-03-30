@@ -6,6 +6,7 @@ from main_menu import MainMenu
 
 app = Ursina()
 window.borderless = False
+window.fullscreen = True
 
 car = Car((0, 10, 4), topspeed = 30)
 car.disable()
