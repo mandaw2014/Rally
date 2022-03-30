@@ -34,6 +34,14 @@ AmbientLight(color = color.rgba(100, 100, 100, 0.1))
 # Sky()
 
 def update():
+    if held_keys["g"]:
+        car.position = (0, -40, 4)
+        car.rotation = (0, 65, 0)
+        car.speed = 0
+        car.count = 0.0
+        car.reset_count = 0.0
+        car.timer_running = False
+
     if car.intersects(sand_track.finish_line):
         car.timer_running = True
         car.last_count = car.count

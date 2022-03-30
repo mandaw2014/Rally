@@ -7,7 +7,7 @@ sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 class Car(Entity):
     def __init__(self, position = (0, 0, 0), topspeed = 25, acceleration = 0.4, friction = 0.6, rotation_speed = 1.0, camera_speed = 0.05, drift_speed = 30):
         super().__init__(
-            model = "car",
+            model = "car.obj",
             position = position,
             rotation = (0, 65, 0),
             collider = "box",
@@ -91,6 +91,9 @@ class Car(Entity):
                 self.speed += self.acceleration * 50 * time.dt
                 self.particles = ParticleSystem(position = Vec3(self.x, self.y - 2, self.z), color = color.hex("925B3A"), rotation_y = random.random() * 360)
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
+            if self.speed >= 2:
+                if self.rotation_speed <= 1.2:
+                    self.rotation_speed = 1.2
         else:
             if ground_check.hit:
                 self.speed -= self.friction * 50 * time.dt
@@ -101,6 +104,10 @@ class Car(Entity):
 
         if held_keys["s"]:
             self.speed -= 10 * time.dt
+
+        if held_keys["space"]:
+            self.drift_speed -= 5
+            self.speed -= 20 * time.dt
 
         if self.speed != 0:
             if held_keys["a"]:
@@ -115,11 +122,10 @@ class Car(Entity):
 
         if self.speed >= self.topspeed:
             self.speed = self.topspeed
-        if self.speed <= 10:
-            self.pivot.rotation = self.rotation
         if self.speed <= 0.1:
             self.speed = 0.1
             self.pivot.rotation = self.rotation
+            self.rotation_speed -= 10
 
         if self.drift_speed <= 20:
             self.drift_speed = 20
@@ -128,8 +134,8 @@ class Car(Entity):
 
         if self.rotation_speed >= 5:
             self.rotation_speed = 5
-        if self.rotation_speed <= 1.2:
-            self.rotation_speed = 1.2
+        if self.rotation_speed <= 0:
+            self.rotation_speed = 0
 
         if self.speed >= 1:
             self.can_shake = True
