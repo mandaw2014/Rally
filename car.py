@@ -50,6 +50,9 @@ class Car(Entity):
         self.highscore = Text(text = "", origin = (0, 0), size = 0.05, scale = (0.6, 0.6), position = (-0.7, 0.38))
         self.reset_count_timer = Text(text = str(round(self.reset_count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
 
+        self.laps = 0
+        self.anti_cheat = 1
+
         path = os.path.dirname(os.path.abspath(__file__))
         highscore = os.path.join(path, "./highscore.txt")
 
@@ -92,9 +95,9 @@ class Car(Entity):
                 self.rotation_y += self.rotation_speed * 50 * time.dt
 
                 if self.rotation_speed > 0:
-                    self.rotation_speed -= self.speed / 5 * time.dt
+                    self.rotation_speed -= self.speed / 4 * time.dt
                 elif self.rotation_speed < 0:
-                    self.rotation_speed += self.speed / 5 * time.dt
+                    self.rotation_speed += self.speed / 4 * time.dt
 
                 self.particles = ParticleSystem(position = Vec3(self.x, self.y - 2, self.z), color = color.hex("925B3A"), rotation_y = random.random() * 360)
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)

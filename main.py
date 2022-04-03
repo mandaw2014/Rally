@@ -37,33 +37,36 @@ AmbientLight(color = color.rgba(100, 100, 100, 0.1))
 
 def update():
     if car.intersects(sand_track.finish_line):
-        car.timer_running = True
-        car.last_count = car.count
-        car.reset_count = 0.0
-        car.timer.disable()
-        car.reset_count_timer.enable()
+        if car.anti_cheat == 1:
+            car.timer_running = True
+            car.last_count = car.count
+            car.reset_count = 0.0
+            car.timer.disable()
+            car.reset_count_timer.enable()
 
-        if car.highscore_count == 0:
-            if car.last_count >= 10:
-                car.highscore_count = car.last_count
-        if car.last_count <= car.highscore_count:
-            if car.last_count >= 10.0:
-                car.highscore_count = car.last_count
-            if car.highscore_count <= 13:
-                car.highscore_count = car.last_count
+            if car.highscore_count == 0:
+                if car.last_count >= 10:
+                    car.highscore_count = car.last_count
+            if car.last_count <= car.highscore_count:
+                if car.last_count >= 10.0:
+                    car.highscore_count = car.last_count
+                if car.highscore_count <= 13:
+                    car.highscore_count = car.last_count
 
-        path = os.path.dirname(os.path.abspath(__file__))
-        highscore = os.path.join(path, "./highscore.txt")
+            path = os.path.dirname(os.path.abspath(__file__))
+            highscore = os.path.join(path, "./highscore.txt")
 
-        with open(highscore, "w") as hs:
-            hs.write(str(car.highscore_count))
+            with open(highscore, "w") as hs:
+                hs.write(str(car.highscore_count))
+
+            car.anti_cheat = 0
+
+            invoke(car.reset_timer, delay = 3)
 
         sand_track.wall1.enable()
         sand_track.wall2.enable()
         sand_track.wall3.disable()
         sand_track.wall4.disable()
- 
-        invoke(car.reset_timer, delay = 3)
 
     if car.intersects(sand_track.boundaries):
         car.speed = 10
@@ -73,6 +76,7 @@ def update():
         sand_track.wall2.disable()
         sand_track.wall3.enable()
         sand_track.wall4.enable()
+        car.anti_cheat = 1
 
 def input(key):
     if main_menu.main_menu.enabled == False:
