@@ -24,6 +24,8 @@ sand_track.wall_trigger = Entity(model = "cube", position = (-72, 450, -84.9), r
 
 car.sand_track = sand_track
 
+# grass_track = Entity(model = "grass_track.obj", position = (0, 0, 0), scale = (30, 30, 30), collider = "mesh")
+
 camera.clip_plane_far = 250
 
 main_menu = MainMenu(car)
@@ -34,14 +36,6 @@ AmbientLight(color = color.rgba(100, 100, 100, 0.1))
 # Sky()
 
 def update():
-    if held_keys["g"]:
-        car.position = (0, -40, 4)
-        car.rotation = (0, 65, 0)
-        car.speed = 0
-        car.count = 0.0
-        car.reset_count = 0.0
-        car.timer_running = False
-
     if car.intersects(sand_track.finish_line):
         car.timer_running = True
         car.last_count = car.count
