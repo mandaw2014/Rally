@@ -5,7 +5,7 @@ from particles import ParticleSystem
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
 class Car(Entity):
-    def __init__(self, position = (0, 0, 0), topspeed = 25, acceleration = 0.4, friction = 0.6, camera_speed = 0.05, drift_speed = 35):
+    def __init__(self, position = (0, 0, 0), topspeed = 25, acceleration = 0.4, friction = 0.6, camera_speed = 8, drift_speed = 35):
         super().__init__(
             model = "car",
             position = position,
@@ -14,7 +14,7 @@ class Car(Entity):
             scale = (1, 1, 1)
         )
 
-        camera.position = (20, 30, -50)
+        camera.position = self.position + (20, 40, -50)
         camera.rotation = (35, -20, 0)
 
         self.original_camera_position = camera.position
@@ -70,8 +70,7 @@ class Car(Entity):
         
         self.highscore.text = str(round(self.highscore_count, 1))
 
-        camera_follow = SmoothFollow(target = self, offset = (20, 40, -50), speed = self.camera_speed)
-        camera.add_script(camera_follow)
+        camera.position += ((self.position + (20, 40, -50) - camera.position) * self.camera_speed * time.dt)
 
         self.pivot.position = self.position
 
@@ -113,7 +112,7 @@ class Car(Entity):
         if held_keys["space"]:
             self.drift_speed -= 20 * time.dt
             self.speed -= 20 * time.dt
-            self.rotation_speed /= 10 * time.dt
+            self.rotation_speed /= 20 * time.dt
 
         if held_keys["g"]:
             self.position = (0, -40, 4)
@@ -122,6 +121,7 @@ class Car(Entity):
             self.count = 0.0
             self.reset_count = 0.0
             self.timer_running = False
+            self.anti_cheat = 1
 
         if self.speed != 0:
             if held_keys["a"]:
