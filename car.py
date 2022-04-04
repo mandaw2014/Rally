@@ -53,6 +53,9 @@ class Car(Entity):
         self.laps = 0
         self.anti_cheat = 1
 
+        camera_follow = SmoothFollow(target = self, offset = (20, 40, -50), speed = self.camera_speed)
+        camera.add_script(camera_follow)
+
         path = os.path.dirname(os.path.abspath(__file__))
         highscore = os.path.join(path, "./highscore.txt")
 
@@ -69,8 +72,6 @@ class Car(Entity):
         self.reset_count_timer.text = str(round(self.reset_count, 1))
         
         self.highscore.text = str(round(self.highscore_count, 1))
-
-        camera.position += ((self.position + (20, 40, -50) - camera.position) * self.camera_speed * time.dt)
 
         self.pivot.position = self.position
 
