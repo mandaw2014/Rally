@@ -14,7 +14,7 @@ class Car(Entity):
             scale = (1, 1, 1)
         )
 
-        camera.position = self.position + (20, 40, -50)
+        camera.position = self.position + (20, 20, -50)
         camera.rotation = (35, -20, 0)
 
         self.original_camera_position = camera.position

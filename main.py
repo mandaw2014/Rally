@@ -8,7 +8,7 @@ app = Ursina()
 window.borderless = False
 window.fullscreen = True
 
-car = Car((0, 0, 4), topspeed = 30)
+car = Car((0, -10, 4), topspeed = 30)
 car.disable()
 
 sand_track = Entity(model = "sand_track.obj", texture = "sand_track.png", position = (-80, -50, -75), scale = (10, 10, 10), collider = "mesh")
