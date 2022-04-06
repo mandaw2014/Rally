@@ -53,6 +53,11 @@ def update():
                 if car.highscore_count <= 13:
                     car.highscore_count = car.last_count
 
+            if not os.path.exists("highscore.txt"):
+                hs = open("highscore.txt", "w")
+                hs.write("0.0")
+                hs.close()
+
             path = os.path.dirname(os.path.abspath(__file__))
             highscore = os.path.join(path, "./highscore.txt")
 
