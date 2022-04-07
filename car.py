@@ -14,7 +14,7 @@ class Car(Entity):
             scale = (1, 1, 1)
         )
 
-        camera.position = self.position + (20, 20, -50)
+        camera.position = self.position + (20, 40, -50)
         camera.rotation = (35, -20, 0)
 
         self.original_camera_position = camera.position
@@ -55,11 +55,6 @@ class Car(Entity):
 
         camera_follow = SmoothFollow(target = self, offset = (20, 40, -50), speed = self.camera_speed)
         camera.add_script(camera_follow)
-
-        if not os.path.exists("highscore.txt"):
-            hs = open("highscore.txt", "w")
-            hs.write("0.0")
-            hs.close()
 
         path = os.path.dirname(os.path.abspath(__file__))
         highscore = os.path.join(path, "./highscore.txt")

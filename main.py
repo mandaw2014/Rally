@@ -8,7 +8,7 @@ app = Ursina()
 window.borderless = False
 window.fullscreen = True
 
-car = Car((0, -10, 4), topspeed = 30)
+car = Car((0, 0, 4), topspeed = 30)
 car.disable()
 
 sand_track = Entity(model = "sand_track.obj", texture = "sand_track.png", position = (-80, -50, -75), scale = (10, 10, 10), collider = "mesh")
@@ -52,11 +52,6 @@ def update():
                     car.highscore_count = car.last_count
                 if car.highscore_count <= 13:
                     car.highscore_count = car.last_count
-
-            if not os.path.exists("highscore.txt"):
-                hs = open("highscore.txt", "w")
-                hs.write("0.0")
-                hs.close()
 
             path = os.path.dirname(os.path.abspath(__file__))
             highscore = os.path.join(path, "./highscore.txt")
