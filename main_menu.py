@@ -20,6 +20,15 @@ class MainMenu(Entity):
             mouse.locked = True
             self.pause_menu.disable()
 
+        def respawn():
+            self.car.position = (0, -40, 4)
+            self.car.rotation = (0, 65, 0)
+            self.car.speed = 0
+            self.car.count = 0.0
+            self.car.reset_count = 0.0
+            self.car.timer_running = False
+            self.car.anti_cheat = 1
+
         def reset_highscore():
             path = os.path.dirname(os.path.abspath(__file__))
             highscore = os.path.join(path, "./highscore.txt")
@@ -44,9 +53,11 @@ class MainMenu(Entity):
         start_button.on_click = Func(start)
         reset_highsore_button.on_click = Func(reset_highscore)
 
-        p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
+        p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.23, parent = self.pause_menu)
+        p_respawn_button = Button(text = "R e s p a w n", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
         p_reset_highsore_button = Button(text = "R e s e t - H i g h s c o r e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)
         p_quit_button = Button(text = "Q u i t", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.13, parent = self.pause_menu)
         p_quit_button.on_click = application.quit
         p_reset_highsore_button.on_click = Func(reset_highscore)
+        p_respawn_button.on_click = Func(respawn)
         p_resume_button.on_click = Func(resume)
