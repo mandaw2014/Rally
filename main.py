@@ -22,61 +22,71 @@ sand_track.wall4 = Entity(model = "cube", position = (-43, 450, -41.6), rotation
 
 sand_track.wall_trigger = Entity(model = "cube", position = (-72, 450, -84.9), rotation = (0, 447.72, 0), collider = "box", scale = (50, 2000, 5), visible = False)
 
-car.sand_track = sand_track
+sand_track.disable()
+sand_track.finish_line.disable()
+sand_track.boundaries.disable()
+sand_track.wall1.disable()
+sand_track.wall2.disable()
+sand_track.wall3.disable()
+sand_track.wall4.disable()
+sand_track.wall_trigger.disable()
 
-# grass_track = Entity(model = "grass_track.obj", position = (0, 0, 0), scale = (30, 30, 30), collider = "mesh")
+grass_track = Entity(model = "grass_track.obj", texture = "grass_track.png", position = (0, -50, 0), rotation = (0, 270, 0), scale = (25, 25, 25), collider = "mesh")
+
+car.sand_track = sand_track
+car.grass_track = grass_track
 
 camera.clip_plane_far = 250
 
-main_menu = MainMenu(car)
-
+main_menu = MainMenu(car, sand_track, grass_track)
 PointLight(parent = camera, color = color.white, position = (0, 10, -1.5))
 AmbientLight(color = color.rgba(100, 100, 100, 0.1))
 
 # Sky()
 
 def update():
-    if car.intersects(sand_track.finish_line):
-        if car.anti_cheat == 1:
-            car.timer_running = True
-            car.last_count = car.count
-            car.reset_count = 0.0
-            car.timer.disable()
-            car.reset_count_timer.enable()
+    if sand_track.enabled == True:
+        if car.intersects(sand_track.finish_line):
+            if car.anti_cheat == 1:
+                car.timer_running = True
+                car.last_count = car.count
+                car.reset_count = 0.0
+                car.timer.disable()
+                car.reset_count_timer.enable()
 
-            if car.highscore_count == 0:
-                if car.last_count >= 10:
-                    car.highscore_count = car.last_count
-            if car.last_count <= car.highscore_count:
-                if car.last_count >= 10.0:
-                    car.highscore_count = car.last_count
-                if car.highscore_count <= 13:
-                    car.highscore_count = car.last_count
+                if car.highscore_count == 0:
+                    if car.last_count >= 10:
+                        car.highscore_count = car.last_count
+                if car.last_count <= car.highscore_count:
+                    if car.last_count >= 10.0:
+                        car.highscore_count = car.last_count
+                    if car.highscore_count <= 13:
+                        car.highscore_count = car.last_count
 
-            path = os.path.dirname(os.path.abspath(__file__))
-            highscore = os.path.join(path, "./highscore.txt")
+                path = os.path.dirname(os.path.abspath(__file__))
+                highscore = os.path.join(path, "./highscore.txt")
 
-            with open(highscore, "w") as hs:
-                hs.write(str(car.highscore_count))
+                with open(highscore, "w") as hs:
+                    hs.write(str(car.highscore_count))
 
-            car.anti_cheat = 0
+                car.anti_cheat = 0
 
-            invoke(car.reset_timer, delay = 3)
+                invoke(car.reset_timer, delay = 3)
 
-        sand_track.wall1.enable()
-        sand_track.wall2.enable()
-        sand_track.wall3.disable()
-        sand_track.wall4.disable()
+            sand_track.wall1.enable()
+            sand_track.wall2.enable()
+            sand_track.wall3.disable()
+            sand_track.wall4.disable()
 
-    if car.intersects(sand_track.boundaries):
-        car.speed = 10
+        if car.intersects(sand_track.boundaries):
+            car.speed = 10
 
-    if car.intersects(sand_track.wall_trigger):
-        sand_track.wall1.disable()
-        sand_track.wall2.disable()
-        sand_track.wall3.enable()
-        sand_track.wall4.enable()
-        car.anti_cheat = 1
+        if car.intersects(sand_track.wall_trigger):
+            sand_track.wall1.disable()
+            sand_track.wall2.disable()
+            sand_track.wall3.enable()
+            sand_track.wall4.enable()
+            car.anti_cheat = 1
 
 def input(key):
     if main_menu.main_menu.enabled == False:

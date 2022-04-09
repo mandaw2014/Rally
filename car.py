@@ -40,6 +40,7 @@ class Car(Entity):
         self.slope = 100
 
         self.sand_track = None
+        self.grass_track = None
 
         self.timer_running = False
         self.count = 0.0

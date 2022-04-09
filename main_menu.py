@@ -1,33 +1,71 @@
+from nis import maps
 from ursina import *
 import os
 
 class MainMenu(Entity):
-    def __init__(self, car):
+    def __init__(self, car, sand_track, grass_track):
         super().__init__(
             parent = camera.ui
         )
 
         self.main_menu = Entity(parent = self, enabled = True)
+        self.maps_menu = Entity(parent = self, enabled = False)
         self.pause_menu = Entity(parent = self, enabled = False)
         self.car = car
 
         def start():
-            self.car.enable()
-            mouse.locked = True
+            self.maps_menu.enable()
             self.main_menu.disable()
 
         def resume():
             mouse.locked = True
             self.pause_menu.disable()
 
+        def back():
+            self.maps_menu.disable()
+            self.main_menu.enable()
+
         def respawn():
-            self.car.position = (0, -40, 4)
+            if grass_track.enabled == True:
+                self.car.position = (-80, -30, 15)
+            if sand_track.enabled == True:
+                self.car.position = (0, -40, 4)
             self.car.rotation = (0, 65, 0)
             self.car.speed = 0
             self.car.count = 0.0
             self.car.reset_count = 0.0
             self.car.timer_running = False
             self.car.anti_cheat = 1
+
+        def main_menu():
+            self.car.position = (0, 0, 4)
+            self.car.disable()
+            self.car.rotation = (0, 65, 0)
+            self.car.speed = 0
+            self.car.count = 0.0
+            self.car.reset_count = 0.0
+            self.car.timer_running = False
+            self.car.anti_cheat = 1
+            self.main_menu.enable()
+            self.pause_menu.disable()
+            sand_track.disable()
+            grass_track.enable()
+
+        def sand_track_func():
+            self.car.enable()
+            mouse.locked = True
+            self.maps_menu.disable()
+            self.car.position = (0, 0, 4)
+            sand_track.enable()
+            grass_track.disable()
+
+        def grass_track_func():
+            self.car.enable()
+            mouse.locked = True
+            self.maps_menu.disable()
+            self.car.position = (-80, -30, 15)
+            grass_track.enable()
+            sand_track.disable()
 
         def reset_highscore():
             path = os.path.dirname(os.path.abspath(__file__))
@@ -53,11 +91,19 @@ class MainMenu(Entity):
         start_button.on_click = Func(start)
         reset_highsore_button.on_click = Func(reset_highscore)
 
+        sand_track_button = Button(text = "S a n d - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = -0.5, parent = self.maps_menu)
+        grass_track_button = Button(text = "G r a s s - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0, parent = self.maps_menu)
+        back_button = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
+
+        sand_track_button.on_click = Func(sand_track_func)
+        grass_track_button.on_click = Func(grass_track_func)
+        back_button.on_click = Func(back)
+
         p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.23, parent = self.pause_menu)
         p_respawn_button = Button(text = "R e s p a w n", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
         p_reset_highsore_button = Button(text = "R e s e t - H i g h s c o r e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)
-        p_quit_button = Button(text = "Q u i t", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.13, parent = self.pause_menu)
-        p_quit_button.on_click = application.quit
+        p_mainmenu_button = Button(text = "M a i n - M e n u", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.13, parent = self.pause_menu)
+        p_mainmenu_button.on_click = Func(main_menu)
         p_reset_highsore_button.on_click = Func(reset_highscore)
         p_respawn_button.on_click = Func(respawn)
         p_resume_button.on_click = Func(resume)
