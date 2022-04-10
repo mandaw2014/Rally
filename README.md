@@ -12,9 +12,9 @@ Particles
 
 Camera Shake
 
-1 Map (Sand Track)
+2 Maps - Sand Track and Grass Track
 
-So far I have been working on this game for 3 weeks. Feel free to leave comments or feedback on how I can improve the game
+So far I have been working on this game for a month. Feel free to leave comments or feedback on how I can improve the game
 
 # Controls
 
@@ -27,6 +27,8 @@ A, D - Turn
 SPACE - Hand Brake
 
 ESCAPE - Pause Menu
+
+G - Respawn
 
 # Screenshots
 

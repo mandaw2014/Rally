@@ -28,9 +28,10 @@ class MainMenu(Entity):
         def respawn():
             if grass_track.enabled == True:
                 self.car.position = (-80, -30, 15)
+                self.car.rotation = (0, 90, 0)
             if sand_track.enabled == True:
                 self.car.position = (0, -40, 4)
-            self.car.rotation = (0, 65, 0)
+                self.car.rotation = (0, 65, 0)
             self.car.speed = 0
             self.car.count = 0.0
             self.car.reset_count = 0.0
@@ -56,31 +57,93 @@ class MainMenu(Entity):
             mouse.locked = True
             self.maps_menu.disable()
             self.car.position = (0, 0, 4)
+            camera.position = (-80, -30, 15)
             sand_track.enable()
             grass_track.disable()
+            
+            sand_track.finish_line.enable()
+            sand_track.boundaries.enable()
+            sand_track.wall1.enable()
+            sand_track.wall2.enable()
+            sand_track.wall3.enable()
+            sand_track.wall4.enable()
+            sand_track.wall_trigger.enable()
+
+            grass_track.finish_line.disable()
+            grass_track.boundaries.disable()
+            grass_track.wall1.disable()
+            grass_track.wall2.disable()
+            grass_track.wall3.disable()
+            grass_track.wall4.disable()
+            grass_track.wall_trigger.disable()
+            grass_track.wall_trigger_ramp.disable()
+
+            path = os.path.dirname(os.path.abspath(__file__))
+            highscore = os.path.join(path, "./highscore/highscore-sandtrack.txt")
+
+            with open(highscore, "r") as hs:
+                self.car.highscore_count = hs.read()
+
+            self.car.highscore_count = float(self.car.highscore_count)
 
         def grass_track_func():
             self.car.enable()
             mouse.locked = True
             self.maps_menu.disable()
             self.car.position = (-80, -30, 15)
+            self.car.rotation = (0, 90, 0)
             grass_track.enable()
             sand_track.disable()
 
-        def reset_highscore():
-            path = os.path.dirname(os.path.abspath(__file__))
-            highscore = os.path.join(path, "./highscore.txt")
+            sand_track.finish_line.disable()
+            sand_track.boundaries.disable()
+            sand_track.wall1.disable()
+            sand_track.wall2.disable()
+            sand_track.wall3.disable()
+            sand_track.wall4.disable()
+            sand_track.wall_trigger.disable()
 
-            with open(highscore, "w") as hs:
-                hs.write(str(0.0))
+            grass_track.finish_line.enable()
+            grass_track.boundaries.enable()
+            grass_track.wall1.enable()
+            grass_track.wall2.enable()
+            grass_track.wall3.enable()
+            grass_track.wall4.enable()
+            grass_track.wall_trigger.enable()
+            grass_track.wall_trigger_ramp.enable()
 
             path = os.path.dirname(os.path.abspath(__file__))
-            highscore = os.path.join(path, "./highscore.txt")
+            highscore = os.path.join(path, "./highscore/highscore-grasstrack.txt")
 
             with open(highscore, "r") as hs:
                 self.car.highscore_count = hs.read()
 
             self.car.highscore_count = float(self.car.highscore_count)
+
+        def reset_highscore():
+            if sand_track.enabled == True:
+                path = os.path.dirname(os.path.abspath(__file__))
+                highscore = os.path.join(path, "./highscore/highscore-sandtrack.txt")
+
+                with open(highscore, "w") as hs:
+                    hs.write(str(0.0))
+
+                with open(highscore, "r") as hs:
+                    self.car.highscore_count = hs.read()
+
+                self.car.highscore_count = float(self.car.highscore_count)
+            
+            if grass_track.enabled == True:
+                path = os.path.dirname(os.path.abspath(__file__))
+                highscore = os.path.join(path, "./highscore/highscore-grasstrack.txt")
+
+                with open(highscore, "w") as hs:
+                    hs.write(str(0.0))
+
+                with open(highscore, "r") as hs:
+                    self.car.highscore_count = hs.read()
+
+                self.car.highscore_count = float(self.car.highscore_count)
 
         title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.main_menu, y = 0.3)
 
