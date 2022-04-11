@@ -1,4 +1,6 @@
 from ursina import *
+from direct.stdpy import thread
+
 from car import Car
 
 from main_menu import MainMenu
@@ -11,6 +13,14 @@ window.borderless = False
 window.fullscreen = True
 window.cog_button.disable()
 window.show_ursina_splash = True
+# Loading car textures
+def load_car_textures():
+    for car_texture in ("black", "blue", "green", "orange", "red", "white"):
+        load_texture(f"assets/garage/car-{car_texture}.png")
+try:
+    thread.start_new_thread(function=load_car_textures, args='')
+except Exception as e:
+    print('error starting thread', e)
 
 car = Car((0, 0, 4), topspeed = 30)
 car.disable()
@@ -37,6 +47,6 @@ def input(key):
     if main_menu.main_menu.enabled == False:
         if key == "escape":
             main_menu.pause_menu.enabled = not main_menu.pause_menu.enabled
-            mouse.locked = not mouse.locked  
+            mouse.locked = not mouse.locked
 
 app.run()

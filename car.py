@@ -71,13 +71,13 @@ class Car(Entity):
         self.highscore_count = float(self.highscore_count)
 
     def update(self):
-        if self.garage_mode != True:
-            if self.timer_running == True:
+        if self.garage_mode is False:
+            if self.timer_running is True:
                 self.count += time.dt
                 self.reset_count += time.dt
             self.timer.text = str(round(self.count, 1))
             self.reset_count_timer.text = str(round(self.reset_count, 1))
-                
+
             self.highscore.text = str(round(self.highscore_count, 1))
 
             self.pivot.position = self.position
@@ -126,10 +126,10 @@ class Car(Entity):
                 self.rotation_speed /= 20 * time.dt
 
             if held_keys["g"]:
-                if self.grass_track.enabled == True:
+                if self.grass_track.enabled is True:
                     self.position = (-80, -30, 15)
                     self.rotation = (0, 90, 0)
-                if self.sand_track.enabled == True:
+                if self.sand_track.enabled is True:
                     self.position = (0, -40, 4)
                     self.rotation = (0, 65, 0)
                 self.speed = 0
