@@ -53,6 +53,7 @@ class MainMenu(Entity):
             self.car.speed = 0
             self.car.count = 0.0
             self.car.reset_count = 0.0
+            self.car.reset_count_timer.disable()
             self.car.timer_running = False
             self.car.anti_cheat = 1
             self.main_menu.enable()
@@ -65,6 +66,8 @@ class MainMenu(Entity):
             mouse.locked = True
             self.maps_menu.disable()
             self.car.position = (0, 0, 4)
+            self.car.rotation = (0, 65, 0)
+            self.car.reset_count_timer.enable()
             camera.position = (-80, -30, 15)
             sand_track.enable()
             grass_track.disable()
@@ -100,6 +103,7 @@ class MainMenu(Entity):
             self.maps_menu.disable()
             self.car.position = (-80, -30, 15)
             self.car.rotation = (0, 90, 0)
+            self.car.reset_count_timer.enable()
             grass_track.enable()
             sand_track.disable()
 
