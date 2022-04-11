@@ -9,6 +9,8 @@ from grass_track import GrassTrack
 app = Ursina()
 window.borderless = False
 window.fullscreen = True
+window.cog_button.disable()
+window.show_ursina_splash = True
 
 car = Car((0, 0, 4), topspeed = 30)
 car.disable()

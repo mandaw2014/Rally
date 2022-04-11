@@ -28,8 +28,9 @@ class MainMenu(Entity):
         def back_garage():
             self.garage_menu.disable()
             self.main_menu.enable()
-            self.car.disable()
+            camera.rotation = (35, -20, 0)
             self.car.garage_mode = False
+            self.car.disable()
             garage.disable()
             grass_track.enable()
 
