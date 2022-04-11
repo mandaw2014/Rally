@@ -16,15 +16,20 @@ car.disable()
 sand_track = SandTrack(car)
 grass_track = GrassTrack(car)
 
+garage = Entity(model = "cube", color = color.white, position = (car.x, car.y - 2, car.z), rotation_y = 45, scale = (10, 1, 10))
+garage.disable()
+
 car.sand_track = sand_track
 car.grass_track = grass_track
 
-camera.clip_plane_far = 250
+# camera.clip_plane_far = 250
 
-main_menu = MainMenu(car, sand_track, grass_track)
+main_menu = MainMenu(car, sand_track, grass_track, garage)
 
 PointLight(parent = camera, color = color.white, position = (0, 10, -1.5))
 AmbientLight(color = color.rgba(100, 100, 100, 0.1))
+
+Sky()
 
 def input(key):
     if main_menu.main_menu.enabled == False:
