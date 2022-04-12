@@ -18,10 +18,13 @@ class Car(Entity):
         camera.position = self.position + (20, 40, -50)
         camera.rotation = (35, -20, 0)
 
+        self.controls = "wasd"
+
         self.original_camera_position = camera.position
         self.shake_duration = 2.0
         self.shake_amount = 0.1
         self.can_shake = False
+        self.camera_shake_option = True
 
         self.speed = 0
         self.velocity_y = 0
@@ -67,9 +70,10 @@ class Car(Entity):
         camera.add_script(self.camera_follow)
 
         path = os.path.dirname(os.path.abspath(__file__))
-        highscore = os.path.join(path, "./highscore/highscore-sandtrack.txt")
+        self.highscore_path_sand = os.path.join(path, "./highscore/highscore-sandtrack.txt")
+        self.highscore_path_grass = os.path.join(path, "./highscore/highscore-grasstrack.txt")
 
-        with open(highscore, "r") as hs:
+        with open(self.highscore_path_sand, "r") as hs:
             self.highscore_count = hs.read()
 
         self.highscore_count = float(self.highscore_count)
@@ -103,7 +107,7 @@ class Car(Entity):
 
             self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
 
-            if held_keys["w"]:
+            if held_keys[self.controls[0]]:
                 if ground_check.hit:
                     self.speed += self.acceleration * 50 * time.dt
                     self.rotation_y += self.rotation_speed * 50 * time.dt
@@ -121,7 +125,7 @@ class Car(Entity):
                     self.speed -= self.friction * 50 * time.dt
                 self.shake_amount -= 0.001 * time.dt
 
-            if held_keys["s"]:
+            if held_keys[self.controls[2]]:
                 self.speed -= 10 * time.dt
 
             if held_keys["space"]:
@@ -143,10 +147,10 @@ class Car(Entity):
                 self.anti_cheat = 1
 
             if self.speed != 0:
-                if held_keys["a"]:
+                if held_keys[self.controls[1]]:
                     self.rotation_speed -= 13 * time.dt
                     self.drift_speed -= 10 * time.dt
-                elif held_keys["d"]:
+                elif held_keys[self.controls[3]]:
                     self.rotation_speed += 13 * time.dt
                     self.drift_speed -= 10 * time.dt
                 else:
@@ -183,7 +187,7 @@ class Car(Entity):
             if self.shake_amount >= 0.03:
                 self.shake_amount = 0.03
 
-            if self.can_shake:
+            if self.can_shake and self.camera_shake_option:
                 self.shake_camera()
 
             movementY = self.velocity_y * time.dt

@@ -13,14 +13,6 @@ window.borderless = False
 window.fullscreen = True
 window.cog_button.disable()
 window.show_ursina_splash = True
-# Loading car textures
-def load_car_textures():
-    for car_texture in ("black", "blue", "green", "orange", "red", "white"):
-        load_texture(f"assets/garage/car-{car_texture}.png")
-try:
-    thread.start_new_thread(function=load_car_textures, args='')
-except Exception as e:
-    print('error starting thread', e)
 
 # Loading car textures
 

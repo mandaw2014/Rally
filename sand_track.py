@@ -50,10 +50,7 @@ class SandTrack(Entity):
                         if self.car.highscore_count <= 13:
                             self.car.highscore_count = self.car.last_count
 
-                    path = os.path.dirname(os.path.abspath(__file__))
-                    highscore = os.path.join(path, "./highscore/highscore-sandtrack.txt")
-
-                    with open(highscore, "w") as hs:
+                    with open(self.car.highscore_path_sand, "w") as hs:
                         hs.write(str(self.car.highscore_count))
 
                     self.car.anti_cheat = 0
