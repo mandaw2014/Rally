@@ -1,5 +1,4 @@
 from ursina import *
-from ursina import curve
 import os
 
 class MainMenu(Entity):
@@ -171,7 +170,7 @@ class MainMenu(Entity):
             """
             Changes the car color to the selected color after a small animation.
             """
-            car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+            car.animate_rotation_y(car.rotation_y + 360, duration=.4, curve=curve.in_out_quad)
             car.texture = f"car-{color}.png"
 
         title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.main_menu, y = 0.3)
