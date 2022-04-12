@@ -1,4 +1,5 @@
 from ursina import *
+from ursina import curve
 import os
 
 class MainMenu(Entity):
@@ -72,7 +73,7 @@ class MainMenu(Entity):
             camera.position = (-80, -30, 15)
             sand_track.enable()
             grass_track.disable()
-            
+
             sand_track.finish_line.enable()
             sand_track.boundaries.enable()
             sand_track.wall1.enable()
@@ -132,7 +133,7 @@ class MainMenu(Entity):
                 self.car.highscore_count = hs.read()
 
             self.car.highscore_count = float(self.car.highscore_count)
-        
+
         def garage_button_func():
             self.garage_menu.enable()
             self.main_menu.disable()
@@ -153,7 +154,7 @@ class MainMenu(Entity):
                     self.car.highscore_count = hs.read()
 
                 self.car.highscore_count = float(self.car.highscore_count)
-            
+
             if grass_track.enabled == True:
                 path = os.path.dirname(os.path.abspath(__file__))
                 highscore = os.path.join(path, "./highscore/highscore-grasstrack.txt")
@@ -166,23 +167,12 @@ class MainMenu(Entity):
 
                 self.car.highscore_count = float(self.car.highscore_count)
 
-        def red_car():
-            car.texture = "car-red.png"
-        
-        def blue_car():
-            car.texture = "car-blue.png"
-        
-        def green_car():
-            car.texture = "car-green.png"
-        
-        def orange_car():
-            car.texture = "car-orange.png"
-
-        def black_car():
-            car.texture = "car-black.png"
-
-        def white_car():
-            car.texture = "car-white.png"
+        def change_color(color):
+            """
+            Changes the car color to the selected color after a small animation.
+            """
+            car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+            car.texture = f"car-{color}.png"
 
         title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.main_menu, y = 0.3)
 
@@ -210,12 +200,12 @@ class MainMenu(Entity):
         white_button = Button(color = color.white, scale_y = 0.1, scale_x = 0.15, y = -0.2, x = 0.3, parent = self.garage_menu)
 
         back_button_garage.on_click = Func(back_garage)
-        red_button.on_click = Func(red_car)
-        blue_button.on_click = Func(blue_car)
-        green_button.on_click = Func(green_car)
-        orange_button.on_click = Func(orange_car)
-        black_button.on_click = Func(black_car)
-        white_button.on_click = Func(white_car)
+        red_button.on_click = Func(change_color, "red")
+        blue_button.on_click = Func(change_color, "blue")
+        green_button.on_click = Func(change_color, "green")
+        orange_button.on_click = Func(change_color, "orange")
+        black_button.on_click = Func(change_color, "black")
+        white_button.on_click = Func(change_color, "white")
 
         p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.23, parent = self.pause_menu)
         p_respawn_button = Button(text = "R e s p a w n", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
