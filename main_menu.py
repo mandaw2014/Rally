@@ -12,6 +12,7 @@ class MainMenu(Entity):
         self.main_menu = Entity(parent = self, enabled = True)
         self.maps_menu = Entity(parent = self, enabled = False)
         self.settings_menu = Entity(parent = self, enabled = False)
+        self.controls_menu = Entity(parent = self, enabled = False)
         self.garage_menu = Entity(parent = self, enabled = False)
         self.pause_menu = Entity(parent = self, enabled = False)
         self.car = car
@@ -132,42 +133,44 @@ class MainMenu(Entity):
 
         def borderless_on():
             window.borderless = True
+            window.exit_button.enable()
 
         def borderless_off():
             window.borderless = False
+            window.exit_button.enable()
 
-        def controls_wasd():
-            self.car.controls = "wasd"
+        def reset_highscore():
+            with open(self.car.highscore_path_sand, "w") as hs:
+                hs.write(str(0.0))
 
-        def controls_zqsd():
-            self.car.controls = "zqsd"
+            with open(self.car.highscore_path_sand, "r") as hs:
+                self.car.highscore_count = hs.read()
+
+            with open(self.car.highscore_path_grass, "w") as hs:
+                hs.write(str(0.0))
+
+            with open(self.car.highscore_path_grass, "r") as hs:
+                self.car.highscore_count = hs.read()
+
+            self.car.highscore_count = float(self.car.highscore_count)
 
         settings_button = Button(text = "S e t t i n g s", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.main_menu)
 
         back_button_settings = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.settings_menu)
-        camera_shake_on_ = DropdownMenuButton("On")
-        camera_shake_off_ = DropdownMenuButton("Off")
-        camera_shake_option = DropdownMenu("Camera Shake", buttons = (
-            camera_shake_on_, camera_shake_off_
-        ), scale_y = 0.05, scale_x = 0.35, y = 0.3, x = -0.5, parent = self.settings_menu)
-
-        fullscreen_on_ = DropdownMenuButton("On")
-        fullscreen_off_ = DropdownMenuButton("Off")
-        fullscreen_option = DropdownMenu("Fullscreen", buttons = (
-            fullscreen_on_, fullscreen_off_
-        ), scale_y = 0.05, scale_x = 0.35, y = 0.3, x = 0, parent = self.settings_menu)
-
-        borderless_on_ = DropdownMenuButton("On")
-        borderless_off_ = DropdownMenuButton("Off")
-        borderless_option = DropdownMenu("Borderless", buttons = (
-            borderless_on_, borderless_off_
-        ), scale_y = 0.05, scale_x = 0.35, y = 0.15, x = -0.5, parent = self.settings_menu)
         
-        controls_wasd_ = DropdownMenuButton("WASD")
-        controls_zqsd_ = DropdownMenuButton("ZQSD")
-        controls_option = DropdownMenu("Controls", buttons = (
-            controls_wasd_, controls_zqsd_
-        ), scale_y = 0.05, scale_x = 0.35, y = 0.15, x = 0.0, parent = self.settings_menu)
+        camera_shake = Text(text = "C a m e r a - S h a k e", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.3, x = -0.5, parent = self.settings_menu)
+        camera_shake_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0, parent = self.settings_menu)
+        camera_shake_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0.2, parent = self.settings_menu)
+        
+        fullscreen = Text(text = "Fullscreen", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.1, x = -0.4, parent = self.settings_menu)
+        fullscreen_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = 0, parent = self.settings_menu)
+        fullscreen_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = 0.2, parent = self.settings_menu)
+        
+        borderless = Text(text = "Borderless", size = 10, resolution = 4096, scale = (1.5, 1.5), y = -0.1, x = -0.4, parent = self.settings_menu)
+        borderless_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = -0.125, x = 0, parent = self.settings_menu)
+        borderless_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = -0.125, x = 0.2, parent = self.settings_menu)
+        
+        reset_highsore_button = Button(text = "R e s e t - H i g h s c o r e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.27, parent = self.settings_menu)
 
         settings_button.on_click = Func(settings)
         camera_shake_on_.on_click = Func(camera_shake_on)
@@ -176,10 +179,37 @@ class MainMenu(Entity):
         fullscreen_off_.on_click = Func(fullscreen_off)
         borderless_on_.on_click = Func(borderless_on)
         borderless_off_.on_click = Func(borderless_off)
-        controls_wasd_.on_click = Func(controls_wasd)
-        controls_zqsd_.on_click = Func(controls_zqsd)
+        reset_highsore_button.on_click = Func(reset_highscore)
         
         back_button_settings.on_click = Func(back_settings)
+
+        # Controls
+
+        def controls():
+            self.settings_menu.disable()
+            self.controls_menu.enable()
+
+        def back_controls():
+            self.controls_menu.disable()
+            self.settings_menu.enable()
+
+        def controls_wasd():
+            self.car.controls = "wasd"
+
+        def controls_zqsd():
+            self.car.controls = "zqsd"
+
+        controls_button = Button(text = "C o n t r o l s", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.4, parent = self.settings_menu)
+        back_button_controls = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.controls_menu)
+
+        controls_ = Text(text = "C o n t r o l s", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.3, x = -0.5, parent = self.controls_menu)
+        controls_wasd_ = Button("WASD", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0, parent = self.controls_menu)
+        controls_zqsd_ = Button("ZQSD", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0.2, parent = self.controls_menu)
+
+        controls_button.on_click = Func(controls)
+        back_button_controls.on_click = Func(back_controls)
+        controls_wasd_.on_click = Func(controls_wasd)
+        controls_zqsd_.on_click = Func(controls_zqsd)
 
         # Pause Menu
 
@@ -200,31 +230,6 @@ class MainMenu(Entity):
             self.car.timer_running = False
             self.car.anti_cheat = 1
 
-        def reset_highscore():
-            if sand_track.enabled == True:
-                path = os.path.dirname(os.path.abspath(__file__))
-                highscore = os.path.join(path, "./highscore/highscore-sandtrack.txt")
-
-                with open(highscore, "w") as hs:
-                    hs.write(str(0.0))
-
-                with open(highscore, "r") as hs:
-                    self.car.highscore_count = hs.read()
-
-                self.car.highscore_count = float(self.car.highscore_count)
-
-            if grass_track.enabled == True:
-                path = os.path.dirname(os.path.abspath(__file__))
-                highscore = os.path.join(path, "./highscore/highscore-grasstrack.txt")
-
-                with open(highscore, "w") as hs:
-                    hs.write(str(0.0))
-
-                with open(highscore, "r") as hs:
-                    self.car.highscore_count = hs.read()
-
-                self.car.highscore_count = float(self.car.highscore_count)
-
         def main_menu():
             self.car.position = (0, 0, 4)
             self.car.disable()
@@ -240,12 +245,10 @@ class MainMenu(Entity):
             sand_track.disable()
             grass_track.enable()
 
-        p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.23, parent = self.pause_menu)
-        p_respawn_button = Button(text = "R e s p a w n", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
-        p_reset_highsore_button = Button(text = "R e s e t - H i g h s c o r e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)
+        p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
+        p_respawn_button = Button(text = "R e s p a w n", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)
         p_mainmenu_button = Button(text = "M a i n - M e n u", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.13, parent = self.pause_menu)
         p_mainmenu_button.on_click = Func(main_menu)
-        p_reset_highsore_button.on_click = Func(reset_highscore)
         p_respawn_button.on_click = Func(respawn)
         p_resume_button.on_click = Func(resume)
 

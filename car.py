@@ -107,7 +107,7 @@ class Car(Entity):
 
             self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
 
-            if held_keys[self.controls[0]]:
+            if held_keys[self.controls[0]] or held_keys["up arrow"]:
                 if ground_check.hit:
                     self.speed += self.acceleration * 50 * time.dt
                     self.rotation_y += self.rotation_speed * 50 * time.dt
@@ -125,7 +125,7 @@ class Car(Entity):
                     self.speed -= self.friction * 50 * time.dt
                 self.shake_amount -= 0.001 * time.dt
 
-            if held_keys[self.controls[2]]:
+            if held_keys[self.controls[2] or held_keys["down arrow"]]:
                 self.speed -= 10 * time.dt
 
             if held_keys["space"]:
@@ -147,10 +147,10 @@ class Car(Entity):
                 self.anti_cheat = 1
 
             if self.speed != 0:
-                if held_keys[self.controls[1]]:
+                if held_keys[self.controls[1]] or held_keys["left arrow"]:
                     self.rotation_speed -= 13 * time.dt
                     self.drift_speed -= 10 * time.dt
-                elif held_keys[self.controls[3]]:
+                elif held_keys[self.controls[3]] or held_keys["right arrow"]:
                     self.rotation_speed += 13 * time.dt
                     self.drift_speed -= 10 * time.dt
                 else:

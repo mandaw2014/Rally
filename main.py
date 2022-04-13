@@ -47,7 +47,7 @@ AmbientLight(color = color.rgba(100, 100, 100, 0.1))
 Sky()
 
 def input(key):
-    if main_menu.main_menu.enabled == False:
+    if main_menu.main_menu.enabled == False and main_menu.settings_menu.enabled == False and main_menu.maps_menu.enabled == False and main_menu.garage_menu.enabled == False and main_menu.controls_menu.enabled == False:
         if key == "escape":
             main_menu.pause_menu.enabled = not main_menu.pause_menu.enabled
             mouse.locked = not mouse.locked
