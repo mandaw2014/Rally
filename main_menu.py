@@ -4,7 +4,7 @@ from ursina.prefabs.dropdown_menu import DropdownMenu, DropdownMenuButton
 import os
 
 class MainMenu(Entity):
-    def __init__(self, car, sand_track, grass_track, garage):
+    def __init__(self, car, sand_track, grass_track):
         super().__init__(
             parent = camera.ui
         )
@@ -257,11 +257,11 @@ class MainMenu(Entity):
         def back_garage():
             self.garage_menu.disable()
             self.main_menu.enable()
-            camera.rotation = (35, -20, 0)
             self.car.garage_mode = False
+            self.car.position = (0, 0, 4)
+            camera.rotation = (35, -20, 0)
+            self.car.camera_follow.offset = (20, 40, -50)
             self.car.disable()
-            garage.disable()
-            grass_track.enable()
 
             path = os.path.dirname(os.path.abspath(__file__))
             highscore = os.path.join(path, "./highscore/highscore-grasstrack.txt")
@@ -276,8 +276,7 @@ class MainMenu(Entity):
             self.main_menu.disable()
             self.car.enable()
             self.car.garage_mode = True
-            garage.enable()
-            grass_track.disable()
+            self.car.position = (-3, -42.6, 15)
 
         def change_color(color):
             """
@@ -289,12 +288,12 @@ class MainMenu(Entity):
         garage_button = Button(text = "G a r a g e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.main_menu)
 
         back_button_garage = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.garage_menu)
-        red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.2, x = -0.3, parent = self.garage_menu)
-        blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.2, x = 0, parent = self.garage_menu)
-        green_button = Button(color = color.lime, scale_y = 0.1, scale_x = 0.15, y = 0.2, x = 0.3, parent = self.garage_menu)
-        orange_button = Button(color = color.orange, scale_y = 0.1, scale_x = 0.15, y = -0.2, x = -0.3, parent = self.garage_menu)
-        black_button = Button(color = color.black, scale_y = 0.1, scale_x = 0.15, y = -0.2, x = 0, parent = self.garage_menu)
-        white_button = Button(color = color.white, scale_y = 0.1, scale_x = 0.15, y = -0.2, x = 0.3, parent = self.garage_menu)
+        red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.7, parent = self.garage_menu)
+        blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.garage_menu)
+        green_button = Button(color = color.lime, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.3, parent = self.garage_menu)
+        orange_button = Button(color = color.orange, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.7, parent = self.garage_menu)
+        black_button = Button(color = color.black, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.5, parent = self.garage_menu)
+        white_button = Button(color = color.white, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.3, parent = self.garage_menu)
 
         garage_button.on_click = Func(garage_button_func)
         back_button_garage.on_click = Func(back_garage)

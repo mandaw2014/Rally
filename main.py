@@ -1,5 +1,6 @@
 from ursina import *
 from direct.stdpy import thread
+# from direct.actor.Actor import Actor
 
 from car import Car
 
@@ -28,18 +29,22 @@ except Exception as e:
 car = Car((0, 0, 4), topspeed = 30)
 car.disable()
 
+# carAI = Entity(position = (0, -50, 0), rotation = (0, 270, 0), scale = (25, 25, 25))
+
+# actor = Actor("./assets/ai/grass_track.gltf")
+# actor.reparent_to(carAI)
+# actor.play("./assets/ai/grass_track.gltf")
+# actor.loop("./assets/ai/grass_track.gltf")
+
 sand_track = SandTrack(car)
 grass_track = GrassTrack(car)
-
-garage = Entity(model = "cube", color = color.white, position = (car.x, car.y - 2, car.z), rotation_y = 45, scale = (10, 1, 10))
-garage.disable()
 
 car.sand_track = sand_track
 car.grass_track = grass_track
 
 # camera.clip_plane_far = 250
 
-main_menu = MainMenu(car, sand_track, grass_track, garage)
+main_menu = MainMenu(car, sand_track, grass_track)
 
 PointLight(parent = camera, color = color.white, position = (0, 10, -1.5))
 AmbientLight(color = color.rgba(100, 100, 100, 0.1))
