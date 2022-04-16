@@ -6,8 +6,9 @@ from car import Car
 
 from main_menu import MainMenu
 
-from sand_track import SandTrack
-from grass_track import GrassTrack
+from tracks.sand_track import SandTrack
+from tracks.grass_track import GrassTrack
+from tracks.snow_track import SnowTrack
 
 app = Ursina()
 window.borderless = False
@@ -29,22 +30,20 @@ except Exception as e:
 car = Car((0, 0, 4), topspeed = 30)
 car.disable()
 
-# carAI = Entity(position = (0, -50, 0), rotation = (0, 270, 0), scale = (25, 25, 25))
-
-# actor = Actor("./assets/ai/grass_track.gltf")
-# actor.reparent_to(carAI)
-# actor.play("./assets/ai/grass_track.gltf")
-# actor.loop("./assets/ai/grass_track.gltf")
-
 sand_track = SandTrack(car)
 grass_track = GrassTrack(car)
+snow_track = SnowTrack(car)
 
 car.sand_track = sand_track
 car.grass_track = grass_track
+car.snow_track = snow_track
 
-# camera.clip_plane_far = 250
+main_menu = MainMenu(car, sand_track, grass_track, snow_track)
 
-main_menu = MainMenu(car, sand_track, grass_track)
+# ai_car = Entity(position = (0, 0, 0), rotation = (0, 0, 0), scale = (1, 1, 1))
+# actor = Actor("./assets/ai/ai_car.gltf", {"drive": "./assets/ai/ai_car.gltf"})
+# actor.reparentTo(ai_car)
+# actor.loop("drive")
 
 PointLight(parent = camera, color = color.white, position = (0, 10, -1.5))
 AmbientLight(color = color.rgba(100, 100, 100, 0.1))

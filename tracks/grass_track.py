@@ -55,9 +55,6 @@ class GrassTrack(Entity):
                 self.wall3.disable()
                 self.wall4.disable()
 
-            if self.car.intersects(self.boundaries):
-                self.car.speed = 10
-
             if self.car.intersects(self.wall_trigger):
                 self.wall1.disable()
                 self.wall2.disable()

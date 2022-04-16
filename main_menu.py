@@ -1,10 +1,8 @@
 from ursina import *
 from ursina import curve
-from ursina.prefabs.dropdown_menu import DropdownMenu, DropdownMenuButton
-import os
 
 class MainMenu(Entity):
-    def __init__(self, car, sand_track, grass_track):
+    def __init__(self, car, sand_track, grass_track, snow_track):
         super().__init__(
             parent = camera.ui
         )
@@ -41,6 +39,7 @@ class MainMenu(Entity):
             self.car.position = (0, 0, 4)
             self.car.rotation = (0, 65, 0)
             self.car.reset_count_timer.enable()
+            self.car.garage_mode = False
             camera.position = (-80, -30, 15)
             sand_track.enable()
             grass_track.disable()
@@ -62,6 +61,23 @@ class MainMenu(Entity):
             grass_track.wall_trigger.disable()
             grass_track.wall_trigger_ramp.disable()
 
+            snow_track.finish_line.disable()
+            snow_track.boundaries.disable()
+            snow_track.wall1.disable()
+            snow_track.wall2.disable()
+            snow_track.wall3.disable()
+            snow_track.wall4.disable()
+            snow_track.wall5.disable()
+            snow_track.wall6.disable()
+            snow_track.wall7.disable()
+            snow_track.wall8.disable()
+            snow_track.wall9.disable()
+            snow_track.wall10.disable()
+            snow_track.wall11.disable()
+            snow_track.wall12.disable()
+            snow_track.wall_trigger.disable()
+            snow_track.wall_trigger_end.disable()
+
             with open(self.car.highscore_path_sand, "r") as hs:
                 self.car.highscore_count = hs.read()
 
@@ -74,6 +90,7 @@ class MainMenu(Entity):
             self.car.position = (-80, -30, 15)
             self.car.rotation = (0, 90, 0)
             self.car.reset_count_timer.enable()
+            self.car.garage_mode = False
             grass_track.enable()
             sand_track.disable()
 
@@ -94,7 +111,77 @@ class MainMenu(Entity):
             grass_track.wall_trigger.enable()
             grass_track.wall_trigger_ramp.enable()
 
+            snow_track.finish_line.disable()
+            snow_track.boundaries.disable()
+            snow_track.finish_line.disable()
+            snow_track.boundaries.disable()
+            snow_track.wall1.disable()
+            snow_track.wall2.disable()
+            snow_track.wall3.disable()
+            snow_track.wall4.disable()
+            snow_track.wall5.disable()
+            snow_track.wall6.disable()
+            snow_track.wall7.disable()
+            snow_track.wall8.disable()
+            snow_track.wall9.disable()
+            snow_track.wall10.disable()
+            snow_track.wall11.disable()
+            snow_track.wall12.disable()
+            snow_track.wall_trigger.disable()
+            snow_track.wall_trigger_end.disable()
+
             with open(self.car.highscore_path_grass, "r") as hs:
+                self.car.highscore_count = hs.read()
+
+            self.car.highscore_count = float(self.car.highscore_count)
+
+        def snow_track_func():
+            self.car.enable()
+            mouse.locked = True
+            self.maps_menu.disable()
+            self.car.position = (-5, -35, 90)
+            self.car.rotation = (0, 90, 0)
+            self.car.reset_count_timer.enable()
+            self.car.garage_mode = False
+            grass_track.disable()
+            sand_track.disable()
+            snow_track.enable()
+            
+            sand_track.finish_line.disable()
+            sand_track.boundaries.disable()
+            sand_track.wall1.disable()
+            sand_track.wall2.disable()
+            sand_track.wall3.disable()
+            sand_track.wall4.disable()
+            sand_track.wall_trigger.disable()
+
+            grass_track.finish_line.disable()
+            grass_track.boundaries.disable()
+            grass_track.wall1.disable()
+            grass_track.wall2.disable()
+            grass_track.wall3.disable()
+            grass_track.wall4.disable()
+            grass_track.wall_trigger.disable()
+            grass_track.wall_trigger_ramp.disable()
+
+            snow_track.finish_line.enable()
+            snow_track.boundaries.enable()
+            snow_track.wall1.enable()
+            snow_track.wall2.enable()
+            snow_track.wall3.enable()
+            snow_track.wall4.enable()
+            snow_track.wall5.enable()
+            snow_track.wall6.enable()
+            snow_track.wall7.enable()
+            snow_track.wall8.enable()
+            snow_track.wall9.enable()
+            snow_track.wall10.enable()
+            snow_track.wall11.enable()
+            snow_track.wall12.enable()
+            snow_track.wall_trigger.enable()
+            snow_track.wall_trigger_end.enable()
+
+            with open(self.car.highscore_path_snow, "r") as hs:
                 self.car.highscore_count = hs.read()
 
             self.car.highscore_count = float(self.car.highscore_count)
@@ -102,11 +189,13 @@ class MainMenu(Entity):
         start_button = Button(text = "S t a r t - G a m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.02, parent = self.main_menu)
         sand_track_button = Button(text = "S a n d - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = -0.5, parent = self.maps_menu)
         grass_track_button = Button(text = "G r a s s - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0, parent = self.maps_menu)
+        snow_track_button = Button(text = "S n o w - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0.5, parent = self.maps_menu)
         back_button = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
         
         start_button.on_click = Func(start)
         sand_track_button.on_click = Func(sand_track_func)
         grass_track_button.on_click = Func(grass_track_func)
+        snow_track_button.on_click = Func(snow_track_func)
         back_button.on_click = Func(back)
 
         # Settings
@@ -150,6 +239,12 @@ class MainMenu(Entity):
                 hs.write(str(0.0))
 
             with open(self.car.highscore_path_grass, "r") as hs:
+                self.car.highscore_count = hs.read()
+
+            with open(self.car.highscore_path_snow, "w") as hs:
+                hs.write(str(0.0))
+
+            with open(self.car.highscore_path_snow, "r") as hs:
                 self.car.highscore_count = hs.read()
 
             self.car.highscore_count = float(self.car.highscore_count)
@@ -224,6 +319,9 @@ class MainMenu(Entity):
             if sand_track.enabled == True:
                 self.car.position = (0, -40, 4)
                 self.car.rotation = (0, 65, 0)
+            if snow_track.enabled == True:
+                self.car.position = (-5, -35, 90)
+                self.car.rotation = (0, 90, 0)
             self.car.speed = 0
             self.car.count = 0.0
             self.car.reset_count = 0.0
@@ -243,6 +341,7 @@ class MainMenu(Entity):
             self.main_menu.enable()
             self.pause_menu.disable()
             sand_track.disable()
+            snow_track.disable()
             grass_track.enable()
 
         p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
@@ -263,10 +362,7 @@ class MainMenu(Entity):
             self.car.camera_follow.offset = (20, 40, -50)
             self.car.disable()
 
-            path = os.path.dirname(os.path.abspath(__file__))
-            highscore = os.path.join(path, "./highscore/highscore-grasstrack.txt")
-
-            with open(highscore, "r") as hs:
+            with open(self.car.highscore_path_grass, "r") as hs:
                 self.car.highscore_count = hs.read()
 
             self.car.highscore_count = float(self.car.highscore_count)
