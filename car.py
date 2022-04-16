@@ -145,8 +145,8 @@ class Car(Entity):
                     self.position = (0, -40, 4)
                     self.rotation = (0, 65, 0)
                 if self.snow_track.enabled == True:
-                    self.car.position = (-5, -35, 90)
-                    self.car.rotation = (0, 90, 0)
+                    self.position = (-5, -35, 90)
+                    self.rotation = (0, 90, 0)
                 self.speed = 0
                 self.count = 0.0
                 self.reset_count = 0.0
