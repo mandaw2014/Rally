@@ -12,9 +12,31 @@ Particles
 
 Camera Shake
 
-2 Maps - Sand Track and Grass Track
+3 Maps - Sand Track, Grass Track and Snow Track
+
+A Garage where you can change the colour of the car
 
 So far I have been working on this game for a month. Feel free to leave comments or feedback on how I can improve the game
+
+# Installation
+
+Download Rally on itch > https://mandaw2014.itch.io/rally
+
+OR
+
+Code > Download Zip > Extract the Zip > Navigate to the folder in CMD or Terminal > Run:
+
+```
+pip install -r requirements.txt
+```
+
+And then run
+
+```
+python main.py
+```
+
+Then you're all set :)
 
 # Controls
 
