@@ -121,7 +121,15 @@ class Car(Entity):
                     elif self.rotation_speed < 0:
                         self.rotation_speed += self.speed / 4 * time.dt
 
-                    self.particles = ParticleSystem(position = self.particle_pivot.world_position, color = color.hex("925B3A"), rotation_y = random.random() * 360)
+                    self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360)
+                    if self.sand_track.enabled == True:
+                        self.particles.color = color.hex("925B3A")
+                    elif self.grass_track.enabled == True:
+                        self.particles.color = color.hex("8C6C30")
+                    elif self.snow_track.enabled == True:
+                        self.particles.color = color.hex("76604C")
+                    else:
+                        self.particles.color = color.hex("925B3A")
                     self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
                     invoke(self.particles.disable, delay = 1)
             else:
