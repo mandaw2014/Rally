@@ -29,6 +29,7 @@ class Car(Entity):
         self.speed = 0
         self.velocity_y = 0
         self.rotation_speed = 0
+        self.max_rotation_speed = 2.6
         self.topspeed = topspeed
         self.camera_speed = camera_speed
         self.acceleration = acceleration
@@ -143,7 +144,10 @@ class Car(Entity):
             if held_keys["space"]:
                 self.drift_speed -= 20 * time.dt
                 self.speed -= 20 * time.dt
-                self.rotation_speed /= 20 * time.dt
+                self.rotation_speed *= 60 * time.dt
+                self.max_rotation_speed = 3
+            else:
+                self.max_rotation_speed = 2.6
 
             if held_keys["g"]:
                 if self.grass_track.enabled is True:
@@ -186,10 +190,10 @@ class Car(Entity):
             if self.drift_speed >= 40:
                 self.drift_speed = 40
 
-            if self.rotation_speed >= 2.6:
-                self.rotation_speed = 2.6
-            if self.rotation_speed <= -2.6:
-                self.rotation_speed = -2.6
+            if self.rotation_speed >= self.max_rotation_speed:
+                self.rotation_speed = self.max_rotation_speed
+            if self.rotation_speed <= -self.max_rotation_speed:
+                self.rotation_speed = -self.max_rotation_speed
 
             if self.speed >= 1:
                 self.can_shake = True
