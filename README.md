@@ -42,7 +42,9 @@ Then you're all set :)
 
 # Multiplayer
 
-To run multiplayer, run the server.py file, and then run the main.py. This will start a server that you can join with multipler clients. Right now, it's only localhost. You can change this if you want in the code.
+To run multiplayer, run the `server.py` file and enter the ip address, this can be defaulted to 'localhost'. Run the `main.py` file and replace 'localhost' with the ip address of the server. Click `JOIN` and you will be placed into the server. 
+
+If you don't want to play on a server, run the `main.py` file and click `Singleplayer`.
 
 # Controls
 
