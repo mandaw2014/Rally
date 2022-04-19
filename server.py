@@ -1,9 +1,12 @@
-from ursina import *
 from ursinanetworking import *
 
-print("Hello from the Server!")
+print("\nHello from the Rally Server!")
 
-server = UrsinaNetworkingServer("localhost", 25565)
+print("\nPlease enter the ip (use 'localhost' for localhost)")
+
+ip = input("\nIP: ")
+
+server = UrsinaNetworkingServer(ip, 25565)
 easy = EasyUrsinaNetworkingServer(server)
 
 @server.event

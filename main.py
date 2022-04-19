@@ -2,7 +2,9 @@ from ursina import *
 from ursinanetworking import *
 from direct.stdpy import thread
 
-from car import Car, CarRepresentation
+from car import Car
+
+from multiplayer import Multiplayer
 
 from main_menu import MainMenu
 
@@ -39,7 +41,8 @@ car.sand_track = sand_track
 car.grass_track = grass_track
 car.snow_track = snow_track
 
-car.multiplayer = True
+car.multiplayer = False
+car.multiplayer_update = False
 
 main_menu = MainMenu(car, sand_track, grass_track, snow_track)
 
@@ -48,67 +51,24 @@ AmbientLight(color = color.rgba(100, 100, 100, 0.1))
 
 Sky()
 
-if car.multiplayer == True:
-    client = UrsinaNetworkingClient("localhost", 25565)
-    easy = EasyUrsinaNetworkingClient(client)
-
-    players = {}
-    players_target_pos = {}
-    players_target_rot = {}
-
-    selfId = -1
-
-    @client.event
-    def GetId(id):
-        global selfId
-        selfId = id
-        print(f"My ID is : {selfId}")
-
-    @easy.event
-    def onReplicatedVariableCreated(variable):
-        global client
-        variable_name = variable.name
-        variable_type = variable.content["type"]
-
-        if variable_type == "player":
-            players_target_pos[variable_name] = Vec3(-80, -30, 15)
-            players_target_rot[variable_name] = Vec3(0, 90, 0)
-            players[variable_name] = CarRepresentation((-80, -30, 15), (0, 90, 0))
-
-            if selfId == int(variable.content["id"]):
-                players[variable_name].color = color.red
-                players[variable_name].visible = False
-
-    @easy.event
-    def onReplicatedVariableUpdated(variable):
-        players_target_pos[variable.name] = variable.content["position"]
-        players_target_rot[variable.name] = variable.content["rotation"]
-
-    @easy.event
-    def onReplicatedVariableRemoved(variable):
-        variable_name = variable.name
-        variable_type = variable.content["type"]
-        
-        if variable_type == "player":
-            destroy(players[variable_name])
-            del players[variable_name]
-
 def update():
     if car.multiplayer == True:
-        for p in players:
-            players[p].position += (Vec3(players_target_pos[p]) - players[p].position) / 25
-            players[p].rotation += (Vec3(players_target_rot[p]) - players[p].rotation) / 25
+        global multiplayer
+        multiplayer = Multiplayer(car)
+        car.multiplayer_update = True
+        car.multiplayer = False
 
-        easy.process_net_events()
+    if car.multiplayer_update:
+        multiplayer.update_multiplayer()
 
 def input(key):
-    if car.multiplayer == True:
-        client.send_message("MyPosition", tuple(car.position))
-        client.send_message("MyRotation", tuple(car.rotation))
-    
-    if main_menu.main_menu.enabled == False and main_menu.settings_menu.enabled == False and main_menu.maps_menu.enabled == False and main_menu.garage_menu.enabled == False and main_menu.controls_menu.enabled == False:
+    if main_menu.main_menu.enabled == False and main_menu.server_menu.enabled == False and main_menu.settings_menu.enabled == False and main_menu.maps_menu.enabled == False and main_menu.garage_menu.enabled == False and main_menu.controls_menu.enabled == False:
         if key == "escape":
             main_menu.pause_menu.enabled = not main_menu.pause_menu.enabled
             mouse.locked = not mouse.locked
+
+    if car.multiplayer_update:
+        multiplayer.client.send_message("MyPosition", tuple(multiplayer.car.position))
+        multiplayer.client.send_message("MyRotation", tuple(multiplayer.car.rotation))
 
 app.run()

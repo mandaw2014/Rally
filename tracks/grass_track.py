@@ -24,6 +24,7 @@ class GrassTrack(Entity):
         self.wall_trigger = Entity(model = "cube", position = (25, -40.2, 65), collider = "box", rotation = (0, 90, 0), scale = (40, 20, 3), visible = False)
         self.wall_trigger_ramp = Entity(model = "cube", position = (-82, -34, -64), collider = "box", rotation = (0, 90, 0), scale = (40, 20, 3), visible = False)
         
+        self.finish_line.disable()
         self.boundaries.disable()
         self.wall1.disable()
         self.wall2.disable()
