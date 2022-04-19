@@ -5,12 +5,12 @@ from particles import ParticleSystem
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
 class Car(Entity):
-    def __init__(self, position = (0, 0, 0), topspeed = 25, acceleration = 0.4, friction = 0.6, camera_speed = 8, drift_speed = 35):
+    def __init__(self, position = (0, 0, 0), rotation = (0, 65, 0), topspeed = 25, acceleration = 0.4, friction = 0.6, camera_speed = 8, drift_speed = 35):
         super().__init__(
             model = "car.obj",
             texture = "car-red.png",
             position = position,
-            rotation = (0, 65, 0),
+            rotation = rotation,
             collider = "box",
             scale = (1, 1, 1)
         )
@@ -309,3 +309,14 @@ class Car(Entity):
         camera.x += random.randint(-1, 1) * self.shake_amount
         camera.y += random.randint(-1, 1) * self.shake_amount
         camera.z += random.randint(-1, 1) * self.shake_amount
+
+class CarRepresentation(Entity):
+    def __init__(self, position = (0, 0, 0), rotation = (0, 65, 0)):
+        super().__init__(
+            parent = scene,
+            model = "car.obj",
+            texture = "car-red.png",
+            position = position,
+            rotation = rotation,
+            scale = (1, 1, 1)
+        )

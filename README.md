@@ -1,6 +1,6 @@
 # Rally
 
-A Simple 3D Racing (Rally) Game Made In Python With The Ursina Engine
+A Simple 3D Racing Game Made In Python With The Ursina Engine
 
 So far the game includes:
 
@@ -15,6 +15,8 @@ Camera Shake
 3 Maps - Sand Track, Grass Track and Snow Track
 
 A Garage where you can change the colour of the car
+
+Multiplayer
 
 So far I have been working on this game for a month. Feel free to leave comments or feedback on how I can improve the game
 
@@ -37,6 +39,10 @@ python main.py
 ```
 
 Then you're all set :)
+
+# Multiplayer
+
+To run multiplayer, run the server.py file, and then run the main.py. This will start a server that you can join with multipler clients. Right now, it's only localhost. You can change this if you want in the code.
 
 # Controls
 

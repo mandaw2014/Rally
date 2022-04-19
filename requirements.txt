@@ -1,2 +1,3 @@
 ursina==4.1.1
+ursinanetworking==2.1.4
 numpy

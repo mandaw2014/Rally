@@ -35,6 +35,20 @@ class SnowTrack(Entity):
         self.disable()
         self.finish_line.disable()
         self.boundaries.disable()
+        self.wall1.disable()
+        self.wall2.disable()
+        self.wall3.disable()
+        self.wall4.disable()
+        self.wall5.disable()
+        self.wall6.disable()
+        self.wall7.disable()
+        self.wall8.disable()
+        self.wall9.disable()
+        self.wall10.disable()
+        self.wall11.disable()
+        self.wall12.disable()
+        self.wall_trigger.disable()
+        self.wall_trigger_end.disable()
 
     def update(self):
         if self.enabled == True:
