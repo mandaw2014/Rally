@@ -12,7 +12,7 @@ from tracks.sand_track import SandTrack
 from tracks.grass_track import GrassTrack
 from tracks.snow_track import SnowTrack
 
-# application.development_mode = False
+application.development_mode = False
 
 app = Ursina()
 window.borderless = False
@@ -70,5 +70,6 @@ def input(key):
     if car.multiplayer_update:
         multiplayer.client.send_message("MyPosition", tuple(multiplayer.car.position))
         multiplayer.client.send_message("MyRotation", tuple(multiplayer.car.rotation))
+        multiplayer.client.send_message("MyTexture", str(multiplayer.car.texture))
 
 app.run()

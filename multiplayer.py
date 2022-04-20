@@ -12,6 +12,7 @@ class Multiplayer(Entity):
         self.players = {}
         self.players_target_pos = {}
         self.players_target_rot = {}
+        self.players_target_tex = {}
 
         self.selfId = -1
 
@@ -28,6 +29,7 @@ class Multiplayer(Entity):
             if variable_type == "player":
                 self.players_target_pos[variable_name] = Vec3(-80, -30, 15)
                 self.players_target_rot[variable_name] = Vec3(0, 90, 0)
+                self.players_target_tex[variable_name] = "./assets/garage/car-red.png"
                 self.players[variable_name] = CarRepresentation((-80, -30, 15), (0, 90, 0))
 
                 if self.selfId == int(variable.content["id"]):
@@ -38,6 +40,7 @@ class Multiplayer(Entity):
         def onReplicatedVariableUpdated(variable):
             self.players_target_pos[variable.name] = variable.content["position"]
             self.players_target_rot[variable.name] = variable.content["rotation"]
+            self.players_target_tex[variable.name] = variable.content["texture"]
 
         @self.easy.event
         def onReplicatedVariableRemoved(variable):
@@ -52,5 +55,6 @@ class Multiplayer(Entity):
         for p in self.players:
             self.players[p].position += (Vec3(self.players_target_pos[p]) - self.players[p].position) / 25
             self.players[p].rotation += (Vec3(self.players_target_rot[p]) - self.players[p].rotation) / 25
+            self.players[p].texture = f"{self.players_target_tex[p]}"
 
         self.easy.process_net_events()

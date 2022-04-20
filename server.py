@@ -13,7 +13,7 @@ easy = EasyUrsinaNetworkingServer(server)
 def onClientConnected(client):
     easy.create_replicated_variable(
         f"player_{client.id}",
-        { "type" : "player", "id" : client.id, "position": (0, 0, 0), "rotation" : (0, 0, 0)}
+        { "type" : "player", "id" : client.id, "position": (0, 0, 0), "rotation" : (0, 0, 0), "texture" : "car-red.png"}
     )
     print(f"{client} connected!")
     client.send_message("GetId", client.id)
@@ -29,6 +29,10 @@ def MyPosition(client, newpos):
 @server.event
 def MyRotation(client, newrot):
     easy.update_replicated_variable_by_name(f"player_{client.id}", "rotation", newrot)
+
+@server.event
+def MyTexture(client, newtex):
+    easy.update_replicated_variable_by_name(f"player_{client.id}", "texture", newtex)
 
 while True:
     easy.process_net_events()

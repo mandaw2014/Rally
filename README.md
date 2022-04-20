@@ -18,7 +18,7 @@ A Garage where you can change the colour of the car
 
 Multiplayer
 
-So far I have been working on this game for a month. Feel free to leave comments or feedback on how I can improve the game
+Feel free to leave comments or feedback on how I can improve the game
 
 # Installation
 
