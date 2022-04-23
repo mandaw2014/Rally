@@ -1,6 +1,8 @@
 from ursina import *
 from ursina import curve
 
+Text.default_resolution = 1080 * Text.size
+
 class MainMenu(Entity):
     def __init__(self, car, sand_track, grass_track, snow_track):
         super().__init__(
@@ -45,9 +47,10 @@ class MainMenu(Entity):
         grass_track.disable()
         snow_track.enable()
 
-        car.ip = InputField(default_value = "localhost", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.22, parent = self.server_menu)
-        multiplayer_button = Button(text = "J o i n", color = color.light_gray, highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = 0.1, parent = self.server_menu)
-        single_player_button = Button(text = "S i n g l e p l a y e r", color = color.light_gray, highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.02, parent = self.server_menu)
+        car.username = InputField(default_value = "Guest", color = color.black, alpha = 100, y = 0.18, parent = self.server_menu)
+        car.ip = InputField(default_value = "localhost", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.server_menu)
+        multiplayer_button = Button(text = "J o i n", color = color.light_gray, highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.02, parent = self.server_menu)
+        single_player_button = Button(text = "S i n g l e p l a y e r", color = color.light_gray, highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.14, parent = self.server_menu)
 
         multiplayer_button.on_click = Func(join_server)
         single_player_button.on_click = Func(single_player)
@@ -225,7 +228,7 @@ class MainMenu(Entity):
         grass_track_button = Button(text = "G r a s s - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0, parent = self.maps_menu)
         snow_track_button = Button(text = "S n o w - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0.5, parent = self.maps_menu)
         back_button = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
-        
+
         start_button.on_click = Func(start)
         sand_track_button.on_click = Func(sand_track_func)
         grass_track_button.on_click = Func(grass_track_func)
@@ -262,6 +265,18 @@ class MainMenu(Entity):
             window.borderless = False
             window.exit_button.enable()
 
+        def fps_on():
+            window.fps_counter.enable()
+
+        def fps_off():
+            window.fps_counter.disable()
+
+        def exit_button_on():
+            window.exit_button.enable()
+
+        def exit_button_off():
+            window.exit_button.disable()
+
         def reset_highscore():
             with open(self.car.highscore_path_sand, "w") as hs:
                 hs.write(str(0.0))
@@ -287,18 +302,26 @@ class MainMenu(Entity):
 
         back_button_settings = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.settings_menu)
         
-        camera_shake = Text(text = "C a m e r a - S h a k e", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.3, x = -0.5, parent = self.settings_menu)
-        camera_shake_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0, parent = self.settings_menu)
-        camera_shake_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0.2, parent = self.settings_menu)
+        camera_shake = Text(text = "Camera Shake", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.3, x = -0.8, parent = self.settings_menu)
+        camera_shake_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = -0.3, parent = self.settings_menu)
+        camera_shake_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = -0.1, parent = self.settings_menu)
         
-        fullscreen = Text(text = "Fullscreen", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.1, x = -0.4, parent = self.settings_menu)
-        fullscreen_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = 0, parent = self.settings_menu)
-        fullscreen_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = 0.2, parent = self.settings_menu)
+        fullscreen = Text(text = "Fullscreen", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.1, x = -0.7, parent = self.settings_menu)
+        fullscreen_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = -0.3, parent = self.settings_menu)
+        fullscreen_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = -0.1, parent = self.settings_menu)
         
-        borderless = Text(text = "Borderless", size = 10, resolution = 4096, scale = (1.5, 1.5), y = -0.1, x = -0.4, parent = self.settings_menu)
-        borderless_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = -0.125, x = 0, parent = self.settings_menu)
-        borderless_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = -0.125, x = 0.2, parent = self.settings_menu)
+        borderless = Text(text = "Borderless", size = 10, resolution = 4096, scale = (1.5, 1.5), y = -0.1, x = -0.7, parent = self.settings_menu)
+        borderless_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = -0.125, x = -0.3, parent = self.settings_menu)
+        borderless_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = -0.125, x = -0.1, parent = self.settings_menu)
         
+        fps = Text(text = "FPS", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.3, x = 0.2, parent = self.settings_menu)
+        fps_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0.5, parent = self.settings_menu)
+        fps_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0.7, parent = self.settings_menu)
+
+        exit_button = Text(text = "Exit Button", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.1, x = 0.2, parent = self.settings_menu)
+        exit_button_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = 0.5, parent = self.settings_menu)
+        exit_button_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = 0.7, parent = self.settings_menu)
+
         reset_highsore_button = Button(text = "R e s e t - H i g h s c o r e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.27, parent = self.settings_menu)
 
         settings_button.on_click = Func(settings)
@@ -308,6 +331,10 @@ class MainMenu(Entity):
         fullscreen_off_.on_click = Func(fullscreen_off)
         borderless_on_.on_click = Func(borderless_on)
         borderless_off_.on_click = Func(borderless_off)
+        fps_on_.on_click = Func(fps_on)
+        fps_off_.on_click = Func(fps_off)
+        exit_button_on_.on_click = Func(exit_button_on)
+        exit_button_off_.on_click = Func(exit_button_off)
         reset_highsore_button.on_click = Func(reset_highscore)
         
         back_button_settings.on_click = Func(back_settings)

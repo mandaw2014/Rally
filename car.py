@@ -52,8 +52,6 @@ class Car(Entity):
         self.grass_track = None
         self.snow_track = None
 
-        self.ai = None
-
         self.timer_running = False
         self.count = 0.0
         self.highscore_count = None

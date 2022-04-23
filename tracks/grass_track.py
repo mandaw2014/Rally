@@ -55,6 +55,8 @@ class GrassTrack(Entity):
                     with open(self.car.highscore_path_grass, "w") as hs:
                         hs.write(str(self.car.highscore_count))
 
+                    self.car.highscore_count = float(self.car.highscore_count)
+
                     self.car.anti_cheat = 0
 
                     invoke(self.car.reset_timer, delay = 3)
@@ -71,6 +73,6 @@ class GrassTrack(Entity):
                 self.wall4.enable()
                 self.car.anti_cheat = 0.5
 
-            if self.car.intersects(self.wall_trigger):
+            if self.car.intersects(self.wall_trigger_ramp):
                 if self.car.anti_cheat == 0.5:
                     self.car.anti_cheat = 1
