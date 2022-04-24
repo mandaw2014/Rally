@@ -60,11 +60,13 @@ class Car(Entity):
         self.timer = Text(text = "", origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
         self.highscore = Text(text = "", origin = (0, 0), size = 0.05, scale = (0.6, 0.6), position = (-0.7, 0.38))
         self.reset_count_timer = Text(text = str(round(self.reset_count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
-
+        
         self.reset_count_timer.disable()
 
         self.laps = 0
         self.anti_cheat = 1
+        self.started = False
+        self.scores = {}
 
         self.camera_follow = SmoothFollow(target = self, offset = (20, 40, -50), speed = self.camera_speed)
         camera.add_script(self.camera_follow)
@@ -78,6 +80,11 @@ class Car(Entity):
             self.highscore_count = hs.read()
 
         self.highscore_count = float(self.highscore_count)
+        self.old_highscore = self.highscore_count
+
+        with open("./highscore/username.txt", "r") as username:
+            self.username_text = username.read()
+            print(self.username_text)
 
     def update(self):
         if self.timer_running is True:
@@ -87,6 +94,9 @@ class Car(Entity):
         self.reset_count_timer.text = str(round(self.reset_count, 1))
 
         self.highscore.text = str(round(self.highscore_count, 1))
+
+        with open("./highscore/username.txt", "r") as username:
+            self.username_text = username.read()
 
         self.pivot.position = self.position
 
@@ -288,6 +298,7 @@ class Car(Entity):
         self.count = self.reset_count
         self.timer.enable()
         self.reset_count_timer.disable()
+        self.old_highscore = self.highscore_count
 
     def update_camera_pos(self):
         self.original_camera_position = camera.position
@@ -298,7 +309,7 @@ class Car(Entity):
         camera.z += random.randint(-1, 1) * self.shake_amount
 
 class CarRepresentation(Entity):
-    def __init__(self, position = (0, 0, 0), rotation = (0, 65, 0)):
+    def __init__(self, car, position = (0, 0, 0), rotation = (0, 65, 0)):
         super().__init__(
             parent = scene,
             model = "car.obj",
@@ -307,3 +318,20 @@ class CarRepresentation(Entity):
             rotation = rotation,
             scale = (1, 1, 1)
         )
+
+        self.text_object = None
+        self.highscore = 0.0
+
+class CarUsername(Text):
+    def __init__(self, car):
+        super().__init__(
+            parent = car,
+            text = "Guest",
+            y = 10,
+            scale = 10
+        )
+
+        self.username_text = "Guest"
+
+    def update(self):
+        self.text = self.username_text

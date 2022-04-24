@@ -13,6 +13,7 @@ from tracks.grass_track import GrassTrack
 from tracks.snow_track import SnowTrack
 
 application.development_mode = False
+Text.default_resolution = 1080 * Text.size
 
 app = Ursina()
 window.borderless = False
@@ -41,10 +42,10 @@ car.sand_track = sand_track
 car.grass_track = grass_track
 car.snow_track = snow_track
 
+main_menu = MainMenu(car, sand_track, grass_track, snow_track)
+
 car.multiplayer = False
 car.multiplayer_update = False
-
-main_menu = MainMenu(car, sand_track, grass_track, snow_track)
 
 PointLight(parent = camera, color = color.white, position = (0, 10, -1.5))
 AmbientLight(color = color.rgba(100, 100, 100, 0.1))
@@ -61,6 +62,9 @@ def update():
     if car.multiplayer_update:
         multiplayer.update_multiplayer()
 
+        # print(multiplayer.players_target_name)
+        # print(car.username_text)
+
 def input(key):
     if main_menu.main_menu.enabled == False and main_menu.server_menu.enabled == False and main_menu.settings_menu.enabled == False and main_menu.maps_menu.enabled == False and main_menu.garage_menu.enabled == False and main_menu.controls_menu.enabled == False:
         if key == "escape":
@@ -71,5 +75,7 @@ def input(key):
         multiplayer.client.send_message("MyPosition", tuple(multiplayer.car.position))
         multiplayer.client.send_message("MyRotation", tuple(multiplayer.car.rotation))
         multiplayer.client.send_message("MyTexture", str(multiplayer.car.texture))
+        multiplayer.client.send_message("MyUsername", str(multiplayer.car.username_text))
+        multiplayer.client.send_message("MyHighscore", str(round(multiplayer.car.highscore_count, 2)))
 
 app.run()

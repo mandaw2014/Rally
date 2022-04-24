@@ -1,6 +1,6 @@
 from ursinanetworking import *
 from ursina import *
-from car import CarRepresentation
+from car import CarRepresentation, CarUsername
 
 class Multiplayer(Entity):
     def __init__(self, car):
@@ -10,9 +10,11 @@ class Multiplayer(Entity):
         self.easy = EasyUrsinaNetworkingClient(self.client)
 
         self.players = {}
+        self.players_target_name = {}
         self.players_target_pos = {}
         self.players_target_rot = {}
         self.players_target_tex = {}
+        self.players_target_score = {}
 
         self.selfId = -1
 
@@ -30,7 +32,10 @@ class Multiplayer(Entity):
                 self.players_target_pos[variable_name] = Vec3(-80, -30, 15)
                 self.players_target_rot[variable_name] = Vec3(0, 90, 0)
                 self.players_target_tex[variable_name] = "./assets/garage/car-red.png"
-                self.players[variable_name] = CarRepresentation((-80, -30, 15), (0, 90, 0))
+                self.players_target_name[variable_name] = "Guest"
+                self.players_target_score[variable_name] = 0.0
+                self.players[variable_name] = CarRepresentation(self.car, (-80, -30, 15), (0, 90, 0))
+                self.players[variable_name].text_object = CarUsername(self.players[variable_name])
 
                 if self.selfId == int(variable.content["id"]):
                     self.players[variable_name].color = color.red
@@ -41,6 +46,8 @@ class Multiplayer(Entity):
             self.players_target_pos[variable.name] = variable.content["position"]
             self.players_target_rot[variable.name] = variable.content["rotation"]
             self.players_target_tex[variable.name] = variable.content["texture"]
+            self.players_target_name[variable.name] = variable.content["username"]
+            self.players_target_score[variable.name] = variable.content["highscore"]
 
         @self.easy.event
         def onReplicatedVariableRemoved(variable):
@@ -56,5 +63,28 @@ class Multiplayer(Entity):
             self.players[p].position += (Vec3(self.players_target_pos[p]) - self.players[p].position) / 25
             self.players[p].rotation += (Vec3(self.players_target_rot[p]) - self.players[p].rotation) / 25
             self.players[p].texture = f"{self.players_target_tex[p]}"
+            self.players[p].text_object.text = f"{self.players_target_name[p]}"
+            self.players[p].highscore = f"{self.players_target_score[p]}"
+
+        if "player_0" in self.players:
+            self.car.leaderboard_01 = str(self.players["player_0"].text_object.text) + " | " + str(self.players["player_0"].highscore)
+        else:
+            self.car.leaderboard_01 = ""
+        if "player_1" in self.players:
+            self.car.leaderboard_02 = str(self.players["player_1"].text_object.text) + " | " + str(self.players["player_1"].highscore)
+        else:
+            self.car.leaderboard_02 = ""
+        if "player_2" in self.players:
+            self.car.leaderboard_03 = str(self.players["player_2"].text_object.text) + " | " + str(self.players["player_2"].highscore)
+        else:
+            self.car.leaderboard_03 = ""
+        if "player_3" in self.players:
+            self.car.leaderboard_04 = str(self.players["player_3"].text_object.text) + " | " + str(self.players["player_3"].highscore)
+        else:
+            self.car.leaderboard_04 = ""
+        if "player_4" in self.players:
+            self.car.leaderboard_05 = str(self.players["player_4"].text_object.text) + " | " + str(self.players["player_4"].highscore)
+        else:
+            self.car.leaderboard_05 = ""
 
         self.easy.process_net_events()
