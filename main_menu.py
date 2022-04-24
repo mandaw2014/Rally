@@ -16,7 +16,11 @@ class MainMenu(Entity):
         self.controls_menu = Entity(parent = self, enabled = False)
         self.garage_menu = Entity(parent = self, enabled = False)
         self.pause_menu = Entity(parent = self, enabled = False)
+        
         self.car = car
+        self.sand_track = sand_track
+        self.grass_track = grass_track
+        self.snow_track = snow_track
 
         # Server Menu
 
@@ -47,7 +51,7 @@ class MainMenu(Entity):
         grass_track.disable()
         snow_track.enable()
 
-        car.username = InputField(default_value = "Guest", color = color.black, alpha = 100, y = 0.18, parent = self.server_menu)
+        car.username = InputField(default_value = car.username_text, color = color.black, alpha = 100, y = 0.18, parent = self.server_menu)
         car.ip = InputField(default_value = "localhost", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.server_menu)
         multiplayer_button = Button(text = "J o i n", color = color.light_gray, highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.02, parent = self.server_menu)
         single_player_button = Button(text = "S i n g l e p l a y e r", color = color.light_gray, highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.14, parent = self.server_menu)
@@ -228,6 +232,18 @@ class MainMenu(Entity):
         grass_track_button = Button(text = "G r a s s - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0, parent = self.maps_menu)
         snow_track_button = Button(text = "S n o w - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0.5, parent = self.maps_menu)
         back_button = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
+        
+        self.leaderboard_background = Entity(model = "quad", color = color.hex("0099ff"), alpha = 100, scale = (0.4, 0.42), position = Vec2(0.6, 0.25), parent = camera.ui)
+        self.leaderboard_title = Text("Leaderboard", color = color.gold, scale = 5, line_height = 2, origin = 0, y = 0.4, parent = self.leaderboard_background)
+        
+        self.leaderboard_01 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = 0.2, parent = self.leaderboard_background)
+        self.leaderboard_02 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = 0.1, parent = self.leaderboard_background)
+        self.leaderboard_03 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = 0, parent = self.leaderboard_background)
+        self.leaderboard_04 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = -0.1, parent = self.leaderboard_background)
+        self.leaderboard_05 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = -0.2, parent = self.leaderboard_background)
+        
+        self.leaderboard_background.disable()
+        self.leaderboard_title.disable()
 
         start_button.on_click = Func(start)
         sand_track_button.on_click = Func(sand_track_func)
@@ -480,3 +496,43 @@ class MainMenu(Entity):
                 self.car.rotation_y = mouse.x * 500
             self.car.camera_follow.offset = (-25, 5, 3)
             camera.rotation = (10, 90, 0)
+
+        if self.server_menu.enabled:
+            with open("./highscore/username.txt", "w") as user:
+                user.write(self.car.username.text)
+
+        if self.car.multiplayer_update:
+            if self.main_menu.enabled == False and self.server_menu.enabled == False and self.maps_menu.enabled == False:
+                if self.sand_track.enabled or self.grass_track.enabled or self.snow_track.enabled:
+                    invoke(self.start_leaderboard, delay = 0.1)
+            else:
+                self.leaderboard_background.disable()
+                self.leaderboard_title.disable()
+                self.leaderboard_01.disable()
+                self.leaderboard_02.disable()
+                self.leaderboard_03.disable()
+                self.leaderboard_04.disable()
+                self.leaderboard_05.disable()
+        else:
+            self.leaderboard_background.disable()
+            self.leaderboard_title.disable()
+            self.leaderboard_01.disable()
+            self.leaderboard_02.disable()
+            self.leaderboard_03.disable()
+            self.leaderboard_04.disable()
+            self.leaderboard_05.disable()
+
+    def start_leaderboard(self):
+        self.leaderboard_background.enable()
+        self.leaderboard_title.enable()
+        self.leaderboard_01.enable()
+        self.leaderboard_02.enable()
+        self.leaderboard_03.enable()
+        self.leaderboard_04.enable()
+        self.leaderboard_05.enable()
+
+        self.leaderboard_01.text = str(self.car.leaderboard_01)
+        self.leaderboard_02.text = str(self.car.leaderboard_02)
+        self.leaderboard_03.text = str(self.car.leaderboard_03)
+        self.leaderboard_04.text = str(self.car.leaderboard_04)
+        self.leaderboard_05.text = str(self.car.leaderboard_05)

@@ -62,9 +62,6 @@ def update():
     if car.multiplayer_update:
         multiplayer.update_multiplayer()
 
-        # print(multiplayer.players_target_name)
-        # print(car.username_text)
-
 def input(key):
     if main_menu.main_menu.enabled == False and main_menu.server_menu.enabled == False and main_menu.settings_menu.enabled == False and main_menu.maps_menu.enabled == False and main_menu.garage_menu.enabled == False and main_menu.controls_menu.enabled == False:
         if key == "escape":
