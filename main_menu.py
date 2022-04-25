@@ -498,7 +498,7 @@ class MainMenu(Entity):
             camera.rotation = (10, 90, 0)
 
         if self.server_menu.enabled:
-            with open("./highscore/username.txt", "w") as user:
+            with open(self.car.username_path, "w") as user:
                 user.write(self.car.username.text)
 
         if self.car.multiplayer_update:

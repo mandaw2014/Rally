@@ -82,7 +82,8 @@ class Car(Entity):
         self.highscore_count = float(self.highscore_count)
         self.old_highscore = self.highscore_count
 
-        with open("./highscore/username.txt", "r") as username:
+        self.username_path = os.path.join(path, "./highscore/username.txt")
+        with open(self.username_path, "r") as username:
             self.username_text = username.read()
             print(self.username_text)
 
@@ -95,7 +96,7 @@ class Car(Entity):
 
         self.highscore.text = str(round(self.highscore_count, 1))
 
-        with open("./highscore/username.txt", "r") as username:
+        with open(self.username_path, "r") as username:
             self.username_text = username.read()
 
         self.pivot.position = self.position
