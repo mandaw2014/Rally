@@ -6,7 +6,7 @@ class Multiplayer(Entity):
     def __init__(self, car):
         self.car = car
 
-        self.client = UrsinaNetworkingClient(self.car.ip.text, 25565)
+        self.client = UrsinaNetworkingClient(self.car.ip.text, int(self.car.port.text))
         self.easy = EasyUrsinaNetworkingClient(self.client)
 
         self.players = {}

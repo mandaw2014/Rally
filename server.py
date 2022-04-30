@@ -5,8 +5,9 @@ print("\nHello from the Rally Server!")
 print("\nPlease enter the ip (use 'localhost' for localhost)")
 
 ip = input("\nIP: ")
+port = input("Port: ")
 
-server = UrsinaNetworkingServer(ip, 25565)
+server = UrsinaNetworkingServer(ip, int(port))
 easy = EasyUrsinaNetworkingServer(server)
 
 @server.event

@@ -52,9 +52,10 @@ class MainMenu(Entity):
         snow_track.enable()
 
         car.username = InputField(default_value = car.username_text, color = color.black, alpha = 100, y = 0.18, parent = self.server_menu)
-        car.ip = InputField(default_value = "localhost", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.server_menu)
-        multiplayer_button = Button(text = "J o i n", color = color.light_gray, highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.02, parent = self.server_menu)
-        single_player_button = Button(text = "S i n g l e p l a y e r", color = color.light_gray, highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.14, parent = self.server_menu)
+        car.ip = InputField(default_value = "IP", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.server_menu)
+        car.port = InputField(default_value = "PORT", limit_content_to = "0123456789", color = color.black, alpha = 100, y = 0.02, parent = self.server_menu)
+        multiplayer_button = Button(text = "J o i n", color = color.light_gray, highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.server_menu)
+        single_player_button = Button(text = "S i n g l e p l a y e r", color = color.light_gray, highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.server_menu)
 
         multiplayer_button.on_click = Func(join_server)
         single_player_button.on_click = Func(single_player)
@@ -458,8 +459,11 @@ class MainMenu(Entity):
             """
             Changes the car color to the selected color after a small animation.
             """
-            car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+            if self.start_spin == True:
+                car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             car.texture = f"car-{color}.png"
+
+        self.start_spin = True
 
         garage_button = Button(text = "G a r a g e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.main_menu)
 
@@ -522,6 +526,11 @@ class MainMenu(Entity):
             self.leaderboard_04.disable()
             self.leaderboard_05.disable()
 
+        if held_keys["w"] or held_keys["up arrow"]:
+            self.start_spin = False
+        else:
+            self.start_spin = True
+            
     def start_leaderboard(self):
         self.leaderboard_background.enable()
         self.leaderboard_title.enable()
