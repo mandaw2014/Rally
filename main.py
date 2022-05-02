@@ -54,11 +54,6 @@ AmbientLight(color = color.rgba(100, 100, 100, 0.1))
 Sky()
 
 def update():
-    if car.server_running:
-        car.server.update_server()
-        if car.server.server_update == True:
-            car.server.easy.process_net_events()
-
     if car.multiplayer == True:
         global multiplayer
         multiplayer = Multiplayer(car)
@@ -67,6 +62,11 @@ def update():
 
     if car.multiplayer_update:
         multiplayer.update_multiplayer()
+
+    if car.server_running:
+        car.server.update_server()
+        if car.server.server_update == True:
+            car.server.easy.process_net_events()
 
 def input(key):
     if main_menu.main_menu.enabled == False and main_menu.server_menu.enabled == False and main_menu.settings_menu.enabled == False and main_menu.maps_menu.enabled == False and main_menu.garage_menu.enabled == False and main_menu.controls_menu.enabled == False:
@@ -80,5 +80,5 @@ def input(key):
         multiplayer.client.send_message("MyTexture", str(multiplayer.car.texture))
         multiplayer.client.send_message("MyUsername", str(multiplayer.car.username_text))
         multiplayer.client.send_message("MyHighscore", str(round(multiplayer.car.highscore_count, 2)))
-        
+
 app.run()
