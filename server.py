@@ -42,7 +42,7 @@ class Server:
             @self.server.event
             def MyUsername(client, newuser):
                 self.easy.update_replicated_variable_by_name(f"player_{client.id}", "username", newuser)
-
+        
             @self.server.event
             def MyHighscore(client, newscore):
                 self.easy.update_replicated_variable_by_name(f"player_{client.id}", "highscore", newscore)

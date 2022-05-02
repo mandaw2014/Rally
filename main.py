@@ -80,5 +80,5 @@ def input(key):
         multiplayer.client.send_message("MyTexture", str(multiplayer.car.texture))
         multiplayer.client.send_message("MyUsername", str(multiplayer.car.username_text))
         multiplayer.client.send_message("MyHighscore", str(round(multiplayer.car.highscore_count, 2)))
-
+        
 app.run()

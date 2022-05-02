@@ -52,7 +52,6 @@ class MainMenu(Entity):
             snow_track.disable()
             sand_track.enable()
         
-        self.car.username = InputField(default_value = self.car.username_text, color = color.black, alpha = 100, y = 0.18, parent = self.host_menu)
         self.car.host_ip = InputField(default_value = "localhost", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.host_menu)
         self.car.host_port = InputField(default_value = "25565", limit_content_to = "0123456789", color = color.black, alpha = 100, y = 0.02, parent = self.host_menu)
 
