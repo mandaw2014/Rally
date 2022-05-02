@@ -36,6 +36,8 @@ class MainMenu(Entity):
             self.car.server = Server(car.host_ip, car.host_port)
             self.car.server_running = True
             self.car.server.start_server = True
+            self.car.ip.text = self.car.host_ip.text
+            self.car.port.text = self.car.host_port.text
             car.multiplayer = True
             self.host_menu.disable()
             self.main_menu.enable()

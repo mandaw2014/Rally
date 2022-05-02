@@ -6,11 +6,6 @@ class Multiplayer(Entity):
     def __init__(self, car):
         self.car = car
 
-        if self.car.port.text != type(int):
-            self.car.port.text = "25565"
-        if self.car.ip.text == "IP":
-            self.car.ip.text = "localhost"
-
         self.client = UrsinaNetworkingClient(self.car.ip.text, int(self.car.port.text))
         self.easy = EasyUrsinaNetworkingClient(self.client)
         print("Joining Server: " + "\u0332".join(self.car.ip.text) + " on port " + "\u0332".join(self.car.port.text))
