@@ -36,17 +36,13 @@ class MainMenu(Entity):
             self.car.server = Server(car.host_ip, car.host_port)
             self.car.server_running = True
             self.car.server.start_server = True
-            self.car.ip.text = self.car.host_ip.text
-            self.car.port.text = self.car.host_port.text
-            car.multiplayer = True
             self.host_menu.disable()
-            self.main_menu.enable()
-            grass_track.enable()
+            self.server_menu.enable()
+            self.car.enable()
+            self.car.position = (-32, -48.4, -45)
             snow_track.disable()
-            self.car.position = (0, 0, 4)
-            camera.rotation = (35, -20, 0)
-            self.car.camera_follow.offset = (20, 40, -50)
-            self.car.disable()
+            sand_track.enable()
+            back_button_server.disable()
 
         def join_server_func():
             self.host_menu.disable()

@@ -54,6 +54,11 @@ AmbientLight(color = color.rgba(100, 100, 100, 0.1))
 Sky()
 
 def update():
+    if car.server_running:
+        car.server.update_server()
+        if car.server.server_update == True:
+            car.server.easy.process_net_events()
+
     if car.multiplayer == True:
         global multiplayer
         multiplayer = Multiplayer(car)
@@ -61,10 +66,6 @@ def update():
         car.multiplayer = False
 
     if car.multiplayer_update:
-        if car.server_running:
-            car.server.update_server()
-            if car.server.server_update == True:
-                car.server.easy.process_net_events()
         multiplayer.update_multiplayer()
 
 def input(key):

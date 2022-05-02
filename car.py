@@ -66,6 +66,7 @@ class Car(Entity):
         self.laps = 0
         self.anti_cheat = 1
         self.started = False
+        self.server_running = False
         self.scores = {}
 
         self.camera_follow = SmoothFollow(target = self, offset = (20, 40, -50), speed = self.camera_speed)
@@ -255,6 +256,8 @@ class Car(Entity):
         if y_ray.hit:
             self.jump_count = 0
             self.velocity_y = 0
+            # self.rotation_x = y_ray.world_normal[0] * 30
+            # self.rotation_z = y_ray.world_normal[2] * 30
         else:
             self.y += movementY * 50 * time.dt
             self.velocity_y -= 1
