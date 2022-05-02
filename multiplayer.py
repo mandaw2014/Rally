@@ -6,8 +6,14 @@ class Multiplayer(Entity):
     def __init__(self, car):
         self.car = car
 
+        if self.car.port.text != type(int):
+            self.car.port.text = "25565"
+        if self.car.ip.text == "IP":
+            self.car.ip.text = "localhost"
+
         self.client = UrsinaNetworkingClient(self.car.ip.text, int(self.car.port.text))
         self.easy = EasyUrsinaNetworkingClient(self.client)
+        print("Joining Server: " + "\u0332".join(self.car.ip.text) + " on port " + "\u0332".join(self.car.port.text))
 
         self.players = {}
         self.players_target_name = {}
@@ -65,6 +71,10 @@ class Multiplayer(Entity):
             self.players[p].texture = f"{self.players_target_tex[p]}"
             self.players[p].text_object.text = f"{self.players_target_name[p]}"
             self.players[p].highscore = f"{self.players_target_score[p]}"
+
+            if distance(self.players_target_pos[p], self.car.position) > 2:
+                self.client.send_message("MyPosition", tuple(self.car.position))
+                self.client.send_message("MyRotation", tuple(self.car.rotation))
 
         if "player_0" in self.players:
             self.car.leaderboard_01 = str(self.players["player_0"].text_object.text) + " | " + str(self.players["player_0"].highscore)

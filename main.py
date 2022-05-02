@@ -16,6 +16,7 @@ application.development_mode = False
 Text.default_resolution = 1080 * Text.size
 
 app = Ursina()
+window.title = "Rally"
 window.borderless = False
 window.fullscreen = True
 window.show_ursina_splash = True
@@ -60,6 +61,10 @@ def update():
         car.multiplayer = False
 
     if car.multiplayer_update:
+        if car.server_running:
+            car.server.update_server()
+            if car.server.server_update == True:
+                car.server.easy.process_net_events()
         multiplayer.update_multiplayer()
 
 def input(key):
