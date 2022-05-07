@@ -11,7 +11,7 @@ from main_menu import MainMenu
 from tracks.sand_track import SandTrack
 from tracks.grass_track import GrassTrack
 from tracks.snow_track import SnowTrack
-
+    
 application.development_mode = False
 Text.default_resolution = 1080 * Text.size
 
@@ -51,7 +51,7 @@ car.multiplayer_update = False
 PointLight(parent = camera, color = color.white, position = (0, 10, -1.5))
 AmbientLight(color = color.rgba(100, 100, 100, 0.1))
 
-Sky()
+Sky(texture = "sky")
 
 def update():
     if car.multiplayer == True:
@@ -68,11 +68,30 @@ def update():
         if car.server.server_update == True:
             car.server.easy.process_net_events()
 
+    print(main_menu.main_menu.enabled)
+    print(main_menu.maps_menu.enabled)
+    print(main_menu.server_menu.enabled)
+    print(main_menu.host_menu.enabled)
+    print(main_menu.created_server_menu.enabled)
+    print(main_menu.settings_menu.enabled)
+    print(main_menu.controls_menu.enabled)
+    print(main_menu.garage_menu.enabled)
+    print(main_menu.start_menu.enabled)
+
 def input(key):
-    if main_menu.main_menu.enabled == False and main_menu.server_menu.enabled == False and main_menu.settings_menu.enabled == False and main_menu.maps_menu.enabled == False and main_menu.garage_menu.enabled == False and main_menu.controls_menu.enabled == False:
+    if main_menu.main_menu.enabled == False and main_menu.start_menu.enabled == False and main_menu.server_menu.enabled == False and main_menu.settings_menu.enabled == False and main_menu.maps_menu.enabled == False and main_menu.garage_menu.enabled == False and main_menu.controls_menu.enabled == False and main_menu.host_menu.enabled == False and main_menu.created_server_menu.enabled == False:
         if key == "escape":
             main_menu.pause_menu.enabled = not main_menu.pause_menu.enabled
             mouse.locked = not mouse.locked
+
+        car.timer.enable()
+        car.highscore.enable()
+        car.reset_count_timer.enable()
+    
+    else:
+        car.timer.disable()
+        car.highscore.disable()
+        car.reset_count_timer.disable()
 
     if car.multiplayer_update:
         multiplayer.client.send_message("MyPosition", tuple(multiplayer.car.position))

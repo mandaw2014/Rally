@@ -11,7 +11,9 @@ class MainMenu(Entity):
             parent = camera.ui
         )
 
-        self.host_menu = Entity(parent = self, enabled = True)
+        self.start_menu = Entity(parent = self, enabled = True)
+        self.host_menu = Entity(parent = self, enabled = False)
+        self.created_server_menu = Entity(parent = self, enabled = False)
         self.server_menu = Entity(parent = self, enabled = False)
         self.main_menu = Entity(parent = self, enabled = False)
         self.maps_menu = Entity(parent = self, enabled = False)
@@ -25,19 +27,47 @@ class MainMenu(Entity):
         self.grass_track = grass_track
         self.snow_track = snow_track
 
-        # Host Server Menu
+        # Start Menu
 
+        self.car.position = (-80, -42, 18.8)
+        self.car.rotation = (0, 90, 0)
         self.car.enable()
-        self.car.position = (-3, -44.5, 92)
-        grass_track.disable()
-        snow_track.enable()
+        self.grass_track.enable()
+
+        def singleplayer():
+            car.multiplayer = False
+            self.start_menu.disable()
+            self.main_menu.enable()
+            grass_track.enable()
+            self.car.position = (0, 0, 4)
+            camera.rotation = (35, -20, 0)
+            self.car.camera_follow.offset = (20, 40, -50)
+            self.car.disable()
+
+        def multiplayer():
+            self.start_menu.disable()
+            self.host_menu.enable()
+            self.car.enable()
+            self.car.position = (-3, -44.5, 92)
+            grass_track.disable()
+            snow_track.enable()
+
+        start_title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.start_menu, y = 0.3)
+
+        singleplayer_button = Button(text = "S i n g l e p l a y e r", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = 0.05, parent = self.start_menu)
+        multiplayer_button = Button(text = "M u l t i p l a y e r", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.08, parent = self.start_menu)
+        
+        singleplayer_button.on_click = Func(singleplayer)
+        multiplayer_button.on_click = Func(multiplayer)
+
+        # Host Server Menu
 
         def create_server():
             self.car.server = Server(car.host_ip, car.host_port)
             self.car.server_running = True
             self.car.server.start_server = True
             self.host_menu.disable()
-            self.server_menu.enable()
+            self.created_server_menu.enable()
             self.car.enable()
             self.car.position = (-32, -48.4, -45)
             snow_track.disable()
@@ -51,31 +81,58 @@ class MainMenu(Entity):
             self.car.position = (-32, -48.4, -45)
             snow_track.disable()
             sand_track.enable()
+
+        def back_host():
+            self.host_menu.disable()
+            self.start_menu.enable()
+            self.car.position = (-80, -42, 18.8)
+            self.car.rotation = (0, 90, 0)
+            self.car.enable()
+            self.grass_track.enable()
+            self.snow_track.disable()
         
         self.car.host_ip = InputField(default_value = "localhost", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.host_menu)
         self.car.host_port = InputField(default_value = "25565", limit_content_to = "0123456789", color = color.black, alpha = 100, y = 0.02, parent = self.host_menu)
 
         create_server_button = Button(text = "C r e a t e", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.host_menu)
         join_server_button = Button(text = "J o i n - S e r v e r", color = color.hex("0097F5"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.host_menu)
-        
+        back_button_host = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.host_menu)
+
         create_server_button.on_click = Func(create_server)
         join_server_button.on_click = Func(join_server_func)
+        back_button_host.on_click = Func(back_host)
+
+        # Created Server
+
+        def join_hosted_server_func():
+            car.ip.text = car.host_ip.text
+            car.port.text = car.host_port.text
+            car.multiplayer = True
+            self.created_server_menu.disable()
+            self.main_menu.enable()
+            self.car.position = (0, 0, 4)
+            camera.rotation = (35, -20, 0)
+            self.car.camera_follow.offset = (20, 40, -50)
+            self.car.disable()
+            self.sand_track.disable()
+            self.grass_track.enable()
+
+        def stop_server():
+            application.quit()
+            os._exit(0)
+
+        self.username_created_server = InputField(default_value = car.username_text, color = color.black, alpha = 100, y = 0.05, parent = self.created_server_menu)
+        join_hosted_server = Button(text = "J o i n - S e r v e r", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.created_server_menu)
+        running = Text(text = "Running server...", scale = 1.5, line_height = 2, x = 0, origin = 0, y = 0.2, parent = self.created_server_menu)
+        stop_button = Button(text = "S t o p", color = color.hex("D22828"), scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.created_server_menu)
+
+        join_hosted_server.on_click = Func(join_hosted_server_func)
+        stop_button.on_click = Func(stop_server)
 
         # Server Menu
 
         def join_server():
             car.multiplayer = True
-            self.server_menu.disable()
-            self.main_menu.enable()
-            grass_track.enable()
-            sand_track.disable()
-            self.car.position = (0, 0, 4)
-            camera.rotation = (35, -20, 0)
-            self.car.camera_follow.offset = (20, 40, -50)
-            self.car.disable()
-        
-        def single_player():
-            car.multiplayer = False
             self.server_menu.disable()
             self.main_menu.enable()
             grass_track.enable()
@@ -96,12 +153,10 @@ class MainMenu(Entity):
         car.username = InputField(default_value = car.username_text, color = color.black, alpha = 100, y = 0.18, parent = self.server_menu)
         car.ip = InputField(default_value = "IP", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.server_menu)
         car.port = InputField(default_value = "PORT", limit_content_to = "0123456789", color = color.black, alpha = 100, y = 0.02, parent = self.server_menu)
-        multiplayer_button = Button(text = "J o i n", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.server_menu)
-        single_player_button = Button(text = "S i n g l e p l a y e r", color = color.light_gray, highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.server_menu)
+        join_button = Button(text = "J o i n", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.server_menu)
         back_button_server = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.server_menu)
 
-        multiplayer_button.on_click = Func(join_server)
-        single_player_button.on_click = Func(single_player)
+        join_button.on_click = Func(join_server)
         back_button_server.on_click = Func(back_server)
 
         # Main Menu
@@ -116,7 +171,7 @@ class MainMenu(Entity):
         quit_button = Button(text = "Q u i t", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.34, parent = self.main_menu)
         quit_button.on_click = Func(quit_app)
 
-        # Start Menu
+        # Maps Menu
 
         def start():
             self.maps_menu.enable()
@@ -130,7 +185,7 @@ class MainMenu(Entity):
             self.car.enable()
             mouse.locked = True
             self.maps_menu.disable()
-            self.car.position = (0, 0, 4)
+            self.car.position = (0, -20, 4)
             self.car.rotation = (0, 65, 0)
             self.car.reset_count_timer.enable()
             camera.position = (-80, -30, 15)
@@ -533,7 +588,15 @@ class MainMenu(Entity):
         white_button.on_click = Func(change_color, "white")
 
     def update(self):
-        if self.host_menu.enabled == True:
+        if self.start_menu.enabled:
+            if not held_keys["right mouse"]:
+                self.car.rotation_y += 15 * time.dt
+            else:
+                self.car.rotation_y = mouse.x * 500
+            self.car.camera_follow.offset = (-25, 4, 0)
+            camera.rotation = (5, 90, 0)
+
+        if self.host_menu.enabled:
             if not held_keys["right mouse"]:
                 self.car.rotation_y += 15 * time.dt
             else:
@@ -560,6 +623,10 @@ class MainMenu(Entity):
         if self.host_menu.enabled or self.server_menu.enabled:
             with open(self.car.username_path, "w") as user:
                 user.write(self.car.username.text)
+            
+        if self.created_server_menu.enabled:
+            with open(self.car.username_path, "w") as user:
+                user.write(self.username_created_server.text)
 
         if self.car.multiplayer_update:
             if self.main_menu.enabled == False and self.server_menu.enabled == False and self.maps_menu.enabled == False:

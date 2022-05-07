@@ -256,8 +256,10 @@ class Car(Entity):
         if y_ray.hit:
             self.jump_count = 0
             self.velocity_y = 0
-            # self.rotation_x = y_ray.world_normal[0] * 30
-            # self.rotation_z = y_ray.world_normal[2] * 30
+            
+            # self.animate_rotation_x(y_ray.normal[0] * 200, duration = 0.1, curve = curve.linear)
+            # self.animate_rotation_z((y_ray.world_normal[2] * 30), duration = 0.1, curve = curve.linear)
+
         else:
             self.y += movementY * 50 * time.dt
             self.velocity_y -= 1
@@ -331,10 +333,11 @@ class CarUsername(Text):
         super().__init__(
             parent = car,
             text = "Guest",
-            y = 10,
-            scale = 10
+            y = 3,
+            scale = 30,
+            color = color.white,
         )
-
+    
         self.username_text = "Guest"
 
     def update(self):

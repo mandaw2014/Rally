@@ -13,7 +13,7 @@ class Server:
         if self.start_server:
             self.server = UrsinaNetworkingServer(self.ip.text, int(self.port.text))
             self.easy = EasyUrsinaNetworkingServer(self.server)
-
+            
             @self.server.event
             def onClientConnected(client):
                 self.easy.create_replicated_variable(
