@@ -68,16 +68,6 @@ def update():
         if car.server.server_update == True:
             car.server.easy.process_net_events()
 
-    print(main_menu.main_menu.enabled)
-    print(main_menu.maps_menu.enabled)
-    print(main_menu.server_menu.enabled)
-    print(main_menu.host_menu.enabled)
-    print(main_menu.created_server_menu.enabled)
-    print(main_menu.settings_menu.enabled)
-    print(main_menu.controls_menu.enabled)
-    print(main_menu.garage_menu.enabled)
-    print(main_menu.start_menu.enabled)
-
 def input(key):
     if main_menu.main_menu.enabled == False and main_menu.start_menu.enabled == False and main_menu.server_menu.enabled == False and main_menu.settings_menu.enabled == False and main_menu.maps_menu.enabled == False and main_menu.garage_menu.enabled == False and main_menu.controls_menu.enabled == False and main_menu.host_menu.enabled == False and main_menu.created_server_menu.enabled == False:
         if key == "escape":
