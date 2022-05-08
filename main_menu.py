@@ -65,16 +65,17 @@ class MainMenu(Entity):
         # Host Server Menu
 
         def create_server():
-            self.car.server = Server(car.host_ip, car.host_port)
-            self.car.server_running = True
-            self.car.server.start_server = True
-            self.host_menu.disable()
-            self.created_server_menu.enable()
-            self.car.enable()
-            self.car.position = (-32, -48.4, -45)
-            snow_track.disable()
-            sand_track.enable()
-            back_button_server.disable()
+            if str(self.car.host_ip.text) != "IP" and str(self.car.host_port) != "PORT":
+                self.car.server = Server(car.host_ip, car.host_port)
+                self.car.server_running = True
+                self.car.server.start_server = True
+                self.host_menu.disable()
+                self.created_server_menu.enable()
+                self.car.enable()
+                self.car.position = (-32, -48.4, -45)
+                snow_track.disable()
+                sand_track.enable()
+                back_button_server.disable()
 
         def join_server_func():
             self.host_menu.disable()
@@ -134,15 +135,17 @@ class MainMenu(Entity):
         # Server Menu
 
         def join_server():
-            car.multiplayer = True
-            self.server_menu.disable()
-            self.main_menu.enable()
-            grass_track.enable()
-            sand_track.disable()
-            self.car.position = (0, 0, 4)
-            camera.rotation = (35, -20, 0)
-            self.car.camera_follow.offset = (20, 40, -50)
-            self.car.disable()
+            if str(self.car.ip.text) != "IP" and str(self.car.port.text) != "PORT":
+                car.multiplayer = True
+                self.server_menu.disable()
+                self.main_menu.enable()
+                grass_track.enable()
+                sand_track.disable()
+                self.car.position = (0, 0, 4)
+                camera.rotation = (35, -20, 0)
+                self.car.camera_follow.offset = (20, 40, -50)
+                self.car.disable()
+                self.car.connected = False
 
         def back_server():
             self.host_menu.enable()
@@ -588,6 +591,11 @@ class MainMenu(Entity):
         orange_button.on_click = Func(change_color, "orange")
         black_button.on_click = Func(change_color, "black")
         white_button.on_click = Func(change_color, "white")
+
+        # Error Log
+
+        self.connected = Text(text = "Not connected to server...", scale = 1.5, color = color.hex("FF2E2E"), line_height = 2, x = 0, origin = 0, y = 0.2, parent = camera.ui)
+        self.connected.disable()
 
     def update(self):
         if self.start_menu.enabled:

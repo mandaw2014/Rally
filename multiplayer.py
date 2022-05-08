@@ -1,63 +1,67 @@
 from ursinanetworking import *
 from ursina import *
 from car import CarRepresentation, CarUsername
+from sys import platform
 
 class Multiplayer(Entity):
     def __init__(self, car):
         self.car = car
 
-        self.client = UrsinaNetworkingClient(self.car.ip.text, int(self.car.port.text))
-        self.easy = EasyUrsinaNetworkingClient(self.client)
-        print("Joining Server: " + "\u0332".join(self.car.ip.text) + " on port " + "\u0332".join(self.car.port.text))
+        if str(self.car.ip.text) != "IP" and str(self.car.port.text) != "PORT":
+            self.client = UrsinaNetworkingClient(self.car.ip.text, int(self.car.port.text))
+            self.easy = EasyUrsinaNetworkingClient(self.client)
 
-        self.players = {}
-        self.players_target_name = {}
-        self.players_target_pos = {}
-        self.players_target_rot = {}
-        self.players_target_tex = {}
-        self.players_target_score = {}
+            if platform != "darwin":
+                print("Joining Server: " + "\u0332".join(self.car.ip.text) + " on port " + "\u0332".join(self.car.port.text))
 
-        self.selfId = -1
+            self.players = {}
+            self.players_target_name = {}
+            self.players_target_pos = {}
+            self.players_target_rot = {}
+            self.players_target_tex = {}
+            self.players_target_score = {}
 
-        @self.client.event
-        def GetId(id):
-            self.selfId = id
-            print(f"My ID is : {self.selfId}")
+            self.selfId = -1
 
-        @self.easy.event
-        def onReplicatedVariableCreated(variable):
-            variable_name = variable.name
-            variable_type = variable.content["type"]
+            @self.client.event
+            def GetId(id):
+                self.selfId = id
+                print(f"My ID is : {self.selfId}")
 
-            if variable_type == "player":
-                self.players_target_pos[variable_name] = Vec3(-80, -30, 15)
-                self.players_target_rot[variable_name] = Vec3(0, 90, 0)
-                self.players_target_tex[variable_name] = "./assets/garage/car-red.png"
-                self.players_target_name[variable_name] = "Guest"
-                self.players_target_score[variable_name] = 0.0
-                self.players[variable_name] = CarRepresentation(self.car, (-80, -30, 15), (0, 90, 0))
-                self.players[variable_name].text_object = CarUsername(self.players[variable_name])
+            @self.easy.event
+            def onReplicatedVariableCreated(variable):
+                variable_name = variable.name
+                variable_type = variable.content["type"]
 
-                if self.selfId == int(variable.content["id"]):
-                    self.players[variable_name].color = color.red
-                    self.players[variable_name].visible = False
+                if variable_type == "player":
+                    self.players_target_pos[variable_name] = Vec3(-80, -30, 15)
+                    self.players_target_rot[variable_name] = Vec3(0, 90, 0)
+                    self.players_target_tex[variable_name] = "./assets/garage/car-red.png"
+                    self.players_target_name[variable_name] = "Guest"
+                    self.players_target_score[variable_name] = 0.0
+                    self.players[variable_name] = CarRepresentation(self.car, (-80, -30, 15), (0, 90, 0))
+                    self.players[variable_name].text_object = CarUsername(self.players[variable_name])
 
-        @self.easy.event
-        def onReplicatedVariableUpdated(variable):
-            self.players_target_pos[variable.name] = variable.content["position"]
-            self.players_target_rot[variable.name] = variable.content["rotation"]
-            self.players_target_tex[variable.name] = variable.content["texture"]
-            self.players_target_name[variable.name] = variable.content["username"]
-            self.players_target_score[variable.name] = variable.content["highscore"]
+                    if self.selfId == int(variable.content["id"]):
+                        self.players[variable_name].color = color.red
+                        self.players[variable_name].visible = False
 
-        @self.easy.event
-        def onReplicatedVariableRemoved(variable):
-            variable_name = variable.name
-            variable_type = variable.content["type"]
-            
-            if variable_type == "player":
-                destroy(self.players[variable_name])
-                del self.players[variable_name]
+            @self.easy.event
+            def onReplicatedVariableUpdated(variable):
+                self.players_target_pos[variable.name] = variable.content["position"]
+                self.players_target_rot[variable.name] = variable.content["rotation"]
+                self.players_target_tex[variable.name] = variable.content["texture"]
+                self.players_target_name[variable.name] = variable.content["username"]
+                self.players_target_score[variable.name] = variable.content["highscore"]
+
+            @self.easy.event
+            def onReplicatedVariableRemoved(variable):
+                variable_name = variable.name
+                variable_type = variable.content["type"]
+                
+                if variable_type == "player":
+                    destroy(self.players[variable_name])
+                    del self.players[variable_name]
 
     def update_multiplayer(self):
         for p in self.players:

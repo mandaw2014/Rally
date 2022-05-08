@@ -42,7 +42,8 @@ Then you're all set :)
 
 # Multiplayer
 
-To run multiplayer, run the `server.py` file and enter the ip address, this can be defaulted to 'localhost'. Run the `main.py` file and replace 'localhost' with the ip address of the server. Click `JOIN` and you will be placed into the server. 
+To run multiplayer, run the `main.py` file and click `Multiplayer`. Then enter the ip address (this can be defaulted to 'localhost') and the port (default: 25565). Then click `Join - Server`. 
+For others to join, run the `main.py`, click `Multiplayer` and then click `Join Server`. Enter the public ip address and the port of the server. Click `JOIN` and then you're in. Unlimited people can join!
 
 If you don't want to play on a server, run the `main.py` file and click `Singleplayer`.
 

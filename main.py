@@ -62,6 +62,8 @@ def update():
 
     if car.multiplayer_update:
         multiplayer.update_multiplayer()
+        if multiplayer.client.connected == False:
+            main_menu.connected.enable()
 
     if car.server_running:
         car.server.update_server()
