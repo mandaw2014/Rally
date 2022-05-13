@@ -108,11 +108,11 @@ class Car(Entity):
         if self.pivot.rotation_y != self.rotation_y:
             if self.pivot.rotation_y > self.rotation_y:
                 self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
-                self.speed += self.pivot_rotation_distance / 5 * time.dt
+                self.speed += self.pivot_rotation_distance / 4.5 * time.dt
                 self.rotation_speed -= 2 * time.dt
             if self.pivot.rotation_y < self.rotation_y:
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
-                self.speed -= self.pivot_rotation_distance / 5 * time.dt
+                self.speed -= self.pivot_rotation_distance / 4.5 * time.dt
                 self.rotation_speed += 2 * time.dt
 
         ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, ])
@@ -257,8 +257,8 @@ class Car(Entity):
             self.jump_count = 0
             self.velocity_y = 0
             
-            # self.animate_rotation_x(y_ray.normal[0] * 200, duration = 0.1, curve = curve.linear)
-            # self.animate_rotation_z((y_ray.world_normal[2] * 30), duration = 0.1, curve = curve.linear)
+            self.animate_rotation_x(y_ray.world_normal[0] * 30, duration = 0.1, curve = curve.linear)
+            # self.animate_rotation_z(y_ray.world_normal[2] * 30, duration = 0.1, curve = curve.linear)
 
         else:
             self.y += movementY * 50 * time.dt

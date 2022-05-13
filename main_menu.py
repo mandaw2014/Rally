@@ -18,6 +18,8 @@ class MainMenu(Entity):
         self.main_menu = Entity(parent = self, enabled = False)
         self.maps_menu = Entity(parent = self, enabled = False)
         self.settings_menu = Entity(parent = self, enabled = False)
+        self.video_menu = Entity(parent = self, enabled = False)
+        self.gameplay_menu = Entity(parent = self, enabled = False)
         self.controls_menu = Entity(parent = self, enabled = False)
         self.garage_menu = Entity(parent = self, enabled = False)
         self.pause_menu = Entity(parent = self, enabled = False)
@@ -26,6 +28,22 @@ class MainMenu(Entity):
         self.sand_track = sand_track
         self.grass_track = grass_track
         self.snow_track = snow_track
+
+        for menu in (self.start_menu, self.main_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu, self.controls_menu, self.pause_menu):
+            def animate_in_menu(menu = menu):
+                for i, e in enumerate(menu.children):
+                    e.original_scale = e.scale
+                    e.scale -= 0.01
+                    e.animate_scale(e.original_scale, delay = i * 0.05, duration = 0.1, curve = curve.out_quad)
+
+                    e.alpha = 0
+                    e.animate("alpha", 0.7, delay = i * 0.05, duration = 0.1, curve = curve.out_quad)
+
+                    if hasattr(e, "text_entity"):
+                        e.text_entity.alpha = 0
+                        e.text_entity.animate("alpha", 1, delay = i * 0.05, duration = 0.1)
+
+            menu.on_enable = animate_in_menu
 
         # Start Menu
 
@@ -54,6 +72,9 @@ class MainMenu(Entity):
 
         start_title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.start_menu, y = 0.3)
         quit_button_start = Button(text = "X", color = color.hex("FF1414"), highlight_color = color.hex("FF4747"), scale_y = 0.058, scale_x = 0.06, y = 0.43, x = 0.85, parent = self.start_menu)
+
+        if window.exit_button.enabled:
+            quit_button_start.disable()
 
         singleplayer_button = Button(text = "S i n g l e p l a y e r", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = 0.05, parent = self.start_menu)
         multiplayer_button = Button(text = "M u l t i p l a y e r", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.08, parent = self.start_menu)
@@ -367,41 +388,44 @@ class MainMenu(Entity):
             self.main_menu.disable()
             self.settings_menu.enable()
 
+        def video():
+            self.settings_menu.disable()
+            self.video_menu.enable()
+
+        def gameplay():
+            self.settings_menu.disable()
+            self.gameplay_menu.enable()
+
+        def controls():
+            self.settings_menu.disable()
+            self.controls_menu.enable()
+
         def back_settings():
             self.settings_menu.disable()
             self.main_menu.enable()
 
-        def camera_shake_on():
-            self.car.camera_shake_option = True
+        settings_button = Button(text = "S e t t i n g s", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.main_menu)
+        
+        video_button = Button(text = "Video", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.18, parent = self.settings_menu)
+        gameplay_button = Button(text = "Gameplay", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.06, parent = self.settings_menu)
+        controls_button = Button(text = "Controls", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.06, parent = self.settings_menu)
 
-        def camera_shake_off():
-            self.car.camera_shake_option = False
+        back_button_settings = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.18, parent = self.settings_menu)
 
-        def fullscreen_on():
-            window.fullscreen = True
+        settings_button.on_click = Func(settings) 
+        video_button.on_click = Func(video)
+        gameplay_button.on_click = Func(gameplay)
+        controls_button.on_click = Func(controls)
+        back_button_settings.on_click = Func(back_settings)
 
-        def fullscreen_off():
-            window.fullscreen = False
+        # Gameplay Menu
 
-        def borderless_on():
-            window.borderless = True
-            window.exit_button.enable()
-
-        def borderless_off():
-            window.borderless = False
-            window.exit_button.enable()
-
-        def fps_on():
-            window.fps_counter.enable()
-
-        def fps_off():
-            window.fps_counter.disable()
-
-        def exit_button_on():
-            window.exit_button.enable()
-
-        def exit_button_off():
-            window.exit_button.disable()
+        def camera_shake():
+            self.car.camera_shake_option = not self.car.camera_shake_option
+            if self.car.camera_shake_option:
+                camera_shake_button.text = "Camera Shake: On"
+            elif self.car.camera_shake_option == False:
+                camera_shake_button.text = "Camera Shake: Off"
 
         def reset_highscore():
             with open(self.car.highscore_path_sand, "w") as hs:
@@ -424,74 +448,84 @@ class MainMenu(Entity):
 
             self.car.highscore_count = float(self.car.highscore_count)
 
-        settings_button = Button(text = "S e t t i n g s", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.main_menu)
+        def back_gameplay():
+            self.gameplay_menu.disable()
+            self.settings_menu.enable()
 
-        back_button_settings = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.settings_menu)
-        
-        camera_shake = Text(text = "Camera Shake", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.3, x = -0.8, parent = self.settings_menu)
-        camera_shake_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = -0.3, parent = self.settings_menu)
-        camera_shake_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = -0.1, parent = self.settings_menu)
-        
-        fullscreen = Text(text = "Fullscreen", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.1, x = -0.7, parent = self.settings_menu)
-        fullscreen_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = -0.3, parent = self.settings_menu)
-        fullscreen_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = -0.1, parent = self.settings_menu)
-        
-        borderless = Text(text = "Borderless", size = 10, resolution = 4096, scale = (1.5, 1.5), y = -0.1, x = -0.7, parent = self.settings_menu)
-        borderless_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = -0.125, x = -0.3, parent = self.settings_menu)
-        borderless_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = -0.125, x = -0.1, parent = self.settings_menu)
-        
-        fps = Text(text = "FPS", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.3, x = 0.2, parent = self.settings_menu)
-        fps_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0.5, parent = self.settings_menu)
-        fps_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0.7, parent = self.settings_menu)
+        camera_shake_button = Button("Camera Shake: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.gameplay_menu)
+        reset_highsore_button = Button(text = "Reset Highscore", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.gameplay_menu)
+        back_button_gameplay = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.gameplay_menu)
 
-        exit_button = Text(text = "Exit Button", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.1, x = 0.2, parent = self.settings_menu)
-        exit_button_on_ = Button("On", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = 0.5, parent = self.settings_menu)
-        exit_button_off_ = Button("Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.085, x = 0.7, parent = self.settings_menu)
-
-        reset_highsore_button = Button(text = "R e s e t - H i g h s c o r e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.27, parent = self.settings_menu)
-
-        settings_button.on_click = Func(settings)
-        camera_shake_on_.on_click = Func(camera_shake_on)
-        camera_shake_off_.on_click = Func(camera_shake_off)
-        fullscreen_on_.on_click = Func(fullscreen_on)
-        fullscreen_off_.on_click = Func(fullscreen_off)
-        borderless_on_.on_click = Func(borderless_on)
-        borderless_off_.on_click = Func(borderless_off)
-        fps_on_.on_click = Func(fps_on)
-        fps_off_.on_click = Func(fps_off)
-        exit_button_on_.on_click = Func(exit_button_on)
-        exit_button_off_.on_click = Func(exit_button_off)
+        camera_shake_button.on_click = Func(camera_shake)
         reset_highsore_button.on_click = Func(reset_highscore)
-        
-        back_button_settings.on_click = Func(back_settings)
+        back_button_gameplay.on_click = Func(back_gameplay)
+
+        # Video Menu
+
+        def fullscreen():
+            window.fullscreen = not window.fullscreen
+            if window.fullscreen:
+                fullscreen_button.text = "Fullscreen: On"
+            elif window.fullscreen == False:
+                fullscreen_button.text = "Fullscreen: Off"
+
+        def borderless():
+            window.borderless = not window.borderless
+            if window.borderless:
+                borderless_button.text = "Borderless: On"
+            elif window.borderless == False:
+                borderless_button.text = "Borderless: Off"
+            window.exit_button.enable()
+
+        def fps():
+            window.fps_counter.enabled = not window.fps_counter.enabled
+            if window.fps_counter.enabled:
+                fps_button.text = "Fps: On"
+            elif window.fps_counter.enabled == False:
+                fps_button.text = "Fps: Off"
+
+        def exit_button_func():
+            window.exit_button.enabled = not window.exit_button.enabled
+            if window.exit_button.enabled:
+                exit_button.text = "Exit Button: On"
+            elif window.exit_button.enabled == False:
+                exit_button.text = "Exit Button: Off"
+
+        def back_video():
+            self.video_menu.disable()
+            self.settings_menu.enable()
+
+        fullscreen_button = Button("Fullscreen: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.24, parent = self.video_menu)
+        borderless_button = Button("Borderless: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.video_menu)
+        fps_button = Button("FPS: Off", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.video_menu)
+        exit_button = Button("Exit Button: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.video_menu)
+        back_button_video = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.24, parent = self.video_menu)
+
+        fullscreen_button.on_click = Func(fullscreen)
+        borderless_button.on_click = Func(borderless)
+        fps_button.on_click = Func(fps)
+        exit_button.on_click = Func(exit_button_func)
+        back_button_video.on_click = Func(back_video)
 
         # Controls
-
-        def controls():
-            self.settings_menu.disable()
-            self.controls_menu.enable()
 
         def back_controls():
             self.controls_menu.disable()
             self.settings_menu.enable()
 
-        def controls_wasd():
-            self.car.controls = "wasd"
+        def controls_settings():
+            if self.car.controls == "wasd":
+                self.car.controls = "zqsd"
+                controls_settings_button.text = "Controls: ZQSD"
+            elif self.car.controls == "zqsd":
+                self.car.controls = "wasd"
+                controls_settings_button.text = "Controls: WASD"
 
-        def controls_zqsd():
-            self.car.controls = "zqsd"
+        controls_settings_button = Button("Controls: WASD", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.06, parent = self.controls_menu)
+        back_button_controls = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.06, parent = self.controls_menu)
 
-        controls_button = Button(text = "C o n t r o l s", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.4, parent = self.settings_menu)
-        back_button_controls = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.controls_menu)
-
-        controls_ = Text(text = "C o n t r o l s", size = 10, resolution = 4096, scale = (1.5, 1.5), y = 0.3, x = -0.5, parent = self.controls_menu)
-        controls_wasd_ = Button("WASD", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0, parent = self.controls_menu)
-        controls_zqsd_ = Button("ZQSD", color = color.light_gray, scale_y = 0.1, scale_x = 0.1, y = 0.285, x = 0.2, parent = self.controls_menu)
-
-        controls_button.on_click = Func(controls)
         back_button_controls.on_click = Func(back_controls)
-        controls_wasd_.on_click = Func(controls_wasd)
-        controls_zqsd_.on_click = Func(controls_zqsd)
+        controls_settings_button.on_click = Func(controls_settings)
 
         # Pause Menu
 
