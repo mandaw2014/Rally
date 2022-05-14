@@ -63,9 +63,20 @@ def update():
 
     if car.multiplayer_update:
         multiplayer.update_multiplayer()
-        if multiplayer.client.connected == False:
-            # main_menu.connected.enable()
-            pass
+        if multiplayer.client.connected:
+            if car.connected_text == True:
+                main_menu.connected.enable()
+                car.connected_text = False
+            else:
+                invoke(main_menu.connected.disable, delay = 2)
+            main_menu.not_connected.disable()
+        else:
+            if car.disconnected_text == True:
+                main_menu.not_connected.enable()
+                car.disconnected_text = False
+            else:
+                invoke(main_menu.not_connected.disable, delay = 2)
+            main_menu.connected.disable()
 
     if car.server_running:
         car.server.update_server()

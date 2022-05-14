@@ -69,6 +69,9 @@ class Car(Entity):
         self.server_running = False
         self.scores = {}
 
+        self.connected_text = True
+        self.disconnected_text = True
+
         self.camera_follow = SmoothFollow(target = self, offset = (20, 40, -50), speed = self.camera_speed)
         camera.add_script(self.camera_follow)
 
@@ -257,7 +260,7 @@ class Car(Entity):
             self.jump_count = 0
             self.velocity_y = 0
             
-            self.animate_rotation_x(y_ray.world_normal[0] * 30, duration = 0.1, curve = curve.linear)
+            # self.animate_rotation_x(y_ray.world_normal[0] * 30, duration = 0.1, curve = curve.linear)
             # self.animate_rotation_z(y_ray.world_normal[2] * 30, duration = 0.1, curve = curve.linear)
 
         else:

@@ -2,22 +2,6 @@
 
 A Simple 3D Racing Game Made In Python With The Ursina Engine
 
-So far the game includes:
-
-Drifting
-
-Score + Highscore
-
-Particles
-
-Camera Shake
-
-3 Maps - Sand Track, Grass Track and Snow Track
-
-A Garage where you can change the colour of the car
-
-Multiplayer
-
 Feel free to leave comments or feedback on how I can improve the game
 
 # Installation
@@ -42,7 +26,7 @@ Then you're all set :)
 
 # Multiplayer
 
-To run multiplayer, run the `main.py` file and click `Multiplayer`. Then enter the ip address (this can be defaulted to 'localhost') and the port (default: 25565). Then click `Join - Server`. 
+To run multiplayer, run the `main.py` file and click `Multiplayer`. Then enter the ip address (this can be defaulted to 'localhost') and the port (default: 25565). Click `Create - Server` and then click `Join - Server`.
 For others to join, run the `main.py`, click `Multiplayer` and then click `Join Server`. Enter the public ip address and the port of the server. Click `JOIN` and then you're in. Unlimited people can join!
 
 If you don't want to play on a server, run the `main.py` file and click `Singleplayer`.

@@ -628,8 +628,10 @@ class MainMenu(Entity):
 
         # Error Log
 
-        self.connected = Text(text = "Not connected to server...", scale = 1.5, color = color.hex("FF2E2E"), line_height = 2, x = 0, origin = 0, y = 0.2, parent = camera.ui)
+        self.connected = Text(text = "Connected to server!", scale = 1.5, color = color.hex("4dff4d"), line_height = 2, x = -0.55, origin = 0, y = 0.45, parent = camera.ui)
+        self.not_connected = Text(text = "Not connected to server...", scale = 1.5, color = color.hex("FF2E2E"), line_height = 2, x = -0.55, origin = 0, y = 0.45, parent = camera.ui)
         self.connected.disable()
+        self.not_connected.disable()
 
     def update(self):
         if self.start_menu.enabled:
