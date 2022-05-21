@@ -1,6 +1,6 @@
 from ursinanetworking import *
 
-print("\nHello from the Rally Server!")
+print("\nHello from the Rally Server!\n")
 
 class Server:
     def __init__(self, ip, port):

@@ -6,7 +6,7 @@ import os
 Text.default_resolution = 1080 * Text.size
 
 class MainMenu(Entity):
-    def __init__(self, car, sand_track, grass_track, snow_track):
+    def __init__(self, car, sand_track, grass_track, snow_track, plains_track):
         super().__init__(
             parent = camera.ui
         )
@@ -28,6 +28,7 @@ class MainMenu(Entity):
         self.sand_track = sand_track
         self.grass_track = grass_track
         self.snow_track = snow_track
+        self.plains_track = plains_track
 
         for menu in (self.start_menu, self.main_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu, self.controls_menu, self.pause_menu):
             def animate_in_menu(menu = menu):
@@ -252,6 +253,19 @@ class MainMenu(Entity):
             snow_track.wall_trigger.disable()
             snow_track.wall_trigger_end.disable()
 
+            plains_track.disable()
+            plains_track.finish_line.disable()
+            plains_track.boundaries.disable()
+            plains_track.wall1.disable()
+            plains_track.wall2.disable()
+            plains_track.wall3.disable()
+            plains_track.wall4.disable()
+            plains_track.wall5.disable()
+            plains_track.wall6.disable()
+            plains_track.wall7.disable()
+            plains_track.wall8.disable()
+            plains_track.wall_trigger.disable()
+
             with open(self.car.highscore_path_sand, "r") as hs:
                 self.car.highscore_count = hs.read()
 
@@ -303,6 +317,19 @@ class MainMenu(Entity):
             snow_track.wall_trigger.disable()
             snow_track.wall_trigger_end.disable()
 
+            plains_track.disable()
+            plains_track.finish_line.disable()
+            plains_track.boundaries.disable()
+            plains_track.wall1.disable()
+            plains_track.wall2.disable()
+            plains_track.wall3.disable()
+            plains_track.wall4.disable()
+            plains_track.wall5.disable()
+            plains_track.wall6.disable()
+            plains_track.wall7.disable()
+            plains_track.wall8.disable()
+            plains_track.wall_trigger.disable()
+
             with open(self.car.highscore_path_grass, "r") as hs:
                 self.car.highscore_count = hs.read()
 
@@ -353,7 +380,84 @@ class MainMenu(Entity):
             snow_track.wall_trigger.enable()
             snow_track.wall_trigger_end.enable()
 
+            plains_track.disable()
+            plains_track.finish_line.disable()
+            plains_track.boundaries.disable()
+            plains_track.wall1.disable()
+            plains_track.wall2.disable()
+            plains_track.wall3.disable()
+            plains_track.wall4.disable()
+            plains_track.wall5.disable()
+            plains_track.wall6.disable()
+            plains_track.wall7.disable()
+            plains_track.wall8.disable()
+            plains_track.wall_trigger.disable()
+
             with open(self.car.highscore_path_snow, "r") as hs:
+                self.car.highscore_count = hs.read()
+
+            self.car.highscore_count = float(self.car.highscore_count)
+
+        def plains_track_func():
+            self.car.enable()
+            mouse.locked = True
+            self.maps_menu.disable()
+            self.car.position = (12, -35, 73)
+            self.car.rotation = (0, 90, 0)
+            self.car.reset_count_timer.enable()
+            grass_track.disable()
+            sand_track.disable()
+            snow_track.disable
+            plains_track.enable()
+            
+            sand_track.finish_line.disable()
+            sand_track.boundaries.disable()
+            sand_track.wall1.disable()
+            sand_track.wall2.disable()
+            sand_track.wall3.disable()
+            sand_track.wall4.disable()
+            sand_track.wall_trigger.disable()
+
+            grass_track.finish_line.disable()
+            grass_track.boundaries.disable()
+            grass_track.wall1.disable()
+            grass_track.wall2.disable()
+            grass_track.wall3.disable()
+            grass_track.wall4.disable()
+            grass_track.wall_trigger.disable()
+            grass_track.wall_trigger_ramp.disable()
+
+            snow_track.finish_line.disable()
+            snow_track.boundaries.disable()
+            snow_track.wall1.disable()
+            snow_track.wall2.disable()
+            snow_track.wall3.disable()
+            snow_track.wall4.disable()
+            snow_track.wall5.disable()
+            snow_track.wall6.disable()
+            snow_track.wall7.disable()
+            snow_track.wall8.disable()
+            snow_track.wall9.disable()
+            snow_track.wall10.disable()
+            snow_track.wall11.disable()
+            snow_track.wall12.disable()
+            snow_track.wall_trigger.disable()
+            snow_track.wall_trigger_end.disable()
+
+            plains_track.enable()
+            plains_track.finish_line.enable()
+            plains_track.boundaries.enable()
+            plains_track.wall1.enable()
+            plains_track.wall2.enable()
+            plains_track.wall3.enable()
+            plains_track.wall4.enable()
+            plains_track.wall5.enable()
+            plains_track.wall6.enable()
+            plains_track.wall7.enable()
+            plains_track.wall8.enable()
+            plains_track.wall_trigger.enable()
+
+            with open(self.car.highscore_path_plains, "r") as hs:
                 self.car.highscore_count = hs.read()
 
             self.car.highscore_count = float(self.car.highscore_count)
@@ -362,6 +466,7 @@ class MainMenu(Entity):
         sand_track_button = Button(text = "S a n d - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = -0.5, parent = self.maps_menu)
         grass_track_button = Button(text = "G r a s s - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0, parent = self.maps_menu)
         snow_track_button = Button(text = "S n o w - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0.5, parent = self.maps_menu)
+        plains_track_button = Button(text = "P l a i n s - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = -0.5, parent = self.maps_menu)
         back_button = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
         
         self.leaderboard_background = Entity(model = "quad", color = color.hex("0099ff"), alpha = 100, scale = (0.4, 0.42), position = Vec2(0.6, 0.25), parent = camera.ui)
@@ -380,6 +485,7 @@ class MainMenu(Entity):
         sand_track_button.on_click = Func(sand_track_func)
         grass_track_button.on_click = Func(grass_track_func)
         snow_track_button.on_click = Func(snow_track_func)
+        plains_track_button.on_click = Func(plains_track_func)
         back_button.on_click = Func(back)
 
         # Settings
@@ -444,6 +550,12 @@ class MainMenu(Entity):
                 hs.write(str(0.0))
 
             with open(self.car.highscore_path_snow, "r") as hs:
+                self.car.highscore_count = hs.read()
+
+            with open(self.car.highscore_path_plains, "w") as hs:
+                hs.write(str(0.0))
+
+            with open(self.car.highscore_path_plains, "r") as hs:
                 self.car.highscore_count = hs.read()
 
             self.car.highscore_count = float(self.car.highscore_count)
@@ -537,11 +649,14 @@ class MainMenu(Entity):
             if grass_track.enabled == True:
                 self.car.position = (-80, -30, 15)
                 self.car.rotation = (0, 90, 0)
-            if sand_track.enabled == True:
+            elif sand_track.enabled == True:
                 self.car.position = (0, -40, 4)
                 self.car.rotation = (0, 65, 0)
-            if snow_track.enabled == True:
+            elif snow_track.enabled == True:
                 self.car.position = (-5, -35, 90)
+                self.car.rotation = (0, 90, 0)
+            elif plains_track.enabled == True:
+                self.car.position = (12, -35, 73)
                 self.car.rotation = (0, 90, 0)
             self.car.speed = 0
             self.car.count = 0.0
@@ -563,6 +678,7 @@ class MainMenu(Entity):
             self.pause_menu.disable()
             sand_track.disable()
             snow_track.disable()
+            plains_track.disable()
             grass_track.enable()
 
         p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
@@ -677,7 +793,7 @@ class MainMenu(Entity):
         if self.car.multiplayer_update:
             if self.main_menu.enabled == False and self.server_menu.enabled == False and self.maps_menu.enabled == False:
                 if self.garage_menu.enabled == False and self.settings_menu.enabled == False and self.controls_menu.enabled == False:
-                    if self.sand_track.enabled or self.grass_track.enabled or self.snow_track.enabled:
+                    if self.sand_track.enabled or self.grass_track.enabled or self.snow_track.enabled or self.plains_track.enabled:
                         invoke(self.start_leaderboard, delay = 0.1)
             else:
                 self.leaderboard_background.disable()

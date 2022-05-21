@@ -11,6 +11,7 @@ from main_menu import MainMenu
 from tracks.sand_track import SandTrack
 from tracks.grass_track import GrassTrack
 from tracks.snow_track import SnowTrack
+from tracks.plains_track import PlainsTrack
 
 Text.default_resolution = 1080 * Text.size
 
@@ -39,12 +40,14 @@ car.disable()
 sand_track = SandTrack(car)
 grass_track = GrassTrack(car)
 snow_track = SnowTrack(car)
+plains_track = PlainsTrack(car)
 
 car.sand_track = sand_track
 car.grass_track = grass_track
 car.snow_track = snow_track
+car.plains_track = plains_track
 
-main_menu = MainMenu(car, sand_track, grass_track, snow_track)
+main_menu = MainMenu(car, sand_track, grass_track, snow_track, plains_track)
 
 car.multiplayer = False
 car.multiplayer_update = False
