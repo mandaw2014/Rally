@@ -8,6 +8,8 @@ from multiplayer import Multiplayer
 
 from main_menu import MainMenu
 
+from sun import SunLight
+
 from tracks.sand_track import SandTrack
 from tracks.grass_track import GrassTrack
 from tracks.snow_track import SnowTrack
@@ -52,8 +54,12 @@ main_menu = MainMenu(car, sand_track, grass_track, snow_track, plains_track)
 car.multiplayer = False
 car.multiplayer_update = False
 
-PointLight(parent = camera, color = color.white, position = (0, 10, -1.5))
-AmbientLight(color = color.rgba(100, 100, 100, 0.1))
+
+sun = SunLight(direction = (-0.7, -0.9, 0.5), resolution = 2048, car = car)
+ambient = AmbientLight(color = Vec4(0.5, 0.55, 0.66, 0) * 0.75)
+
+render.setShaderAuto()
+
 
 Sky(texture = "sky")
 
