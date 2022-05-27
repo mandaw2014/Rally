@@ -5,7 +5,6 @@ from direct.stdpy import thread
 from car import Car
 
 from multiplayer import Multiplayer
-
 from main_menu import MainMenu
 
 from sun import SunLight
@@ -24,8 +23,6 @@ window.fullscreen = True
 window.show_ursina_splash = True
 window.cog_button.disable()
 window.fps_counter.disable()
-
-# Loading car textures
 
 def load_car_textures():
     for car_texture in ("black", "blue", "green", "orange", "red", "white"):
@@ -54,12 +51,10 @@ main_menu = MainMenu(car, sand_track, grass_track, snow_track, plains_track)
 car.multiplayer = False
 car.multiplayer_update = False
 
-
 sun = SunLight(direction = (-0.7, -0.9, 0.5), resolution = 2048, car = car)
 ambient = AmbientLight(color = Vec4(0.5, 0.55, 0.66, 0) * 0.75)
 
 render.setShaderAuto()
-
 
 Sky(texture = "sky")
 

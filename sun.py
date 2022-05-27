@@ -17,4 +17,4 @@ class SunLight(DirectionalLight):
         self.lens.set_film_offset((0, 0))
         self.lens.set_film_size((40, 40))
 
-        self.world_position = self.car.world_position
+        self.world_position = self.car.world_position 

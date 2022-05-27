@@ -136,15 +136,15 @@ class Car(Entity):
 
                 self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360)
                 if self.sand_track.enabled == True:
-                    self.particles.color = color.hex("925B3A")
+                    self.particles.texture = "particle_sand_track.png"
                 elif self.grass_track.enabled == True:
-                    self.particles.color = color.hex("8C6C30")
+                    self.particles.texture = "particle_grass_track.png"
                 elif self.snow_track.enabled == True:
-                    self.particles.color = color.hex("76604C")
+                    self.particles.texture = "particle_snow_track.png"
                 elif self.plains_track.enabled == True:
-                    self.particles.color = color.hex("855D3C")
+                    self.particles.texture = "particle_plains_track.png"
                 else:
-                    self.particles.color = color.hex("925B3A")
+                    self.particles.texture = "particle_sand_track.png"
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
                 invoke(self.particles.disable, delay = 1)
         else:
@@ -231,16 +231,22 @@ class Car(Entity):
         if self.can_shake and self.camera_shake_option:
             self.shake_camera()
 
-        if self.y <= -200:
+        if self.y <= -100:
             if self.grass_track.enabled is True:
                 self.position = (-80, -30, 15)
                 self.rotation = (0, 90, 0)
-            if self.sand_track.enabled is True:
+            elif self.sand_track.enabled is True:
                 self.position = (0, -40, 4)
                 self.rotation = (0, 65, 0)
-            if self.snow_track.enabled == True:
-                self.car.position = (-5, -35, 90)
-                self.car.rotation = (0, 90, 0)
+            elif self.snow_track.enabled == True:
+                self.position = (-5, -35, 90)
+                self.rotation = (0, 90, 0)
+            elif self.plains_track.enabled == True:
+                self.position = (12, -40, 73)
+                self.rotation = (0, 90, 0)
+            else:
+                self.position = (0, 0, 0)
+                self.rotation = (0, 0, 0)
             self.speed = 0
             self.count = 0.0
             self.reset_count = 0.0
@@ -266,7 +272,7 @@ class Car(Entity):
         movementY = self.velocity_y * time.dt
         direction = (0, sign(movementY), 0)
 
-        y_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_y * 4 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+        y_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_y * 1.5 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
 
         if y_ray.hit:
             self.jump_count = 0
@@ -284,31 +290,29 @@ class Car(Entity):
 
         if movementX != 0:
             direction = (sign(movementX), 0, 0)
-            x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 2 + abs(movementX), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ], thickness = (1, 1))
+            x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 10 + abs(movementX), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ], thickness = (1, 1))
 
             if not x_ray.hit:
                 self.x += movementX
             else:
-                top_x_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_x / 2, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+                top_x_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_x / 10, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
 
                 if not top_x_ray.hit:
-                    # if top_x_ray.distance < self.slope:
                     self.x += movementX
                     height_ray = raycast(origin = self.world_position + (sign(movementX) * self.scale_x / 2, -self.scale_y / 2, 0), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
-                    if height_ray.distance < self.slope:
+                    if height_ray.distance < self.slope * 10:
                         self.y += height_ray.distance
 
         if movementZ != 0:
             direction = (0, 0, sign(movementZ))
-            z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 2 + abs(movementZ), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ], thickness = (1, 1))
+            z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 10 + abs(movementZ), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ], thickness = (1, 1))
 
             if not z_ray.hit:
                 self.z += movementZ
             else:
-                top_z_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_z / 2, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+                top_z_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_z / 10, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
 
                 if not top_z_ray.hit:
-                    # if top_z_ray.distance < self.slope:
                     self.z += movementZ
                     height_ray = raycast(origin = self.world_position + (0, -self.scale_y / 2, sign(movementZ) * self.scale_z / 2), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
                     if height_ray.hit:

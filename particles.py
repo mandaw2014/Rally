@@ -1,23 +1,17 @@
 from ursina import *
-import numpy
 
 class ParticleSystem(Entity):
-    def __init__(self, **kwargs):
-        super().__init__(t = 0, duration = 1, **kwargs)
+    def __init__(self, position, rotation_y):
+        super().__init__(
+            model = "particles.obj", 
+            scale = 0.1,
+            position = position,
+            rotation_y = rotation_y,
+            t = 0,
+            duration = 1
+        )
 
-        self.number_of_particles = 1
-        self.points = numpy.array([Vec3(0, 0, 0) for i in range(self.number_of_particles)])
-        self.directions = numpy.array([Vec3(random.random(), random.random(), random.random()) * 0.05 for i in range(self.number_of_particles)])
-        self.frames = []
-
-        self.model = Mesh(vertices = self.points, mode = "point", static = False, render_points_in_3d = True, thickness = 10)
-
-        for i in range(200 * 1):
-            self.points += self.directions
-            self.frames.append(copy(self.points))
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+        self.direction = Vec3(random.random(), random.random(), random.random()) * 0.05
 
     def update(self):
         self.t += time.dt
@@ -25,5 +19,4 @@ class ParticleSystem(Entity):
             destroy(self)
             return
 
-        self.model.vertices = self.frames[floor(self.t * 100)]
-        self.model.generate()
+        self.position += self.direction * 120 * time.dt
