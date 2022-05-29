@@ -94,7 +94,8 @@ class MainMenu(Entity):
                 self.host_menu.disable()
                 self.created_server_menu.enable()
                 self.car.enable()
-                self.car.position = (-32, -48.4, -45)
+                self.car.position = (-63, -40, -7)
+                self.car.rotation = (0, 90, 0)
                 snow_track.disable()
                 sand_track.enable()
                 back_button_server.disable()
@@ -103,7 +104,7 @@ class MainMenu(Entity):
             self.host_menu.disable()
             self.server_menu.enable()
             self.car.enable()
-            self.car.position = (-32, -48.4, -45)
+            self.car.position = (-105, -50, -59)
             snow_track.disable()
             sand_track.enable()
 
@@ -212,8 +213,8 @@ class MainMenu(Entity):
             self.car.enable()
             mouse.locked = True
             self.maps_menu.disable()
-            self.car.position = (0, -20, 4)
-            self.car.rotation = (0, 65, 0)
+            self.car.position = (-63, -30, -7)
+            self.car.rotation = (0, 90, 0)
             self.car.reset_count_timer.enable()
             camera.position = (-80, -30, 15)
             sand_track.enable()
@@ -650,8 +651,8 @@ class MainMenu(Entity):
                 self.car.position = (-80, -30, 15)
                 self.car.rotation = (0, 90, 0)
             elif sand_track.enabled == True:
-                self.car.position = (0, -40, 4)
-                self.car.rotation = (0, 65, 0)
+                self.car.position = (-63, -40, -7)
+                self.car.rotation = (0, 90, 0)
             elif snow_track.enabled == True:
                 self.car.position = (-5, -35, 90)
                 self.car.rotation = (0, 90, 0)
@@ -709,7 +710,7 @@ class MainMenu(Entity):
             self.garage_menu.enable()
             self.main_menu.disable()
             self.car.enable()
-            self.car.position = (-32, -48.4, -45)
+            self.car.position = (-105, -50, -59)
             grass_track.disable()
             sand_track.enable()
 
@@ -792,7 +793,7 @@ class MainMenu(Entity):
 
         if self.car.multiplayer_update:
             if self.main_menu.enabled == False and self.server_menu.enabled == False and self.maps_menu.enabled == False:
-                if self.garage_menu.enabled == False and self.settings_menu.enabled == False and self.controls_menu.enabled == False:
+                if self.garage_menu.enabled == False and self.settings_menu.enabled == False and self.controls_menu.enabled == False and self.gameplay_menu.enabled == False and self.video_menu.enabled == False:
                     if self.sand_track.enabled or self.grass_track.enabled or self.snow_track.enabled or self.plains_track.enabled:
                         invoke(self.start_leaderboard, delay = 0.1)
             else:

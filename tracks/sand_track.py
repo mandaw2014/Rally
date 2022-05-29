@@ -6,21 +6,22 @@ class SandTrack(Entity):
             model = "sand_track.obj", 
             texture = "sand_track.png", 
             position = (-80, -50, -75), 
-            scale = (10, 10, 10), 
+            scale = (18, 18, 18), 
+            rotation = (0, 270, 0),
             collider = "mesh"
         )
 
         self.car = car
 
-        self.finish_line = Entity(position = (24, -44.5, 7), collider = "box", rotation = (0, -251, 0), scale = (20, 5, 3), visible = False)
-        self.boundaries = Entity(model = "sand_track_bounds.obj", collider = "mesh", position = (-80, -50, -75), scale = (10, 10, 10), visible = False)
+        self.finish_line = Entity(model = "cube", position = (-50, -50.2, -7), collider = "box", rotation = (0, 90, 0), scale = (30, 8, 3), visible = False)
+        self.boundaries = Entity(model = "sand_track_bounds.obj", collider = "mesh", position = (-80, -50, -75), rotation = (0, 270, 0), scale = (18, 50, 18), visible = False)
 
-        self.wall1 = Entity(model = "cube", position = (-29, 450, -39.8), rotation = (0, 313, 0), collider = "box", scale = (5, 2000, 40), visible = False)
-        self.wall2 = Entity(model = "cube", position = (-40, 450, -71.8), rotation = (0, 325, 0), collider = "box", scale = (5, 2000, 40), visible = False)
-        self.wall3 = Entity(model = "cube", position = (-15, 450, -69.5), rotation = (0, 566.549, 0), collider = "box", scale = (5, 2000, 40), visible = False)
-        self.wall4 = Entity(model = "cube", position = (-43, 450, -41.6), rotation = (0, 751.312, 0), collider = "box", scale = (5, 2000, 40), visible = False)
+        self.wall1 = Entity(model = "cube", position = (-75, 450, -48), rotation = (0, 90, 0), collider = "box", scale = (5, 2000, 40), visible = False)
+        self.wall2 = Entity(model = "cube", position = (-74, 450, -75), rotation = (0, 90, 0), collider = "box", scale = (5, 2000, 40), visible = False)
+        self.wall3 = Entity(model = "cube", position = (-61, 450, -60), rotation = (0, 0, 0), collider = "box", scale = (5, 2000, 40), visible = False)
+        self.wall4 = Entity(model = "cube", position = (-90, 450, -60), rotation = (0, 0, 0), collider = "box", scale = (5, 2000, 40), visible = False)
 
-        self.wall_trigger = Entity(model = "cube", position = (-72, 450, -84.9), rotation = (0, 447.72, 0), collider = "box", scale = (50, 2000, 5), visible = False)
+        self.wall_trigger = Entity(model = "cube", position = (-100, -50, -114), rotation = (0, 90, 0), collider = "box", scale = (30, 100, 5), visible = False)
 
         self.disable()
         self.finish_line.disable()
