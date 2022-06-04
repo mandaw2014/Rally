@@ -5,7 +5,7 @@ from particles import ParticleSystem
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
 class Car(Entity):
-    def __init__(self, position = (0, 0, 0), rotation = (0, 65, 0), topspeed = 30, acceleration = 0.4, friction = 0.6, camera_speed = 8, drift_speed = 35):
+    def __init__(self, position = (0, 0, 0), rotation = (0, 65, 0), topspeed = 30, acceleration = 0.35, friction = 0.6, camera_speed = 8, drift_speed = 35):
         super().__init__(
             model = "car.obj",
             texture = "car-red.png",
@@ -40,9 +40,13 @@ class Car(Entity):
         self.pivot.position = self.position
         self.pivot.rotation = self.rotation
 
+        self.number_of_particles = 0.05
         self.particle_pivot = Entity()
         self.particle_pivot.parent = self
         self.particle_pivot.position = self.position - (0, 1, 5)
+
+        self.rotation_pivot = Entity()
+        self.rotation_pivot.position = self.position
 
         self.drift_speed = drift_speed
 
@@ -68,7 +72,6 @@ class Car(Entity):
         self.anti_cheat = 1
         self.started = False
         self.server_running = False
-        self.scores = {}
 
         self.connected_text = True
         self.disconnected_text = True
@@ -106,6 +109,8 @@ class Car(Entity):
             self.username_text = username.read()
 
         self.pivot.position = self.position
+        self.rotation_pivot.position = self.position
+        self.rotation_pivot.rotation_y = self.rotation_y
 
         camera.rotation = (35, -20, 0)
         self.camera_follow.offset = (20, 40, -50)
@@ -114,11 +119,18 @@ class Car(Entity):
             if self.pivot.rotation_y > self.rotation_y:
                 self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
                 self.speed += self.pivot_rotation_distance / 4.5 * time.dt
-                self.rotation_speed -= 2 * time.dt
+                self.rotation_speed -= 0.1 * time.dt
             if self.pivot.rotation_y < self.rotation_y:
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
                 self.speed -= self.pivot_rotation_distance / 4.5 * time.dt
                 self.rotation_speed += 2 * time.dt
+
+        if self.pivot.rotation_y - self.rotation_y < -20 or self.pivot.rotation_y - self.rotation_y > 20:
+            self.number_of_particles += 2 * time.dt
+            self.shake_amount += 1 * self.speed * time.dt
+        else:
+            self.number_of_particles -= 2 * time.dt
+            self.shake_amount -= 0.2 * time.dt
 
         ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
 
@@ -130,11 +142,11 @@ class Car(Entity):
                 self.rotation_y += self.rotation_speed * 50 * time.dt
 
                 if self.rotation_speed > 0:
-                    self.rotation_speed -= self.speed / 4 * time.dt
+                    self.rotation_speed -= self.speed / 6 * time.dt
                 elif self.rotation_speed < 0:
-                    self.rotation_speed += self.speed / 4 * time.dt
+                    self.rotation_speed += self.speed / 6 * time.dt
 
-                self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360)
+                self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
                 if self.sand_track.enabled == True:
                     self.particles.texture = "particle_sand_track.png"
                 elif self.grass_track.enabled == True:
@@ -150,7 +162,6 @@ class Car(Entity):
         else:
             if ground_check.hit:
                 self.speed -= self.friction * 50 * time.dt
-            self.shake_amount -= 0.001 * time.dt
 
         if held_keys[self.controls[2] or held_keys["down arrow"]]:
             self.speed -= 10 * time.dt
@@ -184,10 +195,10 @@ class Car(Entity):
 
         if self.speed != 0:
             if held_keys[self.controls[1]] or held_keys["left arrow"]:
-                self.rotation_speed -= 13 * time.dt
+                self.rotation_speed -= 8 * time.dt
                 self.drift_speed -= 10 * time.dt
             elif held_keys[self.controls[3]] or held_keys["right arrow"]:
-                self.rotation_speed += 13 * time.dt
+                self.rotation_speed += 8 * time.dt
                 self.drift_speed -= 10 * time.dt
             else:
                 self.drift_speed += 0.01 * time.dt
@@ -220,8 +231,6 @@ class Car(Entity):
         if self.speed >= 1:
             self.can_shake = True
             self.shake_amount += self.speed / 5000 * time.dt
-        else:
-            self.shake_amount -= 0.1 * time.dt
 
         if self.shake_amount <= 0:
             self.shake_amount = 0

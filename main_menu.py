@@ -714,13 +714,13 @@ class MainMenu(Entity):
             grass_track.disable()
             sand_track.enable()
 
-        def change_color(color):
+        def change_colour(colour):
             """
             Changes the car color to the selected color after a small animation.
             """
             if self.start_spin == True:
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
-            car.texture = f"car-{color}.png"
+            car.texture = f"car-{colour}.png"
 
         self.start_spin = True
 
@@ -736,12 +736,12 @@ class MainMenu(Entity):
 
         garage_button.on_click = Func(garage_button_func)
         back_button_garage.on_click = Func(back_garage)
-        red_button.on_click = Func(change_color, "red")
-        blue_button.on_click = Func(change_color, "blue")
-        green_button.on_click = Func(change_color, "green")
-        orange_button.on_click = Func(change_color, "orange")
-        black_button.on_click = Func(change_color, "black")
-        white_button.on_click = Func(change_color, "white")
+        red_button.on_click = Func(change_colour, "red")
+        blue_button.on_click = Func(change_colour, "blue")
+        green_button.on_click = Func(change_colour, "green")
+        orange_button.on_click = Func(change_colour, "orange")
+        black_button.on_click = Func(change_colour, "black")
+        white_button.on_click = Func(change_colour, "white")
 
         # Error Log
 

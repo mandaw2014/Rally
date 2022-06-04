@@ -75,6 +75,11 @@ class Multiplayer(Entity):
                 self.client.send_message("MyPosition", tuple(self.car.position))
                 self.client.send_message("MyRotation", tuple(self.car.rotation))
 
+            if self.car.enabled == False:
+                self.players[p].disable()
+            elif self.car.enabled == True:
+                self.players[p].enable()
+
         if "player_0" in self.players:
             self.car.leaderboard_01 = str(self.players["player_0"].text_object.text) + " | " + str(self.players["player_0"].highscore)
         else:
