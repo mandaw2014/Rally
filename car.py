@@ -129,7 +129,7 @@ class Car(Entity):
             if self.pivot.rotation_y < self.rotation_y:
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
                 self.speed -= self.pivot_rotation_distance / 4.5 * time.dt
-                self.rotation_speed += 2 * time.dt
+                self.rotation_speed += 0.1 * time.dt
 
         # Change number of particles depending on the rotation of the car
         if self.pivot.rotation_y - self.rotation_y < -20 or self.pivot.rotation_y - self.rotation_y > 20:
@@ -149,7 +149,7 @@ class Car(Entity):
         elif self.rotation_speed < 0:
             self.rotation_speed += self.speed / 6 * time.dt
 
-        ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+        ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger])
 
         # Driving
         if held_keys[self.controls[0]] or held_keys["up arrow"]:
@@ -325,8 +325,9 @@ class Car(Entity):
                 if not top_x_ray.hit:
                     self.x += movementX
                     height_ray = raycast(origin = self.world_position + (sign(movementX) * self.scale_x / 2, -self.scale_y / 2, 0), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
-                    if height_ray.distance < self.slope * 10:
-                        self.y += height_ray.distance
+                    if height_ray.hit:
+                        if height_ray.distance < self.slope * 10:
+                            self.y += height_ray.distance
 
         if movementZ != 0:
             direction = (0, 0, sign(movementZ))

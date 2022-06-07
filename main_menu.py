@@ -234,9 +234,11 @@ class MainMenu(Entity):
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
                     ai.enable()
-                    ai.position = (-63, -30, -7) + (random.randint(0, 5), 0, random.randint(0, 5))
+                    ai.position = (-63, -40, -7) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                     ai.rotation = (0, 65, 0)
-
+                    ai.set_random_texture()
+                    ai.next_path = ai.sap1
+                    
             sand_track.enable()
             grass_track.disable()
             snow_track.disable()
@@ -305,8 +307,10 @@ class MainMenu(Entity):
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
                     ai.enable()
-                    ai.position = (-80, -30, 15) + (random.randint(0, 5), 0, random.randint(0, 5))
+                    ai.position = (-80, -35, 15) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                     ai.rotation = (0, 90, 0)
+                    ai.set_random_texture()
+                    ai.next_path = ai.gp1
 
             grass_track.enable()
             sand_track.disable()
@@ -378,9 +382,11 @@ class MainMenu(Entity):
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
                     ai.enable()
-                    ai.position = (-5, -35, 90) + (random.randint(0, 5), 0, random.randint(0, 5))
+                    ai.position = (-5, -40, 90) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                     ai.rotation = (0, 90, 0)
-
+                    ai.set_random_texture()
+                    ai.next_path = ai.snp1
+                    
             grass_track.disable()
             sand_track.disable()
             snow_track.enable()
@@ -449,8 +455,10 @@ class MainMenu(Entity):
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
                     ai.enable()
-                    ai.position = (12, -35, 73) + (random.randint(0, 5), 0, random.randint(0, 5))
+                    ai.position = (12, -40, 73) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                     ai.rotation = (0, 90, 0)
+                    ai.set_random_texture()
+                    ai.next_path = ai.plp1
 
             grass_track.disable()
             sand_track.disable()
@@ -700,29 +708,40 @@ class MainMenu(Entity):
                 self.car.rotation = (0, 90, 0)
                 if self.car.multiplayer_update == False and self.car.ai:
                     for ai in ai_list:
-                        ai.position = (-80, -30, 15) + (random.randint(0, 5), 0, random.randint(0, 5))
+                        ai.position = (-80, -35, 15) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_texture()
+                        ai.next_path = ai.gp1
             elif sand_track.enabled == True:
                 self.car.position = (-63, -40, -7)
                 self.car.rotation = (0, 90, 0)
                 if self.car.multiplayer_update == False and self.car.ai:
                     for ai in ai_list:
-                        ai.position = (-63, -40, -7) + (random.randint(0, 5), 0, random.randint(0, 5))
+                        ai.position = (-63, -45, -7) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_texture()
+                        ai.next_path = ai.sap1
+                        ai.speed = 0
             elif snow_track.enabled == True:
                 self.car.position = (-5, -35, 90)
                 self.car.rotation = (0, 90, 0)
                 if self.car.multiplayer_update == False and self.car.ai:
                     for ai in ai_list:
-                        ai.position = (-5, -35, 90) + (random.randint(0, 5), 0, random.randint(0, 5))
+                        ai.position = (-5, -40, 90) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_texture()
+                        ai.next_path = ai.snp1
+                        ai.speed = 0
             elif plains_track.enabled == True:
                 self.car.position = (12, -35, 73)
                 self.car.rotation = (0, 90, 0)
                 if self.car.multiplayer_update == False and self.car.ai:
                     for ai in ai_list:
-                        ai.position = (12, -35, 73) + (random.randint(0, 5), 0, random.randint(0, 5))
+                        ai.position = (12, -40, 73) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_texture()
+                        ai.next_path = ai.plp1
+                        ai.speed = 0
             self.car.speed = 0
             self.car.count = 0.0
             self.car.reset_count = 0.0
@@ -749,6 +768,15 @@ class MainMenu(Entity):
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
                     ai.disable()
+                    ai.speed = 0
+                    if sand_track.enabled:
+                        ai.next_path = ai.sap1
+                    if grass_track.enabled:
+                        ai.next_path = ai.gp1
+                    if snow_track.enabled:
+                        ai.next_path = ai.snp1
+                    if plains_track.enabled:
+                        ai.next_path = ai.plp1
 
         p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
         p_respawn_button = Button(text = "R e s p a w n", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)

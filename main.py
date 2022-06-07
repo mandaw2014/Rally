@@ -66,6 +66,10 @@ ai2.disable()
 
 ai_list = [ai, ai1, ai2]
 
+ai.ai_list = ai_list
+ai1.ai_list = ai_list
+ai2.ai_list = ai_list
+
 # Main menu
 
 main_menu = MainMenu(car, ai_list, sand_track, grass_track, snow_track, plains_track)
@@ -143,3 +147,13 @@ def input(key):
         multiplayer.client.send_message("MyHighscore", str(round(multiplayer.car.highscore_count, 2)))
 
 app.run()
+
+"""
+Print Position on Screen
+
+def print_position():
+    print_on_screen(str(car.position), window.center)
+    invoke(print_position, delay = 1)
+
+invoke(print_position, delay = 5)
+"""
