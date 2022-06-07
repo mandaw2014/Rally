@@ -171,7 +171,7 @@ class Car(Entity):
                 invoke(self.particles.disable, delay = 1)
         else:
             if ground_check.hit:
-                self.speed -= self.friction * 20 * time.dt
+                self.speed -= self.friction * 5 * time.dt
 
         # Braking
         if held_keys[self.controls[2] or held_keys["down arrow"]]:
@@ -262,7 +262,7 @@ class Car(Entity):
                 self.position = (-80, -30, 15)
                 self.rotation = (0, 90, 0)
             elif self.sand_track.enabled is True:
-                self.position = (0, -40, 4)
+                self.position = (-63, -40, -7)
                 self.rotation = (0, 65, 0)
             elif self.snow_track.enabled == True:
                 self.position = (-5, -35, 90)

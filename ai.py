@@ -251,6 +251,24 @@ class AICar(Entity):
             self.drift_speed = 20
         if self.drift_speed >= 40:
             self.drift_speed = 40
+        
+        if self.y <= -100:
+            if self.grass_track.enabled == True:
+                self.position = (-80 + random.randint(-5, 5), -30 + random.randint(-3, 5), 15 + random.randint(-5, 5))
+                self.rotation = (0, 90, 0)
+            elif self.sand_track.enabled == True:
+                self.position = (-63 + random.randint(-5, 5), -40 + random.randint(-3, 5), -7 + random.randint(-5, 5))
+                self.rotation = (0, 65, 0)
+            elif self.snow_track.enabled == True:
+                self.position = (-5 + random.randint(-5, 5), -35 + random.randint(-3, 5), 90 + random.randint(-5, 5))
+                self.rotation = (0, 90, 0)
+            elif self.plains_track.enabled == True:
+                self.position = (12 + random.randint(-5, 5), -40 + random.randint(-3, 5), 73 + random.randint(-5, 5))
+                self.rotation = (0, 90, 0)
+            else:
+                self.position = (0, 0, 0)
+                self.rotation = (0, 0, 0)
+            self.speed = 0
 
         movementY = self.velocity_y * time.dt
         direction = (0, sign(movementY), 0)
