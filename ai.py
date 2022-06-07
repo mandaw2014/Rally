@@ -281,9 +281,8 @@ class AICar(Entity):
                     height_ray = raycast(origin = self.world_position + (sign(movementX) * self.scale_x / 2, -self.scale_y / 2, 0), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
                     if height_ray.hit and y_ray.hit:
                         if height_ray.distance < self.slope * 10:
-                            for ai in self.ai_list:
-                                if height_ray.entity != ai:
-                                    self.y += height_ray.distance
+                            if height_ray.entity != self.ai_list[0] or height_ray.entity != self.ai_list[1] or height_ray.entity != self.ai_list[2]:
+                                self.y += height_ray.distance
 
         if movementZ != 0:
             direction = (0, 0, sign(movementZ))
@@ -299,9 +298,8 @@ class AICar(Entity):
                     height_ray = raycast(origin = self.world_position + (0, -self.scale_y / 2, sign(movementZ) * self.scale_z / 2), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
                     if height_ray.hit and y_ray.hit:
                         if height_ray.distance < self.slope * 10:
-                            for ai in self.ai_list:
-                                if height_ray.entity != ai:
-                                    self.y += height_ray.distance
+                            if height_ray.entity != self.ai_list[0] or height_ray.entity != self.ai_list[1] or height_ray.entity != self.ai_list[2]:
+                                self.y += height_ray.distance
 
 class PathObject(Entity):
     def __init__(self, position = (0, 0, 0), rotation = (0, 0, 0)):

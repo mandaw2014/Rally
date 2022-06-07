@@ -125,11 +125,11 @@ class Car(Entity):
             if self.pivot.rotation_y > self.rotation_y:
                 self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
                 self.speed += self.pivot_rotation_distance / 4.5 * time.dt
-                self.rotation_speed -= 0.1 * time.dt
+                self.rotation_speed -= 2 * time.dt
             if self.pivot.rotation_y < self.rotation_y:
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
                 self.speed -= self.pivot_rotation_distance / 4.5 * time.dt
-                self.rotation_speed += 0.1 * time.dt
+                self.rotation_speed += 2 * time.dt
 
         # Change number of particles depending on the rotation of the car
         if self.pivot.rotation_y - self.rotation_y < -20 or self.pivot.rotation_y - self.rotation_y > 20:
