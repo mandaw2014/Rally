@@ -5,7 +5,7 @@ from particles import ParticleSystem
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
 class Car(Entity):
-    def __init__(self, position = (0, 0, 0), rotation = (0, 65, 0), topspeed = 30, acceleration = 0.35, braking_strength = 2, friction = 0.6, camera_speed = 8, drift_speed = 35):
+    def __init__(self, position = (0, 0, 0), rotation = (0, 65, 0), topspeed = 30, acceleration = 0.35, braking_strength = 15, friction = 0.6, camera_speed = 8, drift_speed = 35):
         super().__init__(
             model = "car.obj",
             texture = "car-red.png",
@@ -84,6 +84,9 @@ class Car(Entity):
         self.camera_follow = SmoothFollow(target = self, offset = self.camera_angle, speed = self.camera_speed)
         camera.add_script(self.camera_follow)
 
+        self.old_pos = self.position
+        self.update_old_pos()
+
         # Get highscore from text file
         path = os.path.dirname(os.path.abspath(__file__))
         self.highscore_path_sand = os.path.join(path, "./highscore/highscore-sandtrack.txt")
@@ -141,14 +144,6 @@ class Car(Entity):
 
         self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
 
-        # Steering
-        self.rotation_y += self.rotation_speed * 50 * time.dt
-
-        if self.rotation_speed > 0:
-            self.rotation_speed -= self.speed / 6 * time.dt
-        elif self.rotation_speed < 0:
-            self.rotation_speed += self.speed / 6 * time.dt
-
         ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger])
 
         # Driving
@@ -175,14 +170,19 @@ class Car(Entity):
 
         # Braking
         if held_keys[self.controls[2] or held_keys["down arrow"]]:
-            self.speed -= self.braking_strenth * time.dt
+            if ground_check.hit:
+                self.speed -= self.braking_strenth * time.dt
+                self.drift_speed -= 20 * time.dt
+                self.rotation_speed *= 100 * time.dt
+                self.max_rotation_speed = 3
 
         # Hand Braking
         if held_keys["space"]:
-            self.drift_speed -= 20 * time.dt
-            self.speed -= 20 * time.dt
-            self.rotation_speed *= 60 * time.dt
-            self.max_rotation_speed = 3
+            if ground_check.hit:
+                self.drift_speed -= 20 * time.dt
+                self.speed -= 20 * time.dt
+                self.rotation_speed *= 60 * time.dt
+                self.max_rotation_speed = 3
         else:
             self.max_rotation_speed = 2.6
 
@@ -207,6 +207,15 @@ class Car(Entity):
             self.anti_cheat = 1
 
         # Steering
+        distance = sqrt((self.position[0] - self.old_pos[0]) ** 2 + (self.position[1] - self.old_pos[1]) ** 2 + (self.position[2] - self.old_pos[2]) ** 2)
+        if distance >= 0.1: # Check if car has moved
+            self.rotation_y += self.rotation_speed * 50 * time.dt
+
+        if self.rotation_speed > 0:
+            self.rotation_speed -= self.speed / 6 * time.dt
+        elif self.rotation_speed < 0:
+            self.rotation_speed += self.speed / 6 * time.dt
+
         if self.speed != 0:
             if held_keys[self.controls[1]] or held_keys["left arrow"]:
                 self.rotation_speed -= 8 * time.dt
@@ -350,6 +359,10 @@ class Car(Entity):
         self.timer.enable()
         self.reset_count_timer.disable()
         self.old_highscore = self.highscore_count
+
+    def update_old_pos(self):
+        self.old_pos = self.position
+        invoke(self.update_old_pos, delay = 1)
 
     def update_camera_pos(self):
         self.original_camera_position = camera.position

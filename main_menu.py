@@ -32,6 +32,7 @@ class MainMenu(Entity):
         self.grass_track = grass_track
         self.snow_track = snow_track
         self.plains_track = plains_track
+        self.ai_list = ai_list
 
         # Animate the menu
         for menu in (self.start_menu, self.main_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu, self.controls_menu, self.pause_menu):
@@ -233,7 +234,8 @@ class MainMenu(Entity):
 
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
-                    ai.enable()
+                    if ai.set_enabled:
+                        ai.enable()
                     ai.position = (-63, -40, -7) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                     ai.rotation = (0, 65, 0)
                     ai.set_random_texture()
@@ -306,7 +308,8 @@ class MainMenu(Entity):
 
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
-                    ai.enable()
+                    if ai.set_enabled:
+                        ai.enable()
                     ai.position = (-80, -35, 15) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                     ai.rotation = (0, 90, 0)
                     ai.set_random_texture()
@@ -381,7 +384,8 @@ class MainMenu(Entity):
 
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
-                    ai.enable()
+                    if ai.set_enabled:
+                        ai.enable()
                     ai.position = (-5, -40, 90) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                     ai.rotation = (0, 90, 0)
                     ai.set_random_texture()
@@ -454,7 +458,8 @@ class MainMenu(Entity):
 
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
-                    ai.enable()
+                    if ai.set_enabled:
+                        ai.enable()
                     ai.position = (12, -40, 73) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                     ai.rotation = (0, 90, 0)
                     ai.set_random_texture()
@@ -522,9 +527,12 @@ class MainMenu(Entity):
         grass_track_button = Button(text = "G r a s s - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0, parent = self.maps_menu)
         snow_track_button = Button(text = "S n o w - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0.5, parent = self.maps_menu)
         plains_track_button = Button(text = "P l a i n s - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = -0.5, parent = self.maps_menu)
-        ai_button = Button(text = "AI: On", color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.4, x = -0.5, parent = self.maps_menu)
         back_button = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
         
+        ai_button = Button(text = "AI: On", color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.28, x = 0, parent = self.maps_menu)
+        self.ai_slider = Slider(min = 0, max = 3, default = 3, text = "AI", y = -0.4, x = -0.3, scale = 1.3, parent = self.maps_menu, dynamic = True)
+        self.ai_slider.step = 1
+
         self.leaderboard_background = Entity(model = "quad", color = color.hex("0099ff"), alpha = 100, scale = (0.4, 0.42), position = Vec2(0.6, 0.25), parent = camera.ui)
         self.leaderboard_title = Text("Leaderboard", color = color.gold, scale = 5, line_height = 2, origin = 0, y = 0.4, parent = self.leaderboard_background)
         
@@ -831,11 +839,7 @@ class MainMenu(Entity):
 
         garage_button = Button(text = "G a r a g e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.main_menu)
 
-        # upgrade_menu = Button(text = "Upgrades", color = color.light_gray, scale_y = 0.1, scale_x = 0.3, x = 0.75, y = 0.08, parent = self.garage_menu)
-        # colour_menu = Button(text = "Change Colour", color = color.light_gray, scale_y = 0.1, scale_x = 0.3, x = 0.75, y = -0.08, parent = self.garage_menu)
         back_button_garage = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.garage_menu)
-
-        # speed_text = Text("Speed", scale = 2.5, color = color.hex("#D6D6D6"), line_height = 2, x = -0.65, origin = 0, y = 0.2, parent = self.upgrades_menu)
 
         red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.7, parent = self.garage_menu)
         blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.garage_menu)
@@ -845,8 +849,6 @@ class MainMenu(Entity):
         white_button = Button(color = color.white, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.3, parent = self.garage_menu)
 
         garage_button.on_click = Func(garage_button_func)
-        # upgrade_menu.on_click = Func(upgrades_menu_func)
-        # colour_menu.on_click = Func(change_colour_menu)
         back_button_garage.on_click = Func(back_garage)
         red_button.on_click = Func(change_colour, "red")
         blue_button.on_click = Func(change_colour, "blue")
@@ -863,6 +865,24 @@ class MainMenu(Entity):
         self.not_connected.disable()
 
     def update(self):
+        # AI Slider
+        if self.car.multiplayer_update == False:
+            if self.ai_slider.value == 0: 
+                for ai in self.ai_list:
+                    ai.set_enabled = False
+            elif self.ai_slider.value == 1:
+                self.ai_list[0].set_enabled = True
+                self.ai_list[1].set_enabled = False
+                self.ai_list[2].set_enabled = False
+            elif self.ai_slider.value == 2:
+                self.ai_list[0].set_enabled = True
+                self.ai_list[1].set_enabled = True
+                self.ai_list[2].set_enabled = False
+            elif self.ai_slider.value == 3:
+                self.ai_list[0].set_enabled = True
+                self.ai_list[1].set_enabled = True
+                self.ai_list[2].set_enabled = True
+
         # Set the camera's position and make the car rotate
         if self.start_menu.enabled:
             if not held_keys["right mouse"]:

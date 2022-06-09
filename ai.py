@@ -43,6 +43,7 @@ class AICar(Entity):
         self.plains_track = plains_track
 
         self.ai_list = None
+        self.set_enabled = True
 
         self.old_pos = round(self.position)
         
@@ -64,19 +65,19 @@ class AICar(Entity):
 
         # Grass Track Points
 
-        self.gp1 = PathObject((-47, -41, 15))
-        self.gp2 = PathObject((12, -42, 14))
-        self.gp3 = PathObject((48, -42, 34), (0, 90, 0))
-        self.gp4 = PathObject((37, -42, 68))
-        self.gp5 = PathObject((10, -42, 60), (0, 0, 0))
-        self.gp6 = PathObject((-2, -42, -10), (0, 90, 0))
-        self.gp7 = PathObject((3, -42, -40), (0, 90, 0))
-        self.gp8 = PathObject((-13, -42, -63))
-        self.gp9 = PathObject((-38, -42, -67))
-        self.gp10 = PathObject((-94, -39, -57))
-        self.gp11 = PathObject((-105, -42, -26), (0, 90, 0))
-        self.gp12 = PathObject((-106, -42, -2), (0, 90, 0))
-        self.gp13 = PathObject((-90, -42, 15))
+        self.gp1 = PathObject((-47, -41, 15), (0, 90, 0))
+        self.gp2 = PathObject((12, -42, 14), (0, 90, 0))
+        self.gp3 = PathObject((48, -42, 34), (0, 0, 0))
+        self.gp4 = PathObject((37, -42, 68), (0, -90, 0))
+        self.gp5 = PathObject((10, -42, 60), (0, -180, 0))
+        self.gp6 = PathObject((-2, -42, -10), (0, -180, 0))
+        self.gp7 = PathObject((3, -42, -40), (0, -180, 0))
+        self.gp8 = PathObject((-13, -42, -63), (0, -90, 0))
+        self.gp9 = PathObject((-38, -42, -67), (0, -90, 0))
+        self.gp10 = PathObject((-94, -39, -57), (0, -90, 0))
+        self.gp11 = PathObject((-105, -42, -26), (0, -180, 0))
+        self.gp12 = PathObject((-106, -42, -2), (0, -180, 0))
+        self.gp13 = PathObject((-90, -42, 15), (0, 90, 0))
 
         # Snow Track Points
 
