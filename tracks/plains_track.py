@@ -48,27 +48,28 @@ class PlainsTrack(Entity):
                 if self.car.anti_cheat == 1:
                     self.car.timer_running = True
                     self.car.last_count = self.car.count
-                    self.car.reset_count = 0.0
-                    self.car.timer.disable()
-                    self.car.reset_count_timer.enable()
-
-                    if self.car.highscore_count == 0:
-                        if self.car.last_count >= 10:
-                            self.car.highscore_count = self.car.last_count
-                    if self.car.last_count <= self.car.highscore_count:
-                        if self.car.last_count >= 10.0:
-                            self.car.highscore_count = self.car.last_count
-                        if self.car.highscore_count <= 13:
-                            self.car.highscore_count = self.car.last_count
-
-                    with open(self.car.highscore_path_plains, "w") as hs:
-                        hs.write(str(self.car.highscore_count))
-
-                    self.car.highscore_count = float(self.car.highscore_count)
-
                     self.car.anti_cheat = 0
-
                     invoke(self.car.reset_timer, delay = 3)
+
+                    if self.car.time_trial == False:
+                        self.car.reset_count = 0.0
+                        self.car.timer.disable()
+                        self.car.reset_count_timer.enable()
+
+                        if self.car.highscore_count == 0:
+                            if self.car.last_count >= 10:
+                                self.car.highscore_count = self.car.last_count
+                        if self.car.last_count <= self.car.highscore_count:
+                            if self.car.last_count >= 10.0:
+                                self.car.highscore_count = self.car.last_count
+                            if self.car.highscore_count <= 13:
+                                self.car.highscore_count = self.car.last_count
+
+                        self.car.plains_track_hs = float(self.car.highscore_count)
+                        self.car.save_highscore()
+
+                    elif self.car.time_trial:
+                        self.car.laps += 1
 
                     self.wall1.enable()
                     self.wall2.enable()

@@ -1,0 +1,15 @@
+{
+    "highscore": {
+        "sand_track": 0.0, 
+        "grass_track": 0.0, 
+        "snow_track": 0.0, 
+        "plains_track": 0.0
+    }, 
+    
+    "time_trial": {
+        "sand_track": 0, 
+        "grass_track": 0, 
+        "snow_track": 0, 
+        "plains_track": 0
+    }
+}

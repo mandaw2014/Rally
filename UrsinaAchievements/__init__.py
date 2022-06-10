@@ -9,8 +9,11 @@ from ursina import curve
 import json
 from direct.stdpy import thread
 
+path = os.path.dirname(os.path.abspath(__file__))
+json_path = os.path.join(path, "./achievements.json")
+
 _achievements_list = []
-with open("UrsinaAchievements/achievements.json", "r", encoding="utf-8") as save_file:
+with open(json_path, "r", encoding="utf-8") as save_file:
 	_achievements_got = json.load(save_file)["achievements_got_names"].copy()
 
 
@@ -31,7 +34,7 @@ def create_achievement(name:str, unlock_condition, icon:str=None, ringtone:str="
 
 
 def _save_achievements():
-	with open("UrsinaAchievements/achievements.json", "w", encoding="utf-8") as save_file:
+	with open(json_path, "w", encoding="utf-8") as save_file:
 		json.dump({"achievements_got_names": _achievements_got.copy()}, save_file, indent=2)
 
 

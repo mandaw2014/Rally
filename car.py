@@ -1,6 +1,7 @@
 from ursina import *
 from ursina import curve
 from particles import ParticleSystem
+import json
 
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
@@ -21,13 +22,6 @@ class Car(Entity):
 
         # Controls
         self.controls = "wasd"
-
-        # Camera shake
-        self.original_camera_position = camera.position
-        self.shake_duration = 2.0
-        self.shake_amount = 0.1
-        self.can_shake = False
-        self.camera_shake_option = True
 
         # Car's values
         self.speed = 0
@@ -68,9 +62,15 @@ class Car(Entity):
         self.reset_count = 0.0
         self.timer = Text(text = "", origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
         self.highscore = Text(text = "", origin = (0, 0), size = 0.05, scale = (0.6, 0.6), position = (-0.7, 0.38))
+        self.laps_text = Text(text = "", origin = (0, 0), size = 0.05, scale = (1, 1), position = (0.7, 0.43))
         self.reset_count_timer = Text(text = str(round(self.reset_count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
-        
+            
+        self.laps_text.disable()
         self.reset_count_timer.disable()
+
+        self.time_trial = False
+        self.laps = 0
+        self.laps_hs = 0
 
         self.anti_cheat = 1
         self.server_running = False
@@ -85,21 +85,32 @@ class Car(Entity):
         self.camera_follow = SmoothFollow(target = self, offset = self.camera_angle, speed = self.camera_speed)
         camera.add_script(self.camera_follow)
 
-        self.old_pos = self.position
-        self.update_old_pos()
+        # Camera shake
+        self.original_camera_position = camera.position
+        self.shake_duration = 2.0
+        self.shake_amount = 0.1
+        self.can_shake = False
+        self.camera_shake_option = True
 
         # Get highscore from text file
         path = os.path.dirname(os.path.abspath(__file__))
-        self.highscore_path_sand = os.path.join(path, "./highscore/highscore-sandtrack.txt")
-        self.highscore_path_grass = os.path.join(path, "./highscore/highscore-grasstrack.txt")
-        self.highscore_path_snow = os.path.join(path, "./highscore/highscore-snowtrack.txt")
-        self.highscore_path_plains = os.path.join(path, "./highscore/highscore-plainstrack.txt")
+        self.highscore_path = os.path.join(path, "./highscore/highscore.json")
+       
+        with open(self.highscore_path, "r") as hs:
+            self.highscores = json.load(hs)
 
-        with open(self.highscore_path_sand, "r") as hs:
-            self.highscore_count = hs.read()
+        self.sand_track_hs = self.highscores["highscore"]["sand_track"]
+        self.grass_track_hs = self.highscores["highscore"]["grass_track"]
+        self.snow_track_hs = self.highscores["highscore"]["snow_track"]
+        self.plains_track_hs = self.highscores["highscore"]["plains_track"]
 
+        self.sand_track_laps = self.highscores["time_trial"]["sand_track"]
+        self.grass_track_laps = self.highscores["time_trial"]["grass_track"]
+        self.snow_track_laps = self.highscores["time_trial"]["snow_track"]
+        self.plains_track_laps = self.highscores["time_trial"]["plains_track"]
+
+        self.highscore_count = self.sand_track_hs
         self.highscore_count = float(self.highscore_count)
-        self.old_highscore = self.highscore_count
 
         self.username_path = os.path.join(path, "./highscore/username.txt")
         with open(self.username_path, "r") as username:
@@ -107,14 +118,46 @@ class Car(Entity):
             print(self.username_text)
 
     def update(self):
-        # Stopwatch
-        if self.timer_running is True:
-            self.count += time.dt
-            self.reset_count += time.dt
+        # Stopwatch/Timer
+        if self.timer_running:
+            if self.time_trial == False:
+                self.count += time.dt
+                self.reset_count += time.dt
+                self.highscore.text = str(round(self.highscore_count, 1))
+                self.laps_text.disable()
+            elif self.time_trial:
+                self.count -= time.dt
+                self.reset_count -= time.dt
+                self.highscore.text = str(self.laps)
+                self.laps_text.enable()
+                if self.count <= 0.0:
+                    self.count = 60.0
+                    self.reset_count = 60.0
+                    self.laps = 0
+
+                    if self.laps_hs == 0:
+                        if self.laps <= 8:
+                            self.laps_hs = self.laps
+                    if self.laps <= self.laps_hs:
+                        if self.laps <= 10:
+                            self.laps_hs = self.laps
+
+                    if self.sand_track.enabled:
+                        self.sand_track_laps = self.laps_hs
+                    elif self.grass_track.enabled:
+                        self.grass_track_laps = self.laps_hs
+                    elif self.snow_track.enabled:
+                        self.snow_track_laps = self.laps_hs
+                    elif self.plains_track.enabled:
+                        self.plains_track_laps = self.laps_hs
+
+                    self.save_highscore()
+                    self.reset_car()
+
         self.timer.text = str(round(self.count, 1))
         self.reset_count_timer.text = str(round(self.reset_count, 1))
-
-        self.highscore.text = str(round(self.highscore_count, 1))
+        
+        self.laps_text.text = str(self.laps_hs)
 
         with open(self.username_path, "r") as username:
             self.username_text = username.read()
@@ -189,23 +232,7 @@ class Car(Entity):
 
         # Respawn
         if held_keys["g"]:
-            if self.grass_track.enabled is True:
-                self.position = (-80, -30, 15)
-                self.rotation = (0, 90, 0)
-            elif self.sand_track.enabled is True:
-                self.position = (-63, -40, -7)
-                self.rotation = (0, 90, 0)
-            elif self.snow_track.enabled == True:
-                self.position = (-5, -35, 90)
-                self.rotation = (0, 90, 0)
-            elif self.plains_track.enabled == True:
-                self.position = (12, -40, 73)
-                self.rotation = (0, 90, 0)
-            self.speed = 0
-            self.count = 0.0
-            self.reset_count = 0.0
-            self.timer_running = False
-            self.anti_cheat = 1
+            self.reset_car()
 
         # Steering
         self.rotation_y += self.rotation_speed * 50 * time.dt
@@ -266,42 +293,10 @@ class Car(Entity):
 
         # Reset the car's position if y value is less than -100
         if self.y <= -100:
-            if self.grass_track.enabled is True:
-                self.position = (-80, -30, 15)
-                self.rotation = (0, 90, 0)
-            elif self.sand_track.enabled is True:
-                self.position = (-63, -40, -7)
-                self.rotation = (0, 65, 0)
-            elif self.snow_track.enabled == True:
-                self.position = (-5, -35, 90)
-                self.rotation = (0, 90, 0)
-            elif self.plains_track.enabled == True:
-                self.position = (12, -40, 73)
-                self.rotation = (0, 90, 0)
-            else:
-                self.position = (0, 0, 0)
-                self.rotation = (0, 0, 0)
-            self.speed = 0
-            self.count = 0.0
-            self.reset_count = 0.0
-            self.timer_running = False
-            self.anti_cheat = 1
+            self.reset_car()
 
         if self.y >= 500:
-            if self.grass_track.enabled is True:
-                self.position = (-80, -30, 15)
-                self.rotation = (0, 90, 0)
-            if self.sand_track.enabled is True:
-                self.position = (0, -40, 4)
-                self.rotation = (0, 65, 0)
-            if self.snow_track.enabled == True:
-                self.position = (-5, -35, 90)
-                self.rotation = (0, 90, 0)
-            self.speed = 0
-            self.count = 0.0
-            self.reset_count = 0.0
-            self.timer_running = False
-            self.anti_cheat = 1
+            self.reset_car()
 
         # Gravity
         movementY = self.velocity_y * time.dt
@@ -352,16 +347,71 @@ class Car(Entity):
                     if height_ray.hit:
                         if height_ray.distance < self.slope * 10:
                             self.y += height_ray.distance
+
+    def reset_car(self):
+        if self.grass_track.enabled is True:
+            self.position = (-80, -30, 15)
+            self.rotation = (0, 90, 0)
+        elif self.sand_track.enabled is True:
+            self.position = (-63, -40, -7)
+            self.rotation = (0, 90, 0)
+        elif self.snow_track.enabled == True:
+            self.position = (-5, -35, 90)
+            self.rotation = (0, 90, 0)
+        elif self.plains_track.enabled == True:
+            self.position = (12, -40, 73)
+            self.rotation = (0, 90, 0)
+        self.speed = 0
+        self.timer_running = False
+        self.anti_cheat = 1
+        if self.time_trial == False:
+            self.count = 0.0
+            self.reset_count = 0.0
+
+    def save_highscore(self):
+        self.highscore_dict = {
+            "highscore": {
+                "sand_track": self.sand_track_hs,
+                "grass_track": self.grass_track_hs,
+                "snow_track": self.snow_track_hs,
+                "plains_track": self.plains_track_hs
+            },
+            
+            "time_trial": {
+                "sand_track": self.sand_track_laps,
+                "grass_track": self.grass_track_laps, 
+                "snow_track": self.snow_track_laps, 
+                "plains_track": self.plains_track_laps
+            }
+        }
+
+        with open(self.highscore_path, "w") as hs:
+            json.dump(self.highscore_dict, hs)
+
+    def reset_highscore(self):
+        self.highscore_dict = {
+            "highscore": {
+                "sand_track": 0.0,
+                "grass_track": 0.0,
+                "snow_track": 0.0,
+                "plains_track": 0.0
+            },
+
+            "time_trial": {
+                "sand_track": 0,
+                "grass_track": 0, 
+                "snow_track": 0, 
+                "plains_track": 0
+            }
+        }
+
+        with open(self.highscore_path, "w") as hs:
+            json.dump(self.highscore_dict, hs)
     
     def reset_timer(self):
         self.count = self.reset_count
         self.timer.enable()
         self.reset_count_timer.disable()
-        self.old_highscore = self.highscore_count
-
-    def update_old_pos(self):
-        self.old_pos = self.position
-        invoke(self.update_old_pos, delay = 1)
 
     def update_camera_pos(self):
         self.original_camera_position = camera.position

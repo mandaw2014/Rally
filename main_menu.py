@@ -17,6 +17,7 @@ class MainMenu(Entity):
         self.created_server_menu = Entity(parent = self, enabled = False)
         self.server_menu = Entity(parent = self, enabled = False)
         self.main_menu = Entity(parent = self, enabled = False)
+        self.race_menu = Entity(parent = self, enabled = False)
         self.maps_menu = Entity(parent = self, enabled = False)
         self.settings_menu = Entity(parent = self, enabled = False)
         self.video_menu = Entity(parent = self, enabled = False)
@@ -27,7 +28,7 @@ class MainMenu(Entity):
 
         self.menus = [
             self.start_menu, self.host_menu, self.created_server_menu, self.server_menu,
-            self.main_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu,
+            self.main_menu, self.race_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu,
             self.controls_menu, self.garage_menu, self.pause_menu
         ]
         
@@ -39,7 +40,7 @@ class MainMenu(Entity):
         self.ai_list = ai_list
 
         # Animate the menu
-        for menu in (self.start_menu, self.main_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu, self.controls_menu, self.pause_menu):
+        for menu in (self.start_menu, self.main_menu, self.race_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu, self.controls_menu, self.pause_menu):
             def animate_in_menu(menu = menu):
                 for i, e in enumerate(menu.children):
                     e.original_scale = e.scale
@@ -211,14 +212,19 @@ class MainMenu(Entity):
         # Maps Menu
 
         def start():
-            self.maps_menu.enable()
             self.main_menu.disable()
             if self.car.multiplayer_update:
                 ai_button.disable()
+                self.maps_menu.enable()
+            else:
+                self.race_menu.enable()
 
         def back():
             self.maps_menu.disable()
-            self.main_menu.enable()
+            if self.car.multiplayer_update:
+                self.main_menu.enable()
+            else:
+                self.race_menu.enable()
 
         def ai_func():
             self.car.ai = not self.car.ai
@@ -301,10 +307,7 @@ class MainMenu(Entity):
             plains_track.wall8.disable()
             plains_track.wall_trigger.disable()
 
-            with open(self.car.highscore_path_sand, "r") as hs:
-                self.car.highscore_count = hs.read()
-
-            self.car.highscore_count = float(self.car.highscore_count)
+            self.car.highscore_count = float(self.car.sand_track_hs)
 
         def grass_track_func():
             self.car.enable()
@@ -379,10 +382,7 @@ class MainMenu(Entity):
             plains_track.wall8.disable()
             plains_track.wall_trigger.disable()
 
-            with open(self.car.highscore_path_grass, "r") as hs:
-                self.car.highscore_count = hs.read()
-
-            self.car.highscore_count = float(self.car.highscore_count)
+            self.car.highscore_count = float(self.car.grass_track_hs)
 
         def snow_track_func():
             self.car.enable()
@@ -455,10 +455,7 @@ class MainMenu(Entity):
             plains_track.wall8.disable()
             plains_track.wall_trigger.disable()
 
-            with open(self.car.highscore_path_snow, "r") as hs:
-                self.car.highscore_count = hs.read()
-
-            self.car.highscore_count = float(self.car.highscore_count)
+            self.car.highscore_count = float(self.car.snow_track_hs)
 
         def plains_track_func():
             self.car.enable()
@@ -531,10 +528,7 @@ class MainMenu(Entity):
             plains_track.wall8.enable()
             plains_track.wall_trigger.enable()
 
-            with open(self.car.highscore_path_plains, "r") as hs:
-                self.car.highscore_count = hs.read()
-
-            self.car.highscore_count = float(self.car.highscore_count)
+            self.car.highscore_count = float(self.car.plains_track_hs)
 
         start_button = Button(text = "S t a r t - G a m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.02, parent = self.main_menu)
         sand_track_button = Button(text = "S a n d - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = -0.5, parent = self.maps_menu)
@@ -567,6 +561,36 @@ class MainMenu(Entity):
         plains_track_button.on_click = Func(plains_track_func)
         ai_button.on_click = Func(ai_func)
         back_button.on_click = Func(back)
+
+        # Race Menu
+
+        def race_button_func():
+            self.race_menu.disable()
+            self.maps_menu.enable()
+            ai_button.enable()
+            self.car.time_trial = False
+            self.car.count = 0.0
+            self.car.reset_count = 0.0
+
+        def time_trial_func():
+            self.race_menu.disable()
+            self.maps_menu.enable()
+            ai_button.disable()
+            self.car.time_trial = True
+            self.car.count = 60.0
+            self.car.reset_count = 60.0
+
+        def back_race():
+            self.race_menu.disable()
+            self.main_menu.enable()
+
+        race_button = Button(text = "R a c e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.06, parent = self.race_menu)
+        time_trial_button = Button(text = "T i m e - T r i a l", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.06, parent = self.race_menu)
+        back_button_race = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.race_menu)
+
+        race_button.on_click = Func(race_button_func)
+        time_trial_button.on_click = Func(time_trial_func)
+        back_button_race.on_click = Func(back_race)
 
         # Settings
 
@@ -613,33 +637,6 @@ class MainMenu(Entity):
             elif self.car.camera_shake_option == False:
                 camera_shake_button.text = "Camera Shake: Off"
 
-        def reset_highscore():
-            with open(self.car.highscore_path_sand, "w") as hs:
-                hs.write(str(0.0))
-
-            with open(self.car.highscore_path_sand, "r") as hs:
-                self.car.highscore_count = hs.read()
-
-            with open(self.car.highscore_path_grass, "w") as hs:
-                hs.write(str(0.0))
-
-            with open(self.car.highscore_path_grass, "r") as hs:
-                self.car.highscore_count = hs.read()
-
-            with open(self.car.highscore_path_snow, "w") as hs:
-                hs.write(str(0.0))
-
-            with open(self.car.highscore_path_snow, "r") as hs:
-                self.car.highscore_count = hs.read()
-
-            with open(self.car.highscore_path_plains, "w") as hs:
-                hs.write(str(0.0))
-
-            with open(self.car.highscore_path_plains, "r") as hs:
-                self.car.highscore_count = hs.read()
-
-            self.car.highscore_count = float(self.car.highscore_count)
-
         def back_gameplay():
             self.gameplay_menu.disable()
             self.settings_menu.enable()
@@ -649,7 +646,7 @@ class MainMenu(Entity):
         back_button_gameplay = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.gameplay_menu)
 
         camera_shake_button.on_click = Func(camera_shake)
-        reset_highsore_button.on_click = Func(reset_highscore)
+        reset_highsore_button.on_click = Func(self.car.reset_highscore)
         back_button_gameplay.on_click = Func(back_gameplay)
 
         # Video Menu
@@ -766,10 +763,12 @@ class MainMenu(Entity):
                         ai.next_path = ai.plp1
                         ai.speed = 0
             self.car.speed = 0
-            self.car.count = 0.0
-            self.car.reset_count = 0.0
             self.car.timer_running = False
             self.car.anti_cheat = 1
+
+            if self.car.time_trial == False:
+                self.car.count = 0.0
+                self.car.reset_count = 0.0
 
         def main_menu():
             self.car.position = (0, 0, 4)
@@ -779,6 +778,8 @@ class MainMenu(Entity):
             self.car.count = 0.0
             self.car.last_count = 0.0
             self.car.reset_count = 0.0
+            self.car.laps = 0
+            self.car.time_trial = False
             self.car.reset_count_timer.disable()
             self.car.timer_running = False
             self.car.anti_cheat = 1
@@ -813,10 +814,7 @@ class MainMenu(Entity):
             grass_track.enable()
             sand_track.disable()
 
-            with open(self.car.highscore_path_grass, "r") as hs:
-                self.car.highscore_count = hs.read()
-
-            self.car.highscore_count = float(self.car.highscore_count)
+            self.car.highscore_count = float(self.car.grass_track_hs)
 
         def garage_button_func():
             self.garage_menu.enable()
@@ -966,3 +964,22 @@ class MainMenu(Entity):
         self.leaderboard_03.text = str(self.car.leaderboard_03)
         self.leaderboard_04.text = str(self.car.leaderboard_04)
         self.leaderboard_05.text = str(self.car.leaderboard_05)
+    
+    def input(self, key):
+        # Pause menu
+        if self.main_menu.enabled == False and self.start_menu.enabled == False and self.server_menu.enabled == False and self.settings_menu.enabled == False and self.race_menu.enabled == False and self.maps_menu.enabled == False and self.settings_menu.enabled == False and self.garage_menu.enabled == False and self.controls_menu.enabled == False and self.host_menu.enabled == False and self.created_server_menu.enabled == False and self.video_menu.enabled == False and self.gameplay_menu.enabled == False:
+            if key == "escape":
+                self.pause_menu.enabled = not self.pause_menu.enabled
+                mouse.locked = not mouse.locked
+
+            if self.car.reset_count_timer.enabled == False:
+                self.car.timer.enable()
+            else:
+                self.car.timer.disable()
+             
+            self.car.highscore.enable()
+        
+        else:
+            self.car.timer.disable()
+            self.car.highscore.disable()
+            self.car.laps_text.disable()

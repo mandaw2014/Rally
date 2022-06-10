@@ -127,32 +127,14 @@ def update():
         car.server.update_server()
         if car.server.server_update == True:
             car.server.easy.process_net_events()
-
+    
     achievements.time_spent += time.dt
-
     try:
         thread.start_new_thread(function = achievement_updates, args = '')
     except Exception as e:
         print("Error starting new thread", e)
 
 def input(key):
-    # Pause menu
-    if main_menu.main_menu.enabled == False and main_menu.start_menu.enabled == False and main_menu.server_menu.enabled == False and main_menu.settings_menu.enabled == False and main_menu.maps_menu.enabled == False and main_menu.garage_menu.enabled == False and main_menu.controls_menu.enabled == False and main_menu.host_menu.enabled == False and main_menu.created_server_menu.enabled == False and main_menu.video_menu.enabled == False and main_menu.gameplay_menu.enabled == False:
-        if key == "escape":
-            main_menu.pause_menu.enabled = not main_menu.pause_menu.enabled
-            mouse.locked = not mouse.locked
-
-        if car.reset_count_timer.enabled == False:
-            car.timer.enable()
-        else:
-            car.timer.disable()
-            
-        car.highscore.enable()
-    
-    else:
-        car.timer.disable()
-        car.highscore.disable()
-
     # If multiplayer, send the client's position, rotation, texture, username and highscore to the server
     if car.multiplayer_update:
         multiplayer.client.send_message("MyPosition", tuple(multiplayer.car.position))
