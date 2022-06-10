@@ -33,6 +33,8 @@ class GrassTrack(Entity):
         self.wall_trigger.disable()
         self.wall_trigger_ramp.disable()
 
+        self.played = False
+
     def update(self):
         if self.enabled == True:
             if self.car.intersects(self.finish_line):

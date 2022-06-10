@@ -10,6 +10,9 @@ from main_menu import MainMenu
 
 from sun import SunLight
 
+from UrsinaAchievements import *
+from achievements import RallyAchievements
+
 from tracks.sand_track import SandTrack
 from tracks.grass_track import GrassTrack
 from tracks.snow_track import SnowTrack
@@ -66,6 +69,8 @@ ai2.disable()
 
 ai_list = [ai, ai1, ai2]
 
+car.ai_list = ai_list
+
 ai.ai_list = ai_list
 ai1.ai_list = ai_list
 ai2.ai_list = ai_list
@@ -76,6 +81,9 @@ main_menu = MainMenu(car, ai_list, sand_track, grass_track, snow_track, plains_t
 
 car.multiplayer = False
 car.multiplayer_update = False
+
+# Achievements
+achievements = RallyAchievements(car, main_menu, sand_track, grass_track, snow_track, plains_track)
 
 # Lighting + shadows
 
@@ -120,6 +128,13 @@ def update():
         if car.server.server_update == True:
             car.server.easy.process_net_events()
 
+    achievements.time_spent += time.dt
+
+    try:
+        thread.start_new_thread(function = achievement_updates, args = '')
+    except Exception as e:
+        print("Error starting new thread", e)
+
 def input(key):
     # Pause menu
     if main_menu.main_menu.enabled == False and main_menu.start_menu.enabled == False and main_menu.server_menu.enabled == False and main_menu.settings_menu.enabled == False and main_menu.maps_menu.enabled == False and main_menu.garage_menu.enabled == False and main_menu.controls_menu.enabled == False and main_menu.host_menu.enabled == False and main_menu.created_server_menu.enabled == False and main_menu.video_menu.enabled == False and main_menu.gameplay_menu.enabled == False:
@@ -147,13 +162,3 @@ def input(key):
         multiplayer.client.send_message("MyHighscore", str(round(multiplayer.car.highscore_count, 2)))
 
 app.run()
-
-"""
-Print Position on Screen
-
-def print_position():
-    print_on_screen(str(car.position), window.center)
-    invoke(print_position, delay = 1)
-
-invoke(print_position, delay = 5)
-"""

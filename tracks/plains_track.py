@@ -40,6 +40,8 @@ class PlainsTrack(Entity):
         self.wall8.disable()
         self.wall_trigger.disable()
 
+        self.played = False
+
     def update(self):
         if self.enabled == True:
             if self.car.intersects(self.finish_line):

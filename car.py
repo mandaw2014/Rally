@@ -74,7 +74,8 @@ class Car(Entity):
 
         self.anti_cheat = 1
         self.server_running = False
-        self.ai = True
+        self.ai = False
+        self.ai_list = []
 
         self.connected_text = True
         self.disconnected_text = True
@@ -128,11 +129,11 @@ class Car(Entity):
             if self.pivot.rotation_y > self.rotation_y:
                 self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
                 self.speed += self.pivot_rotation_distance / 4.5 * time.dt
-                self.rotation_speed -= 2 * time.dt
+                self.rotation_speed -= 1 * time.dt
             if self.pivot.rotation_y < self.rotation_y:
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
                 self.speed -= self.pivot_rotation_distance / 4.5 * time.dt
-                self.rotation_speed += 2 * time.dt
+                self.rotation_speed += 1 * time.dt
 
         # Change number of particles depending on the rotation of the car
         if self.pivot.rotation_y - self.rotation_y < -20 or self.pivot.rotation_y - self.rotation_y > 20:
@@ -172,16 +173,16 @@ class Car(Entity):
         if held_keys[self.controls[2] or held_keys["down arrow"]]:
             if ground_check.hit:
                 self.speed -= self.braking_strenth * time.dt
-                self.drift_speed -= 20 * time.dt
-                self.rotation_speed *= 100 * time.dt
-                self.max_rotation_speed = 3
 
         # Hand Braking
         if held_keys["space"]:
             if ground_check.hit:
+                if self.rotation_speed < 0:
+                    self.rotation_speed -= 3 * time.dt
+                elif self.rotation_speed > 0:
+                    self.rotation_speed += 3 * time.dt
                 self.drift_speed -= 20 * time.dt
                 self.speed -= 20 * time.dt
-                self.rotation_speed *= 60 * time.dt
                 self.max_rotation_speed = 3
         else:
             self.max_rotation_speed = 2.6
@@ -207,9 +208,7 @@ class Car(Entity):
             self.anti_cheat = 1
 
         # Steering
-        distance = sqrt((self.position[0] - self.old_pos[0]) ** 2 + (self.position[1] - self.old_pos[1]) ** 2 + (self.position[2] - self.old_pos[2]) ** 2)
-        if distance >= 0.1: # Check if car has moved
-            self.rotation_y += self.rotation_speed * 50 * time.dt
+        self.rotation_y += self.rotation_speed * 50 * time.dt
 
         if self.rotation_speed > 0:
             self.rotation_speed -= self.speed / 6 * time.dt

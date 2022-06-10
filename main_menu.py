@@ -23,9 +23,13 @@ class MainMenu(Entity):
         self.gameplay_menu = Entity(parent = self, enabled = False)
         self.controls_menu = Entity(parent = self, enabled = False)
         self.garage_menu = Entity(parent = self, enabled = False)
-        self.upgrades_menu = Entity(parent = self.garage_menu, enabled = False)
-        self.colours_menu = Entity(parent = self.garage_menu, enabled = False)
         self.pause_menu = Entity(parent = self, enabled = False)
+
+        self.menus = [
+            self.start_menu, self.host_menu, self.created_server_menu, self.server_menu,
+            self.main_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu,
+            self.controls_menu, self.garage_menu, self.pause_menu
+        ]
         
         self.car = car
         self.sand_track = sand_track
@@ -220,8 +224,10 @@ class MainMenu(Entity):
             self.car.ai = not self.car.ai
             if self.car.ai:
                 ai_button.text = "AI: On"
+                self.ai_slider.enable()
             elif self.car.ai == False:
                 ai_button.text = "AI: Off"
+                self.ai_slider.disable()
 
         def sand_track_func():
             self.car.enable()
@@ -245,6 +251,8 @@ class MainMenu(Entity):
             grass_track.disable()
             snow_track.disable()
             plains_track.disable()
+
+            sand_track.played = True
 
             sand_track.finish_line.enable()
             sand_track.boundaries.enable()
@@ -319,6 +327,8 @@ class MainMenu(Entity):
             sand_track.disable()
             snow_track.disable()
             plains_track.disable()
+
+            grass_track.played = True
 
             sand_track.finish_line.disable()
             sand_track.boundaries.disable()
@@ -395,6 +405,8 @@ class MainMenu(Entity):
             sand_track.disable()
             snow_track.enable()
             plains_track.disable()
+
+            snow_track.played = True
             
             sand_track.finish_line.disable()
             sand_track.boundaries.disable()
@@ -469,6 +481,8 @@ class MainMenu(Entity):
             sand_track.disable()
             snow_track.disable
             plains_track.enable()
+
+            plains_track.played = True
             
             sand_track.finish_line.disable()
             sand_track.boundaries.disable()
@@ -529,9 +543,10 @@ class MainMenu(Entity):
         plains_track_button = Button(text = "P l a i n s - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = -0.5, parent = self.maps_menu)
         back_button = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
         
-        ai_button = Button(text = "AI: On", color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.28, x = 0, parent = self.maps_menu)
-        self.ai_slider = Slider(min = 0, max = 3, default = 3, text = "AI", y = -0.4, x = -0.3, scale = 1.3, parent = self.maps_menu, dynamic = True)
+        ai_button = Button(text = "AI: Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.28, x = 0, parent = self.maps_menu)
+        self.ai_slider = Slider(min = 1, max = 3, default = 3, text = "AI", y = -0.4, x = -0.3, scale = 1.3, parent = self.maps_menu, dynamic = True)
         self.ai_slider.step = 1
+        self.ai_slider.disable()
 
         self.leaderboard_background = Entity(model = "quad", color = color.hex("0099ff"), alpha = 100, scale = (0.4, 0.42), position = Vec2(0.6, 0.25), parent = camera.ui)
         self.leaderboard_title = Text("Leaderboard", color = color.gold, scale = 5, line_height = 2, origin = 0, y = 0.4, parent = self.leaderboard_background)
@@ -762,6 +777,7 @@ class MainMenu(Entity):
             self.car.rotation = (0, 65, 0)
             self.car.speed = 0
             self.car.count = 0.0
+            self.car.last_count = 0.0
             self.car.reset_count = 0.0
             self.car.reset_count_timer.disable()
             self.car.timer_running = False
@@ -777,15 +793,7 @@ class MainMenu(Entity):
                 for ai in ai_list:
                     ai.disable()
                     ai.speed = 0
-                    if sand_track.enabled:
-                        ai.next_path = ai.sap1
-                    if grass_track.enabled:
-                        ai.next_path = ai.gp1
-                    if snow_track.enabled:
-                        ai.next_path = ai.snp1
-                    if plains_track.enabled:
-                        ai.next_path = ai.plp1
-
+                
         p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
         p_respawn_button = Button(text = "R e s p a w n", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)
         p_mainmenu_button = Button(text = "M a i n - M e n u", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.13, parent = self.pause_menu)
@@ -812,20 +820,11 @@ class MainMenu(Entity):
 
         def garage_button_func():
             self.garage_menu.enable()
-            self.colours_menu.enable()
             self.main_menu.disable()
             self.car.enable()
             self.car.position = (-105, -50, -59)
             grass_track.disable()
             sand_track.enable()
-
-        def upgrades_menu_func():
-            self.upgrades_menu.enable()
-            self.colours_menu.disable()
-
-        def change_colour_menu():
-            self.upgrades_menu.disable()
-            self.colours_menu.enable()
 
         def change_colour(colour):
             """
