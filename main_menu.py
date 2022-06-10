@@ -307,7 +307,10 @@ class MainMenu(Entity):
             plains_track.wall8.disable()
             plains_track.wall_trigger.disable()
 
-            self.car.highscore_count = float(self.car.sand_track_hs)
+            if self.car.time_trial == False:
+                self.car.highscore_count = float(self.car.sand_track_hs)
+            else:
+                self.car.highscore_count = float(self.car.sand_track_laps)
 
         def grass_track_func():
             self.car.enable()
@@ -382,7 +385,10 @@ class MainMenu(Entity):
             plains_track.wall8.disable()
             plains_track.wall_trigger.disable()
 
-            self.car.highscore_count = float(self.car.grass_track_hs)
+            if self.car.time_trial == False:
+                self.car.highscore_count = float(self.car.grass_track_hs)
+            else:
+                self.car.highscore_count = float(self.car.grass_track_laps)
 
         def snow_track_func():
             self.car.enable()
@@ -455,7 +461,10 @@ class MainMenu(Entity):
             plains_track.wall8.disable()
             plains_track.wall_trigger.disable()
 
-            self.car.highscore_count = float(self.car.snow_track_hs)
+            if self.car.time_trial == False:
+                self.car.highscore_count = float(self.car.snow_track_hs)
+            else:
+                self.car.highscore_count = float(self.car.snow_track_laps)
 
         def plains_track_func():
             self.car.enable()
@@ -528,7 +537,10 @@ class MainMenu(Entity):
             plains_track.wall8.enable()
             plains_track.wall_trigger.enable()
 
-            self.car.highscore_count = float(self.car.plains_track_hs)
+            if self.car.time_trial == False:
+                self.car.highscore_count = float(self.car.plains_track_hs)
+            else:
+                self.car.highscore_count = float(self.car.plains_track_laps)
 
         start_button = Button(text = "S t a r t - G a m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.02, parent = self.main_menu)
         sand_track_button = Button(text = "S a n d - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = -0.5, parent = self.maps_menu)

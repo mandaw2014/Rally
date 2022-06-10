@@ -133,14 +133,11 @@ class Car(Entity):
                 if self.count <= 0.0:
                     self.count = 60.0
                     self.reset_count = 60.0
-                    self.laps = 0
 
-                    if self.laps_hs == 0:
-                        if self.laps <= 8:
-                            self.laps_hs = self.laps
-                    if self.laps <= self.laps_hs:
-                        if self.laps <= 10:
-                            self.laps_hs = self.laps
+                    if self.laps >= self.laps_hs:
+                        self.laps_hs = self.laps
+
+                    self.laps = 0
 
                     if self.sand_track.enabled:
                         self.sand_track_laps = self.laps_hs
