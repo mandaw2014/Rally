@@ -87,8 +87,8 @@ class MainMenu(Entity):
         if window.exit_button.enabled:
             quit_button_start.disable()
 
-        singleplayer_button = Button(text = "S i n g l e p l a y e r", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = 0.05, parent = self.start_menu)
-        multiplayer_button = Button(text = "M u l t i p l a y e r", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.08, parent = self.start_menu)
+        singleplayer_button = Button(text = "Singleplayer", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = 0.05, parent = self.start_menu)
+        multiplayer_button = Button(text = "Multiplayer", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.08, parent = self.start_menu)
         
         singleplayer_button.on_click = Func(singleplayer)
         multiplayer_button.on_click = Func(multiplayer)
@@ -130,9 +130,9 @@ class MainMenu(Entity):
         self.car.host_ip = InputField(default_value = "IP", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.host_menu)
         self.car.host_port = InputField(default_value = "PORT", limit_content_to = "0123456789", color = color.black, alpha = 100, y = 0.02, parent = self.host_menu)
 
-        create_server_button = Button(text = "C r e a t e", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.host_menu)
-        join_server_button = Button(text = "J o i n - S e r v e r", color = color.hex("0097F5"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.host_menu)
-        back_button_host = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.host_menu)
+        create_server_button = Button(text = "Create", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.host_menu)
+        join_server_button = Button(text = "Join Server", color = color.hex("0097F5"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.host_menu)
+        back_button_host = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.host_menu)
 
         create_server_button.on_click = Func(create_server)
         join_server_button.on_click = Func(join_server_func)
@@ -158,9 +158,9 @@ class MainMenu(Entity):
             os._exit(0)
 
         self.username_created_server = InputField(default_value = car.username_text, color = color.black, alpha = 100, y = 0.05, parent = self.created_server_menu)
-        join_hosted_server = Button(text = "J o i n - S e r v e r", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.created_server_menu)
+        join_hosted_server = Button(text = "Join Server", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.created_server_menu)
         running = Text(text = "Running server...", scale = 1.5, line_height = 2, x = 0, origin = 0, y = 0.2, parent = self.created_server_menu)
-        stop_button = Button(text = "S t o p", color = color.hex("D22828"), scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.created_server_menu)
+        stop_button = Button(text = "Stop", color = color.hex("D22828"), scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.created_server_menu)
 
         join_hosted_server.on_click = Func(join_hosted_server_func)
         stop_button.on_click = Func(stop_server)
@@ -191,8 +191,8 @@ class MainMenu(Entity):
         car.username = InputField(default_value = car.username_text, color = color.black, alpha = 100, y = 0.18, parent = self.server_menu)
         car.ip = InputField(default_value = "IP", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.server_menu)
         car.port = InputField(default_value = "PORT", limit_content_to = "0123456789", color = color.black, alpha = 100, y = 0.02, parent = self.server_menu)
-        join_button = Button(text = "J o i n", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.server_menu)
-        back_button_server = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.server_menu)
+        join_button = Button(text = "Join", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.server_menu)
+        back_button_server = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.server_menu)
 
         join_button.on_click = Func(join_server)
         back_button_server.on_click = Func(back_server)
@@ -206,7 +206,7 @@ class MainMenu(Entity):
 
         title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.main_menu, y = 0.3)
 
-        quit_button = Button(text = "Q u i t", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.34, parent = self.main_menu)
+        quit_button = Button(text = "Quit", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.34, parent = self.main_menu)
         quit_button.on_click = Func(quit_app)
 
         # Maps Menu
@@ -542,12 +542,12 @@ class MainMenu(Entity):
             else:
                 self.car.highscore_count = float(self.car.plains_track_laps)
 
-        start_button = Button(text = "S t a r t - G a m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.02, parent = self.main_menu)
-        sand_track_button = Button(text = "S a n d - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = -0.5, parent = self.maps_menu)
-        grass_track_button = Button(text = "G r a s s - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0, parent = self.maps_menu)
-        snow_track_button = Button(text = "S n o w - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0.5, parent = self.maps_menu)
-        plains_track_button = Button(text = "P l a i n s - T r a c k", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = -0.5, parent = self.maps_menu)
-        back_button = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
+        start_button = Button(text = "Start Game", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.02, parent = self.main_menu)
+        sand_track_button = Button(text = "Sand Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = -0.5, parent = self.maps_menu)
+        grass_track_button = Button(text = "Grass Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0, parent = self.maps_menu)
+        snow_track_button = Button(text = "Snow Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0.5, parent = self.maps_menu)
+        plains_track_button = Button(text = "Plains Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = -0.5, parent = self.maps_menu)
+        back_button = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
         
         ai_button = Button(text = "AI: Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.28, x = 0, parent = self.maps_menu)
         self.ai_slider = Slider(min = 1, max = 3, default = 3, text = "AI", y = -0.4, x = -0.3, scale = 1.3, parent = self.maps_menu, dynamic = True)
@@ -596,9 +596,9 @@ class MainMenu(Entity):
             self.race_menu.disable()
             self.main_menu.enable()
 
-        race_button = Button(text = "R a c e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.06, parent = self.race_menu)
-        time_trial_button = Button(text = "T i m e - T r i a l", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.06, parent = self.race_menu)
-        back_button_race = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.race_menu)
+        race_button = Button(text = "Race", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.06, parent = self.race_menu)
+        time_trial_button = Button(text = "Time Trial", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.06, parent = self.race_menu)
+        back_button_race = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.race_menu)
 
         race_button.on_click = Func(race_button_func)
         time_trial_button.on_click = Func(time_trial_func)
@@ -626,7 +626,7 @@ class MainMenu(Entity):
             self.settings_menu.disable()
             self.main_menu.enable()
 
-        settings_button = Button(text = "S e t t i n g s", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.main_menu)
+        settings_button = Button(text = "Settings", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.main_menu)
         
         video_button = Button(text = "Video", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.18, parent = self.settings_menu)
         gameplay_button = Button(text = "Gameplay", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.06, parent = self.settings_menu)
@@ -775,12 +775,12 @@ class MainMenu(Entity):
                         ai.next_path = ai.plp1
                         ai.speed = 0
             self.car.speed = 0
-            self.car.timer_running = False
             self.car.anti_cheat = 1
 
             if self.car.time_trial == False:
                 self.car.count = 0.0
                 self.car.reset_count = 0.0
+                self.car.timer_running = False
 
         def main_menu():
             self.car.position = (0, 0, 4)
@@ -807,9 +807,9 @@ class MainMenu(Entity):
                     ai.disable()
                     ai.speed = 0
                 
-        p_resume_button = Button(text = "R e s u m e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
-        p_respawn_button = Button(text = "R e s p a w n", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)
-        p_mainmenu_button = Button(text = "M a i n - M e n u", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.13, parent = self.pause_menu)
+        p_resume_button = Button(text = "Resume", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
+        p_respawn_button = Button(text = "Respawn", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)
+        p_mainmenu_button = Button(text = "Main Menu", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.13, parent = self.pause_menu)
         p_mainmenu_button.on_click = Func(main_menu)
         p_respawn_button.on_click = Func(respawn)
         p_resume_button.on_click = Func(resume)
@@ -846,9 +846,9 @@ class MainMenu(Entity):
 
         self.start_spin = True
 
-        garage_button = Button(text = "G a r a g e", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.main_menu)
+        garage_button = Button(text = "Garage", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.main_menu)
 
-        back_button_garage = Button(text = "< - B a c k", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.garage_menu)
+        back_button_garage = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.garage_menu)
 
         red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.7, parent = self.garage_menu)
         blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.garage_menu)
@@ -979,7 +979,7 @@ class MainMenu(Entity):
     
     def input(self, key):
         # Pause menu
-        if self.main_menu.enabled == False and self.start_menu.enabled == False and self.server_menu.enabled == False and self.settings_menu.enabled == False and self.race_menu.enabled == False and self.maps_menu.enabled == False and self.settings_menu.enabled == False and self.garage_menu.enabled == False and self.controls_menu.enabled == False and self.host_menu.enabled == False and self.created_server_menu.enabled == False and self.video_menu.enabled == False and self.gameplay_menu.enabled == False:
+        if self.start_menu.enabled == False and self.main_menu.enabled == False and self.server_menu.enabled == False and self.settings_menu.enabled == False and self.race_menu.enabled == False and self.maps_menu.enabled == False and self.settings_menu.enabled == False and self.garage_menu.enabled == False and self.controls_menu.enabled == False and self.host_menu.enabled == False and self.created_server_menu.enabled == False and self.video_menu.enabled == False and self.gameplay_menu.enabled == False:
             if key == "escape":
                 self.pause_menu.enabled = not self.pause_menu.enabled
                 mouse.locked = not mouse.locked

@@ -4,6 +4,7 @@ from particles import ParticleSystem
 import json
 
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
+Text.default_resolution = 1080 * Text.size
 
 class Car(Entity):
     def __init__(self, position = (0, 0, 0), rotation = (0, 65, 0), topspeed = 30, acceleration = 0.35, braking_strength = 15, friction = 0.6, camera_speed = 8, drift_speed = 35):
@@ -62,9 +63,11 @@ class Car(Entity):
         self.reset_count = 0.0
         self.timer = Text(text = "", origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
         self.highscore = Text(text = "", origin = (0, 0), size = 0.05, scale = (0.6, 0.6), position = (-0.7, 0.38))
-        self.laps_text = Text(text = "", origin = (0, 0), size = 0.05, scale = (1, 1), position = (0.7, 0.43))
+        self.laps_text = Text(text = "", origin = (0, 0), size = 0.05, scale = (1.1, 1.1), position = (0, 0.43))
         self.reset_count_timer = Text(text = str(round(self.reset_count, 1)), origin = (0, 0), size = 0.05, scale = (1, 1), position = (-0.7, 0.43))
-            
+        
+        self.timer.disable()
+        self.highscore.disable()
         self.laps_text.disable()
         self.reset_count_timer.disable()
 
@@ -119,20 +122,23 @@ class Car(Entity):
 
     def update(self):
         # Stopwatch/Timer
-        if self.timer_running:
-            if self.time_trial == False:
+        if self.time_trial == False:
+            self.highscore.text = str(round(self.highscore_count, 1))
+            self.laps_text.disable()
+            if self.timer_running:
                 self.count += time.dt
                 self.reset_count += time.dt
-                self.highscore.text = str(round(self.highscore_count, 1))
-                self.laps_text.disable()
-            elif self.time_trial:
+        elif self.time_trial:
+            self.highscore.text = str(self.laps_hs)
+            self.laps_text.text = str(self.laps)
+            self.laps_text.enable()
+            if self.timer_running:
                 self.count -= time.dt
                 self.reset_count -= time.dt
-                self.highscore.text = str(self.laps)
-                self.laps_text.enable()
                 if self.count <= 0.0:
                     self.count = 60.0
                     self.reset_count = 60.0
+                    self.timer_running = False
 
                     if self.laps >= self.laps_hs:
                         self.laps_hs = self.laps
@@ -153,8 +159,6 @@ class Car(Entity):
 
         self.timer.text = str(round(self.count, 1))
         self.reset_count_timer.text = str(round(self.reset_count, 1))
-        
-        self.laps_text.text = str(self.laps_hs)
 
         with open(self.username_path, "r") as username:
             self.username_text = username.read()
@@ -306,7 +310,7 @@ class Car(Entity):
             self.velocity_y = 0
         else:
             self.y += movementY * 50 * time.dt
-            self.velocity_y -= 1
+            self.velocity_y -= 50 * time.dt
 
         # Movement
         movementX = self.pivot.forward[0] * self.speed * time.dt
@@ -359,9 +363,9 @@ class Car(Entity):
             self.position = (12, -40, 73)
             self.rotation = (0, 90, 0)
         self.speed = 0
-        self.timer_running = False
         self.anti_cheat = 1
         if self.time_trial == False:
+            self.timer_running = False
             self.count = 0.0
             self.reset_count = 0.0
 

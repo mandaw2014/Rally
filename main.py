@@ -19,6 +19,7 @@ from tracks.snow_track import SnowTrack
 from tracks.plains_track import PlainsTrack
 
 Text.default_resolution = 1080 * Text.size
+Text.default_font = "./assets/Roboto.ttf"
 
 # Window
 
@@ -128,7 +129,8 @@ def update():
         if car.server.server_update == True:
             car.server.easy.process_net_events()
     
-    achievements.time_spent += time.dt
+    if achievements.time_spent < 4:
+        achievements.time_spent += time.dt
     try:
         thread.start_new_thread(function = achievement_updates, args = '')
     except Exception as e:
