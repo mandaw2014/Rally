@@ -681,9 +681,9 @@ class MainMenu(Entity):
         def fps():
             window.fps_counter.enabled = not window.fps_counter.enabled
             if window.fps_counter.enabled:
-                fps_button.text = "Fps: On"
+                fps_button.text = "FPS: On"
             elif window.fps_counter.enabled == False:
-                fps_button.text = "Fps: Off"
+                fps_button.text = "FPS: Off"
 
         def exit_button_func():
             window.exit_button.enabled = not window.exit_button.enabled
