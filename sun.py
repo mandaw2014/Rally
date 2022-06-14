@@ -1,20 +1,22 @@
-from ursina import *
+from panda3d.core import DirectionalLight
+from ursina import Entity
 
-class SunLight(DirectionalLight):
-    def __init__(self, direction, resolution, car, **kwargs):
+class SunLight(Entity):
+    def __init__(self, direction, resolution, car):
         super().__init__()
 
-        self.look_at(direction)
-        self.shadow_map_resolution = (resolution, resolution)
         self.car = car
-        self.lens = self._light.get_lens()
 
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+        dlight = DirectionalLight("sun")
+        dlight.setShadowCaster(True, resolution, resolution)
+
+        lens = dlight.getLens()
+        lens.setNearFar(-80, 20)
+        lens.setFilmSize((40, 40))
+
+        self.dlnp = render.attachNewNode(dlight)
+        self.dlnp.lookAt(direction)
+        render.setLight(self.dlnp)
 
     def update(self):
-        self.lens.set_near_far(-80, 20)
-        self.lens.set_film_offset((0, 0))
-        self.lens.set_film_size((40, 40))
-
-        self.world_position = self.car.world_position 
+        self.dlnp.setPos(self.car.world_position)
