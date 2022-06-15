@@ -215,6 +215,7 @@ class MainMenu(Entity):
             self.main_menu.disable()
             if self.car.multiplayer_update:
                 ai_button.disable()
+                self.ai_slider.disable()
                 self.maps_menu.enable()
             else:
                 self.race_menu.enable()
@@ -588,9 +589,11 @@ class MainMenu(Entity):
             self.race_menu.disable()
             self.maps_menu.enable()
             ai_button.disable()
+            self.ai_slider.disable()
             self.car.time_trial = True
             self.car.count = 60.0
             self.car.reset_count = 60.0
+            self.car.ai = False
 
         def back_race():
             self.race_menu.disable()
