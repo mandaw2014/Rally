@@ -118,59 +118,6 @@ class AICar(Entity):
         self.next_path = self.gp1
         self.difficulty = 50
 
-        # self.sap1.disable()
-        # self.sap2.disable()
-        # self.sap3.disable()
-        # self.sap4.disable()
-        # self.sap5.disable()
-        # self.sap6.disable()
-        # self.sap7.disable()
-        # self.sap8.disable()
-
-        self.gp1.disable()
-        self.gp2.disable()
-        self.gp3.disable()
-        self.gp4.disable()
-        self.gp5.disable()
-        self.gp6.disable()
-        self.gp7.disable()
-        self.gp8.disable()
-        self.gp9.disable()
-        self.gp10.disable()
-        self.gp11.disable()
-
-        self.snp1.disable()
-        self.snp2.disable()
-        self.snp3.disable()
-        self.snp4.disable()
-        self.snp5.disable()
-        self.snp6.disable()
-        self.snp7.disable()
-        self.snp8.disable()
-        self.snp9.disable()
-        self.snp10.disable()
-        self.snp11.disable()
-        self.snp12.disable()
-        self.snp13.disable()
-        self.snp14.disable()
-        self.snp15.disable()
-        self.snp16.disable()
-        self.snp17.disable()
-
-        self.plp1.disable()
-        self.plp2.disable()
-        self.plp3.disable()
-        self.plp4.disable()
-        self.plp5.disable()
-        self.plp6.disable()
-        self.plp7.disable()
-        self.plp8.disable()
-        self.plp9.disable()
-        self.plp10.disable()
-        self.plp11.disable()
-        self.plp12.disable()
-        self.plp13.disable()
-
         invoke(self.same_pos, delay = 5)
 
     def set_random_texture(self):
@@ -413,6 +360,6 @@ class PathObject(Entity):
             rotation = rotation,
             texture = "white_cube",
             scale = (1, 20, 20),
-            visible = True,
+            visible = False,
             alpha = 50,
         )
