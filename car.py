@@ -445,7 +445,7 @@ class CarUsername(Text):
             text = "Guest",
             y = 3,
             scale = 30,
-            color = color.white,
+            color = color.white
         )
     
         self.username_text = "Guest"

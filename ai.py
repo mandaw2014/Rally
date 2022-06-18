@@ -51,82 +51,125 @@ class AICar(Entity):
 
         # Sand Track Points
 
-        self.sap1 = PathObject((-41, -50, -7))
-        self.sap2 = PathObject((-26, -50, -25), (0, 90, 0))
-        self.sap3 = PathObject((-26, -50, -42), (0, 90, 0))
-        self.sap4 = PathObject((-48, -47, -55))
-        self.sap5 = PathObject((-100, -50, -61))
-        self.sap6 = PathObject((-128, -50, -95), (0, 90, 0))
-        self.sap7 = PathObject((-105, -50, -105))
-        self.sap8 = PathObject((-91, -50, -105))
-        self.sap9 = PathObject((-80, -46, -86), (0, 90, 0))
-        self.sap10 = PathObject((-75, -50, -34), (0, 90, 0))
-        self.sap11 = PathObject((-54, -50, -15))
+        self.sap1 = PathObject((-41, -50, -7), (0, 90, 0))
+        self.sap2 = PathObject((-20, -50, -30), (0, 180, 0))
+        self.sap3 = PathObject((-48, -47, -55), (0, 270, 0))
+        self.sap4 = PathObject((-100, -50, -61), (0, 270, 0))
+        self.sap5 = PathObject((-128, -50, -80), (0, 150, 0))
+        self.sap6 = PathObject((-100, -50, -115), (0, 70, 0))
+        self.sap7 = PathObject((-80, -46, -86), (0, -30, 0))
+        self.sap8 = PathObject((-75, -50, -34), (0, 0, 0))
 
         # Grass Track Points
 
         self.gp1 = PathObject((-47, -41, 15), (0, 90, 0))
         self.gp2 = PathObject((12, -42, 14), (0, 90, 0))
         self.gp3 = PathObject((48, -42, 34), (0, 0, 0))
-        self.gp4 = PathObject((37, -42, 68), (0, -90, 0))
-        self.gp5 = PathObject((10, -42, 60), (0, -180, 0))
-        self.gp6 = PathObject((-2, -42, -10), (0, -180, 0))
-        self.gp7 = PathObject((3, -42, -40), (0, -180, 0))
-        self.gp8 = PathObject((-13, -42, -63), (0, -90, 0))
-        self.gp9 = PathObject((-38, -42, -67), (0, -90, 0))
-        self.gp10 = PathObject((-94, -39, -57), (0, -90, 0))
-        self.gp11 = PathObject((-105, -42, -26), (0, -180, 0))
-        self.gp12 = PathObject((-106, -42, -2), (0, -180, 0))
-        self.gp13 = PathObject((-90, -42, 15), (0, 90, 0))
+        self.gp4 = PathObject((25, -42, 68), (0, -90, 0))
+        self.gp5 = PathObject((0, -42, 50), (0, -210, 0))
+        self.gp6 = PathObject((2, -42, -25), (0, -180, 0))
+        self.gp7 = PathObject((-10, -42, -60), (0, -90, 0))
+        self.gp8 = PathObject((-70, -39, -67), (0, -70, 0))
+        self.gp9 = PathObject((-105, -42, -26), (0, 00, 0))
+        self.gp10 = PathObject((-106, -42, -2), (0, 50, 0))
+        self.gp11 = PathObject((-60, -42, 15), (0, 120, 0))
 
         # Snow Track Points
 
-        self.snp1 = PathObject((32, -44, 94))
-        self.snp2 = PathObject((48, -44, 78), (0, 90, 0))
-        self.snp3 = PathObject((53, -44, 65), (0, 90, 0))
-        self.snp4 = PathObject((39, -44, 42))
-        self.snp5 = PathObject((-37, -44, 42))
-        self.snp6 = PathObject((-73, -43, 35), (0, 90, 0))
-        self.snp7 = PathObject((-76, -42, 2), (0, 90, 0))
-        self.snp8 = PathObject((-67, -44, -8))
-        self.snp9 = PathObject((47, -44, -8))
-        self.snp10 = PathObject((65, -42, -27), (0, 90, 0))
-        self.snp11 = PathObject((52, -43, -46))
-        self.snp12 = PathObject((5, -44, -51))
-        self.snp13 = PathObject((-25, -44, -39), (0, 90, 0))
-        self.snp14 = PathObject((-22, -44, 50), (0, 90, 0))
-        self.snp15 = PathObject((-21, -44, 106), (0, 90, 0))
-        self.snp16 = PathObject((-47, -41, 126))
-        self.snp17 = PathObject((-70, -44, 100), (0, 90, 0))
-        self.snp18 = PathObject((-55, -44, 85))
-        self.snp19 = PathObject((-14, -44, 94))
+        self.snp1 = PathObject((32, -44, 94), (0, 90, 0))
+        self.snp2 = PathObject((48, -44, 72), (0, 180, 0))
+        self.snp3 = PathObject((39, -44, 42), (0, 280, 0))
+        self.snp4 = PathObject((-37, -44, 42), (0, 270, 0))
+        self.snp5 = PathObject((-73, -43, 25), (0, 180, 0))
+        self.snp6 = PathObject((-40, -44, -8), (0, 65, 0))
+        self.snp7 = PathObject((20, -44, -8), (0, 90, 0))
+        self.snp8 = PathObject((50, -42, -25), (0, 250, 0))
+        self.snp9 = PathObject((30, -43, -55), (0, 290, 0))
+        self.snp10 = PathObject((5, -44, -51), (0, 290, 0))
+        self.snp11 = PathObject((-15, -44, -39), (0, 380, 0))
+        self.snp12 = PathObject((-22, -44, 70), (0, 363, 0))
+        self.snp13 = PathObject((-21, -44, 106), (0, 340, 0))
+        self.snp14 = PathObject((-47, -41, 126), (0, 240, 0))
+        self.snp15 = PathObject((-70, -44, 100), (0, 140, 0))
+        self.snp16 = PathObject((-30, -44, 90), (0, 90, 0))
+        self.snp17 = PathObject((-14, -44, 94), (0, 90, 0))
 
         # Plains Track Points
 
-        self.plp1 = PathObject((57, -51, 76))
-        self.plp2 = PathObject((82, -51, 63), (0, 90, 0))
-        self.plp3 = PathObject((80, -51, 52), (0, 90, 0))
-        self.plp4 = PathObject((57, -51, 36))
-        self.plp5 = PathObject((-29, -51, 36))
-        self.plp6 = PathObject((-62, -51, 16), (0, 90, 0))
-        self.plp7 = PathObject((-42, -51, -11))
-        self.plp8 = PathObject((4, -51, -11))
-        self.plp9 = PathObject((41, -51, -25), (0, 90, 0))
-        self.plp10 = PathObject((41, -51, -46), (0, 90, 0))
-        self.plp11 = PathObject((25, -51, -66))
-        self.plp12 = PathObject((7, -51, -67))
-        self.plp13 = PathObject((-17, -51, -53), (0, 90, 0))
-        self.plp14 = PathObject((-18, -51, -6), (0, 90, 0))
-        self.plp15 = PathObject((-18, -46, 24), (0, 90, 0))
-        self.plp16 = PathObject((-3, -51, 75))
+        self.plp1 = PathObject((57, -51, 76), (0, 90, 0))
+        self.plp2 = PathObject((82, -51, 63), (0, 180, 0))
+        self.plp3 = PathObject((57, -51, 36), (0, 275, 0))
+        self.plp4 = PathObject((-29, -51, 36), (0, 270, 0))
+        self.plp5 = PathObject((-62, -51, 16), (0, 170, 0))
+        self.plp6 = PathObject((-42, -51, -11), (0, 80, 0))
+        self.plp7 = PathObject((4, -51, -11), (0, 90, 0))
+        self.plp8 = PathObject((41, -51, -40), (0, 180, 0))
+        self.plp9 = PathObject((5, -51, -66), (0, 270, 0))
+        self.plp10 = PathObject((-17, -51, -53), (0, 360, 0))
+        self.plp11 = PathObject((-18, -51, -6), (0, 0, 0))
+        self.plp12 = PathObject((-18, -46, 40), (0, 0, 0))
+        self.plp13 = PathObject((-3, -51, 75), (0, 120, 0))
 
-        self.sand_path = [self.sap1, self.sap2, self.sap3, self.sap4, self.sap5, self.sap6, self.sap7, self.sap8, self.sap9, self.sap10, self.sap11]
-        self.grass_path = [self.gp1, self.gp2, self.gp3, self.gp4, self.gp5, self.gp6, self.gp7, self.gp8, self.gp9, self.gp10, self.gp11, self.gp12, self.gp13]
-        self.snow_path = [self.snp1, self.snp2, self.snp3, self.snp4, self.snp5, self.snp6, self.snp7, self.snp8, self.snp9, self.snp10, self.snp11, self.snp12, self.snp13, self.snp14, self.snp15, self.snp16, self.snp17, self.snp18, self.snp19]
-        self.plains_path = [self.plp1, self.plp2, self.plp3, self.plp4, self.plp5, self.plp6, self.plp7, self.plp8, self.plp9, self.plp10, self.plp11, self.plp12, self.plp13, self.plp14, self.plp15, self.plp16]
+        self.sand_path = [self.sap1, self.sap2, self.sap3, self.sap4, self.sap5, self.sap6, self.sap7, self.sap8]
+        self.grass_path = [self.gp1, self.gp2, self.gp3, self.gp4, self.gp5, self.gp6, self.gp7, self.gp8, self.gp9, self.gp10, self.gp11]
+        self.snow_path = [self.snp1, self.snp2, self.snp3, self.snp4, self.snp5, self.snp6, self.snp7, self.snp8, self.snp9, self.snp10, self.snp11, self.snp12, self.snp13, self.snp14, self.snp15, self.snp16, self.snp17]
+        self.plains_path = [self.plp1, self.plp2, self.plp3, self.plp4, self.plp5, self.plp6, self.plp7, self.plp8, self.plp9, self.plp10, self.plp11, self.plp12, self.plp13]
 
         self.next_path = self.gp1
-        self.difficulty = 70
+        self.difficulty = 50
+
+        # self.sap1.disable()
+        # self.sap2.disable()
+        # self.sap3.disable()
+        # self.sap4.disable()
+        # self.sap5.disable()
+        # self.sap6.disable()
+        # self.sap7.disable()
+        # self.sap8.disable()
+
+        self.gp1.disable()
+        self.gp2.disable()
+        self.gp3.disable()
+        self.gp4.disable()
+        self.gp5.disable()
+        self.gp6.disable()
+        self.gp7.disable()
+        self.gp8.disable()
+        self.gp9.disable()
+        self.gp10.disable()
+        self.gp11.disable()
+
+        self.snp1.disable()
+        self.snp2.disable()
+        self.snp3.disable()
+        self.snp4.disable()
+        self.snp5.disable()
+        self.snp6.disable()
+        self.snp7.disable()
+        self.snp8.disable()
+        self.snp9.disable()
+        self.snp10.disable()
+        self.snp11.disable()
+        self.snp12.disable()
+        self.snp13.disable()
+        self.snp14.disable()
+        self.snp15.disable()
+        self.snp16.disable()
+        self.snp17.disable()
+
+        self.plp1.disable()
+        self.plp2.disable()
+        self.plp3.disable()
+        self.plp4.disable()
+        self.plp5.disable()
+        self.plp6.disable()
+        self.plp7.disable()
+        self.plp8.disable()
+        self.plp9.disable()
+        self.plp10.disable()
+        self.plp11.disable()
+        self.plp12.disable()
+        self.plp13.disable()
 
         invoke(self.same_pos, delay = 5)
 
@@ -159,7 +202,7 @@ class AICar(Entity):
                 self.y += 40 * time.dt
                 self.z += random.randint(-10, 10) * time.dt
             self.old_pos = round(self.position)
-        invoke(self.same_pos, delay = 2)
+        invoke(self.same_pos, delay = 1)
 
     def update(self):
         if self.enabled:
@@ -180,12 +223,12 @@ class AICar(Entity):
 
             self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
 
-            if self.sand_track.enabled or self.sand_track.enabled:
-                self.difficulty = 70
+            if self.sand_track.enabled or self.grass_track.enabled:
+                self.difficulty = 60
             elif self.snow_track.enabled or self.plains_track.enabled:
-                self.difficulty = 50
+                self.difficulty = 40
 
-            ground_check = raycast(origin = self.position, direction = self.down, distance = 2, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
+            ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.car, self.ai_list[0], self.ai_list[1], self.ai_list[2], self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
             
             if ground_check.hit:
                 r = random.randint(0, 1)
@@ -208,22 +251,37 @@ class AICar(Entity):
 
             # Main AI bit
             if self.sand_track.enabled:
-                self.look_at(self.next_path)
+                if self.next_path.rotation_y > self.rotation_y:
+                    self.rotation_y += 80 * time.dt
+                elif self.next_path.rotation_y < self.rotation_y:
+                    self.rotation_y -= 80 * time.dt
                 for p in self.sand_path:
                     if distance(p, self) < 12 and self.next_path == p:
                         self.next_path = self.sand_path[self.sand_path.index(p) - len(self.sand_path) + 1]
             elif self.grass_track.enabled:
-                self.look_at(self.next_path)
+                if self.next_path.rotation_y > self.rotation_y:
+                    self.rotation_y += 80 * time.dt
+                elif self.next_path.rotation_y < self.rotation_y:
+                    self.rotation_y -= 80 * time.dt
                 for p in self.grass_path:
-                    if distance(p, self) < 12 and self.next_path == p:
+                    if distance(p, self) < 14 and self.next_path == p:
                         self.next_path = self.grass_path[self.grass_path.index(p) - len(self.grass_path) + 1]
             elif self.snow_track.enabled:
-                self.look_at(self.next_path)
+                if self.next_path.rotation_y > self.rotation_y:
+                    self.rotation_y += 80 * time.dt
+                elif self.next_path.rotation_y < self.rotation_y:
+                    self.rotation_y -= 80 * time.dt
                 for p in self.snow_path:
                     if distance(p, self) < 12 and self.next_path == p:
                         self.next_path = self.snow_path[self.snow_path.index(p) - len(self.snow_path) + 1]
             elif self.plains_track.enabled:
-                self.look_at(self.next_path)
+                if self.next_path.rotation_y > self.rotation_y:
+                    self.rotation_y += 80 * time.dt
+                elif self.next_path.rotation_y < self.rotation_y:
+                    self.rotation_y -= 80 * time.dt
+                if distance(self.plp10, self) < 12:
+                    self.rotation_y = 0
+                    self.pivot.rotation_y = self.rotation_y
                 for p in self.plains_path:
                     if distance(p, self) < 12 and self.next_path == p:
                         self.next_path = self.plains_path[self.plains_path.index(p) - len(self.plains_path) + 1]
@@ -258,15 +316,41 @@ class AICar(Entity):
                 if self.grass_track.enabled == True:
                     self.position = (-80 + random.randint(-5, 5), -30 + random.randint(-3, 5), 15 + random.randint(-5, 5))
                     self.rotation = (0, 90, 0)
+                    self.next_path = self.gp1
                 elif self.sand_track.enabled == True:
                     self.position = (-63 + random.randint(-5, 5), -40 + random.randint(-3, 5), -7 + random.randint(-5, 5))
                     self.rotation = (0, 65, 0)
+                    self.next_path = self.sap1
                 elif self.snow_track.enabled == True:
                     self.position = (-5 + random.randint(-5, 5), -35 + random.randint(-3, 5), 90 + random.randint(-5, 5))
                     self.rotation = (0, 90, 0)
+                    self.next_path = self.snp1
                 elif self.plains_track.enabled == True:
                     self.position = (12 + random.randint(-5, 5), -40 + random.randint(-3, 5), 73 + random.randint(-5, 5))
                     self.rotation = (0, 90, 0)
+                    self.next_path = self.plp1
+                else:
+                    self.position = (0, 0, 0)
+                    self.rotation = (0, 0, 0)
+                self.speed = 0
+
+            if self.y >= 200:
+                if self.grass_track.enabled == True:
+                    self.position = (-80 + random.randint(-5, 5), -30 + random.randint(-3, 5), 15 + random.randint(-5, 5))
+                    self.rotation = (0, 90, 0)
+                    self.next_path = self.gp1
+                elif self.sand_track.enabled == True:
+                    self.position = (-63 + random.randint(-5, 5), -40 + random.randint(-3, 5), -7 + random.randint(-5, 5))
+                    self.rotation = (0, 65, 0)
+                    self.next_path = self.sap1
+                elif self.snow_track.enabled == True:
+                    self.position = (-5 + random.randint(-5, 5), -35 + random.randint(-3, 5), 90 + random.randint(-5, 5))
+                    self.rotation = (0, 90, 0)
+                    self.next_path = self.snp1
+                elif self.plains_track.enabled == True:
+                    self.position = (12 + random.randint(-5, 5), -40 + random.randint(-3, 5), 73 + random.randint(-5, 5))
+                    self.rotation = (0, 90, 0)
+                    self.next_path = self.plp1
                 else:
                     self.position = (0, 0, 0)
                     self.rotation = (0, 0, 0)
@@ -329,6 +413,6 @@ class PathObject(Entity):
             rotation = rotation,
             texture = "white_cube",
             scale = (1, 20, 20),
-            visible = False,
+            visible = True,
             alpha = 50,
         )
