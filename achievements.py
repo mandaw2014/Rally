@@ -20,7 +20,7 @@ class RallyAchievements():
         create_achievement("Race against AI!", self.race_against_ai, icon = "confetti.png", ringtone = None)
         create_achievement("Play Multiplayer!", self.play_multiplayer, icon = "confetti.png", ringtone = None)
         create_achievement("Go to the Garage!", self.garage, icon = "confetti.png", ringtone = None)
-        create_achievement("Play Time Trial!", self.garage, icon = "confetti.png", ringtone = None)
+        create_achievement("Play Time Trial!", self.time_trial, icon = "confetti.png", ringtone = None)
 
         create_achievement("Get under 20s on Sand Track!", self.twenty_seconds_sand_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 17s on Sand Track!", self.seventeen_seconds_sand_track, icon = "confetti.png", ringtone = None)
