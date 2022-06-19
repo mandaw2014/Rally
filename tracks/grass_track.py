@@ -24,14 +24,13 @@ class GrassTrack(Entity):
         self.wall_trigger = Entity(model = "cube", position = (25, -40.2, 65), collider = "box", rotation = (0, 90, 0), scale = (40, 20, 3), visible = False)
         self.wall_trigger_ramp = Entity(model = "cube", position = (-82, -34, -64), collider = "box", rotation = (0, 90, 0), scale = (40, 20, 3), visible = False)
         
-        self.finish_line.disable()
-        self.boundaries.disable()
-        self.wall1.disable()
-        self.wall2.disable()
-        self.wall3.disable()
-        self.wall4.disable()
-        self.wall_trigger.disable()
-        self.wall_trigger_ramp.disable()
+        self.track = [
+            self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
+            self.wall4, self.wall_trigger, self.wall_trigger_ramp
+        ]
+        
+        for i in self.track:
+            i.disable()
 
         self.played = False
 
@@ -62,7 +61,9 @@ class GrassTrack(Entity):
                         self.car.save_highscore()
 
                     elif self.car.time_trial:
-                        self.car.laps += 1
+                        if self.car.start_time:
+                            self.car.laps += 1
+                        self.car.start_time = True
 
                 self.wall1.enable()
                 self.wall2.enable()

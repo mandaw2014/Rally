@@ -123,23 +123,17 @@ class AICar(Entity):
     def set_random_texture(self):
         i = random.randint(0, 5)
         if i == 0:
-            if self.car.texture != "car-red.png":
-                self.texture = "car-red.png"
+            self.texture = "car-red.png"
         elif i == 1:
-            if self.car.texture != "car-blue.png":
-                self.texture = "car-blue.png"
+            self.texture = "car-blue.png"
         elif i == 2:
-            if self.car.texture != "car-orange.png":
-                self.texture = "car-orange.png"
+            self.texture = "car-orange.png"
         elif i == 3:
-            if self.car.texture != "car-green.png":
-                self.texture = "car-green.png"
+            self.texture = "car-green.png"
         elif i == 4:
-            if self.car.texture != "car-white.png":
-                self.texture = "car-white.png"
+            self.texture = "car-white.png"
         elif i == 5:
-            if self.car.texture != "car-black.png":
-                self.texture = "car-black.png"
+            self.texture = "car-black.png"
 
     def same_pos(self):
         if self.enabled:
@@ -197,56 +191,32 @@ class AICar(Entity):
                     invoke(self.particles.disable, delay = 1)
 
             # Main AI bit
+
+            # If the ai's rotation y does not equal the next paths rotation, change it
+            if self.next_path.rotation_y > self.rotation_y:
+                self.rotation_y += 80 * time.dt
+            elif self.next_path.rotation_y < self.rotation_y:
+                self.rotation_y -= 80 * time.dt
+
             if self.sand_track.enabled:
-                if self.next_path.rotation_y > self.rotation_y:
-                    self.rotation_y += 80 * time.dt
-                elif self.next_path.rotation_y < self.rotation_y:
-                    self.rotation_y -= 80 * time.dt
                 for p in self.sand_path:
                     if distance(p, self) < 12 and self.next_path == p:
                         self.next_path = self.sand_path[self.sand_path.index(p) - len(self.sand_path) + 1]
             elif self.grass_track.enabled:
-                if self.next_path.rotation_y > self.rotation_y:
-                    self.rotation_y += 80 * time.dt
-                elif self.next_path.rotation_y < self.rotation_y:
-                    self.rotation_y -= 80 * time.dt
                 for p in self.grass_path:
                     if distance(p, self) < 14 and self.next_path == p:
                         self.next_path = self.grass_path[self.grass_path.index(p) - len(self.grass_path) + 1]
             elif self.snow_track.enabled:
-                if self.next_path.rotation_y > self.rotation_y:
-                    self.rotation_y += 80 * time.dt
-                elif self.next_path.rotation_y < self.rotation_y:
-                    self.rotation_y -= 80 * time.dt
                 for p in self.snow_path:
                     if distance(p, self) < 12 and self.next_path == p:
                         self.next_path = self.snow_path[self.snow_path.index(p) - len(self.snow_path) + 1]
             elif self.plains_track.enabled:
-                if self.next_path.rotation_y > self.rotation_y:
-                    self.rotation_y += 80 * time.dt
-                elif self.next_path.rotation_y < self.rotation_y:
-                    self.rotation_y -= 80 * time.dt
                 if distance(self.plp10, self) < 12:
                     self.rotation_y = 0
                     self.pivot.rotation_y = self.rotation_y
                 for p in self.plains_path:
                     if distance(p, self) < 12 and self.next_path == p:
                         self.next_path = self.plains_path[self.plains_path.index(p) - len(self.plains_path) + 1]
-            else:
-                if self.speed != 0:
-                    r = random.randint(0, 3)
-                    if r == 1:
-                        self.rotation_speed -= 20 * time.dt
-                        self.drift_speed -= 10 * time.dt
-                    elif r == 2:
-                        self.rotation_speed += 20 * time.dt
-                        self.drift_speed -= 10 * time.dt
-                    else:
-                        self.drift_speed += 0.01 * time.dt
-                        if self.rotation_speed > 0:
-                            self.rotation_speed -= 5 * time.dt
-                        elif self.rotation_speed < 0:
-                            self.rotation_speed += 5 * time.dt
 
             if self.speed >= self.topspeed:
                 self.speed = self.topspeed
@@ -260,48 +230,10 @@ class AICar(Entity):
                 self.drift_speed = 40
             
             if self.y <= -100:
-                if self.grass_track.enabled == True:
-                    self.position = (-80 + random.randint(-5, 5), -30 + random.randint(-3, 5), 15 + random.randint(-5, 5))
-                    self.rotation = (0, 90, 0)
-                    self.next_path = self.gp1
-                elif self.sand_track.enabled == True:
-                    self.position = (-63 + random.randint(-5, 5), -40 + random.randint(-3, 5), -7 + random.randint(-5, 5))
-                    self.rotation = (0, 65, 0)
-                    self.next_path = self.sap1
-                elif self.snow_track.enabled == True:
-                    self.position = (-5 + random.randint(-5, 5), -35 + random.randint(-3, 5), 90 + random.randint(-5, 5))
-                    self.rotation = (0, 90, 0)
-                    self.next_path = self.snp1
-                elif self.plains_track.enabled == True:
-                    self.position = (12 + random.randint(-5, 5), -40 + random.randint(-3, 5), 73 + random.randint(-5, 5))
-                    self.rotation = (0, 90, 0)
-                    self.next_path = self.plp1
-                else:
-                    self.position = (0, 0, 0)
-                    self.rotation = (0, 0, 0)
-                self.speed = 0
+                self.reset()
 
             if self.y >= 200:
-                if self.grass_track.enabled == True:
-                    self.position = (-80 + random.randint(-5, 5), -30 + random.randint(-3, 5), 15 + random.randint(-5, 5))
-                    self.rotation = (0, 90, 0)
-                    self.next_path = self.gp1
-                elif self.sand_track.enabled == True:
-                    self.position = (-63 + random.randint(-5, 5), -40 + random.randint(-3, 5), -7 + random.randint(-5, 5))
-                    self.rotation = (0, 65, 0)
-                    self.next_path = self.sap1
-                elif self.snow_track.enabled == True:
-                    self.position = (-5 + random.randint(-5, 5), -35 + random.randint(-3, 5), 90 + random.randint(-5, 5))
-                    self.rotation = (0, 90, 0)
-                    self.next_path = self.snp1
-                elif self.plains_track.enabled == True:
-                    self.position = (12 + random.randint(-5, 5), -40 + random.randint(-3, 5), 73 + random.randint(-5, 5))
-                    self.rotation = (0, 90, 0)
-                    self.next_path = self.plp1
-                else:
-                    self.position = (0, 0, 0)
-                    self.rotation = (0, 0, 0)
-                self.speed = 0
+                self.reset()
 
             movementY = self.velocity_y * time.dt
             direction = (0, sign(movementY), 0)
@@ -351,6 +283,28 @@ class AICar(Entity):
                             if height_ray.distance < self.slope * 10:
                                 if height_ray.entity != self.ai_list[0] or height_ray.entity != self.ai_list[1] or height_ray.entity != self.ai_list[2]:
                                     self.y += height_ray.distance
+
+    def reset(self):
+        if self.grass_track.enabled == True:
+            self.position = (-80 + random.randint(-5, 5), -30 + random.randint(-3, 5), 15 + random.randint(-5, 5))
+            self.rotation = (0, 90, 0)
+            self.next_path = self.gp1
+        elif self.sand_track.enabled == True:
+            self.position = (-63 + random.randint(-5, 5), -40 + random.randint(-3, 5), -7 + random.randint(-5, 5))
+            self.rotation = (0, 65, 0)
+            self.next_path = self.sap1
+        elif self.snow_track.enabled == True:
+            self.position = (-5 + random.randint(-5, 5), -35 + random.randint(-3, 5), 90 + random.randint(-5, 5))
+            self.rotation = (0, 90, 0)
+            self.next_path = self.snp1
+        elif self.plains_track.enabled == True:
+            self.position = (12 + random.randint(-5, 5), -40 + random.randint(-3, 5), 73 + random.randint(-5, 5))
+            self.rotation = (0, 90, 0)
+            self.next_path = self.plp1
+        else:
+            self.position = (0, 0, 0)
+            self.rotation = (0, 0, 0)
+        self.speed = 0
 
 class PathObject(Entity):
     def __init__(self, position = (0, 0, 0), rotation = (0, 0, 0)):

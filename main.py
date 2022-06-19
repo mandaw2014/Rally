@@ -30,6 +30,7 @@ window.fullscreen = True
 window.show_ursina_splash = True
 window.cog_button.disable()
 window.fps_counter.disable()
+window.exit_button.disable()
 
 # Starting new thread for loading textures
 
@@ -44,7 +45,7 @@ except Exception as e:
 
 # Car
 
-car = Car((0, 0, 4), (0, 0, 0), topspeed = 30)
+car = Car()
 car.disable()
 
 # Tracks
@@ -129,7 +130,7 @@ def update():
         if car.server.server_update == True:
             car.server.easy.process_net_events()
     
-    if achievements.time_spent < 4:
+    if achievements.time_spent < 10:
         achievements.time_spent += time.dt
     try:
         thread.start_new_thread(function = achievement_updates, args = '')

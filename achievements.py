@@ -20,6 +20,7 @@ class RallyAchievements():
         create_achievement("Race against AI!", self.race_against_ai, icon = "confetti.png", ringtone = None)
         create_achievement("Play Multiplayer!", self.play_multiplayer, icon = "confetti.png", ringtone = None)
         create_achievement("Go to the Garage!", self.garage, icon = "confetti.png", ringtone = None)
+        create_achievement("Play Time Trial!", self.garage, icon = "confetti.png", ringtone = None)
 
         create_achievement("Get under 20s on Sand Track!", self.twenty_seconds_sand_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 17s on Sand Track!", self.seventeen_seconds_sand_track, icon = "confetti.png", ringtone = None)
@@ -40,6 +41,11 @@ class RallyAchievements():
         create_achievement("Get under 28s on Plains Track!", self.twentyeight_seconds_plains_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 26s on Plains Track!", self.twentysix_seconds_plains_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 24s on Plains Track!", self.twentyfour_seconds_plains_track, icon = "confetti.png", ringtone = None)
+
+        create_achievement("Beat Mandaw in Sand Track!", self.beat_mandaw_in_sand_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Beat Mandaw in Grass Track!", self.beat_mandaw_in_grass_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Beat Mandaw in Snow Track!", self.beat_mandaw_in_snow_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Beat Mandaw in Plains Track!", self.beat_mandaw_in_plains_track, icon = "confetti.png", ringtone = None)
 
     def play_the_game(self):
         return self.time_spent > 3
@@ -64,6 +70,9 @@ class RallyAchievements():
 
     def garage(self):
         return self.main_menu.garage_menu.enabled
+
+    def time_trial(self):
+        return self.car.time_trial
 
     def twenty_seconds_sand_track(self):
         if self.sand_track.enabled:
@@ -184,3 +193,31 @@ class RallyAchievements():
                     if menu.enabled == False:
                         if self.car.last_count != 0:
                             return self.car.last_count <= 24
+
+    def beat_mandaw_in_sand_track(self):
+        if self.sand_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.last_count != 0:
+                        return self.car.last_count <= 14.49
+
+    def beat_mandaw_in_grass_track(self):
+        if self.grass_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.last_count != 0:
+                        return self.car.last_count <= 17.79
+    
+    def beat_mandaw_in_snow_track(self):
+        if self.snow_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.last_count != 0:
+                        return self.car.last_count <= 31.45
+
+    def beat_mandaw_in_plains_track(self):
+        if self.plains_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.last_count != 0:
+                        return self.car.last_count <= 24.66

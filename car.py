@@ -7,7 +7,7 @@ sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 Text.default_resolution = 1080 * Text.size
 
 class Car(Entity):
-    def __init__(self, position = (0, 0, 0), rotation = (0, 65, 0), topspeed = 30, acceleration = 0.35, braking_strength = 15, friction = 0.6, camera_speed = 8, drift_speed = 35):
+    def __init__(self, position = (0, 0, 4), rotation = (0, 0, 0), topspeed = 30, acceleration = 0.35, braking_strength = 15, friction = 0.6, camera_speed = 8, drift_speed = 35):
         super().__init__(
             model = "car.obj",
             texture = "car-red.png",
@@ -72,6 +72,7 @@ class Car(Entity):
         self.reset_count_timer.disable()
 
         self.time_trial = False
+        self.start_time = False
         self.laps = 0
         self.laps_hs = 0
 
@@ -136,8 +137,8 @@ class Car(Entity):
                 self.count -= time.dt
                 self.reset_count -= time.dt
                 if self.count <= 0.0:
-                    self.count = 60.0
-                    self.reset_count = 60.0
+                    self.count = 100.0
+                    self.reset_count = 100.0
                     self.timer_running = False
 
                     if self.laps >= self.laps_hs:
@@ -153,6 +154,8 @@ class Car(Entity):
                         self.snow_track_laps = self.laps_hs
                     elif self.plains_track.enabled:
                         self.plains_track_laps = self.laps_hs
+
+                    self.start_time = False
 
                     self.save_highscore()
                     self.reset_car()
@@ -368,6 +371,12 @@ class Car(Entity):
             self.timer_running = False
             self.count = 0.0
             self.reset_count = 0.0
+        elif self.time_trial:
+            self.count = 100.0
+            self.reset_count = 100.0
+            self.laps = 0
+            self.timer_running = False
+            self.start_time = False
 
     def save_highscore(self):
         self.highscore_dict = {

@@ -23,14 +23,15 @@ class SandTrack(Entity):
 
         self.wall_trigger = Entity(model = "cube", position = (-100, -50, -114), rotation = (0, 90, 0), collider = "box", scale = (30, 100, 5), visible = False)
 
+        self.track = [
+            self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
+            self.wall4, self.wall_trigger
+        ]
+        
         self.disable()
-        self.finish_line.disable()
-        self.boundaries.disable()
-        self.wall1.disable()
-        self.wall2.disable()
-        self.wall3.disable()
-        self.wall4.disable()
-        self.wall_trigger.disable()
+
+        for i in self.track:
+            i.disable()
 
         self.played = False
 
@@ -61,7 +62,9 @@ class SandTrack(Entity):
                         self.car.save_highscore()
 
                     elif self.car.time_trial:
-                        self.car.laps += 1
+                        if self.car.start_time:
+                            self.car.laps += 1
+                        self.car.start_time = True
 
                     self.wall1.enable()
                     self.wall2.enable()

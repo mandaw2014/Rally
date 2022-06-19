@@ -266,52 +266,17 @@ class MainMenu(Entity):
 
             sand_track.played = True
 
-            sand_track.finish_line.enable()
-            sand_track.boundaries.enable()
-            sand_track.wall1.enable()
-            sand_track.wall2.enable()
-            sand_track.wall3.enable()
-            sand_track.wall4.enable()
-            sand_track.wall_trigger.enable()
+            for s in sand_track.track:
+                s.enable()
 
-            grass_track.finish_line.disable()
-            grass_track.boundaries.disable()
-            grass_track.wall1.disable()
-            grass_track.wall2.disable()
-            grass_track.wall3.disable()
-            grass_track.wall4.disable()
-            grass_track.wall_trigger.disable()
-            grass_track.wall_trigger_ramp.disable()
+            for g in grass_track.track:
+                g.disable()
 
-            snow_track.finish_line.disable()
-            snow_track.boundaries.disable()
-            snow_track.wall1.disable()
-            snow_track.wall2.disable()
-            snow_track.wall3.disable()
-            snow_track.wall4.disable()
-            snow_track.wall5.disable()
-            snow_track.wall6.disable()
-            snow_track.wall7.disable()
-            snow_track.wall8.disable()
-            snow_track.wall9.disable()
-            snow_track.wall10.disable()
-            snow_track.wall11.disable()
-            snow_track.wall12.disable()
-            snow_track.wall_trigger.disable()
-            snow_track.wall_trigger_end.disable()
+            for s in snow_track.track:
+                s.disable()
 
-            plains_track.disable()
-            plains_track.finish_line.disable()
-            plains_track.boundaries.disable()
-            plains_track.wall1.disable()
-            plains_track.wall2.disable()
-            plains_track.wall3.disable()
-            plains_track.wall4.disable()
-            plains_track.wall5.disable()
-            plains_track.wall6.disable()
-            plains_track.wall7.disable()
-            plains_track.wall8.disable()
-            plains_track.wall_trigger.disable()
+            for p in plains_track.track:
+                p.disable()
 
             if self.car.time_trial == False:
                 self.car.highscore_count = float(self.car.sand_track_hs)
@@ -342,54 +307,17 @@ class MainMenu(Entity):
 
             grass_track.played = True
 
-            sand_track.finish_line.disable()
-            sand_track.boundaries.disable()
-            sand_track.wall1.disable()
-            sand_track.wall2.disable()
-            sand_track.wall3.disable()
-            sand_track.wall4.disable()
-            sand_track.wall_trigger.disable()
+            for s in sand_track.track:
+                s.disable()
 
-            grass_track.finish_line.enable()
-            grass_track.boundaries.enable()
-            grass_track.wall1.enable()
-            grass_track.wall2.enable()
-            grass_track.wall3.enable()
-            grass_track.wall4.enable()
-            grass_track.wall_trigger.enable()
-            grass_track.wall_trigger_ramp.enable()
+            for g in grass_track.track:
+                g.enable()
 
-            snow_track.finish_line.disable()
-            snow_track.boundaries.disable()
-            snow_track.finish_line.disable()
-            snow_track.boundaries.disable()
-            snow_track.wall1.disable()
-            snow_track.wall2.disable()
-            snow_track.wall3.disable()
-            snow_track.wall4.disable()
-            snow_track.wall5.disable()
-            snow_track.wall6.disable()
-            snow_track.wall7.disable()
-            snow_track.wall8.disable()
-            snow_track.wall9.disable()
-            snow_track.wall10.disable()
-            snow_track.wall11.disable()
-            snow_track.wall12.disable()
-            snow_track.wall_trigger.disable()
-            snow_track.wall_trigger_end.disable()
+            for s in snow_track.track:
+                s.disable()
 
-            plains_track.disable()
-            plains_track.finish_line.disable()
-            plains_track.boundaries.disable()
-            plains_track.wall1.disable()
-            plains_track.wall2.disable()
-            plains_track.wall3.disable()
-            plains_track.wall4.disable()
-            plains_track.wall5.disable()
-            plains_track.wall6.disable()
-            plains_track.wall7.disable()
-            plains_track.wall8.disable()
-            plains_track.wall_trigger.disable()
+            for p in plains_track.track:
+                p.disable()
 
             if self.car.time_trial == False:
                 self.car.highscore_count = float(self.car.grass_track_hs)
@@ -420,52 +348,17 @@ class MainMenu(Entity):
 
             snow_track.played = True
             
-            sand_track.finish_line.disable()
-            sand_track.boundaries.disable()
-            sand_track.wall1.disable()
-            sand_track.wall2.disable()
-            sand_track.wall3.disable()
-            sand_track.wall4.disable()
-            sand_track.wall_trigger.disable()
+            for s in sand_track.track:
+                s.disable()
 
-            grass_track.finish_line.disable()
-            grass_track.boundaries.disable()
-            grass_track.wall1.disable()
-            grass_track.wall2.disable()
-            grass_track.wall3.disable()
-            grass_track.wall4.disable()
-            grass_track.wall_trigger.disable()
-            grass_track.wall_trigger_ramp.disable()
+            for g in grass_track.track:
+                g.disable()
 
-            snow_track.finish_line.enable()
-            snow_track.boundaries.enable()
-            snow_track.wall1.enable()
-            snow_track.wall2.enable()
-            snow_track.wall3.enable()
-            snow_track.wall4.enable()
-            snow_track.wall5.enable()
-            snow_track.wall6.enable()
-            snow_track.wall7.enable()
-            snow_track.wall8.enable()
-            snow_track.wall9.enable()
-            snow_track.wall10.enable()
-            snow_track.wall11.enable()
-            snow_track.wall12.enable()
-            snow_track.wall_trigger.enable()
-            snow_track.wall_trigger_end.enable()
+            for s in snow_track.track:
+                s.enable()
 
-            plains_track.disable()
-            plains_track.finish_line.disable()
-            plains_track.boundaries.disable()
-            plains_track.wall1.disable()
-            plains_track.wall2.disable()
-            plains_track.wall3.disable()
-            plains_track.wall4.disable()
-            plains_track.wall5.disable()
-            plains_track.wall6.disable()
-            plains_track.wall7.disable()
-            plains_track.wall8.disable()
-            plains_track.wall_trigger.disable()
+            for p in plains_track.track:
+                p.disable()
 
             if self.car.time_trial == False:
                 self.car.highscore_count = float(self.car.snow_track_hs)
@@ -496,52 +389,17 @@ class MainMenu(Entity):
 
             plains_track.played = True
             
-            sand_track.finish_line.disable()
-            sand_track.boundaries.disable()
-            sand_track.wall1.disable()
-            sand_track.wall2.disable()
-            sand_track.wall3.disable()
-            sand_track.wall4.disable()
-            sand_track.wall_trigger.disable()
+            for s in sand_track.track:
+                s.disable()
 
-            grass_track.finish_line.disable()
-            grass_track.boundaries.disable()
-            grass_track.wall1.disable()
-            grass_track.wall2.disable()
-            grass_track.wall3.disable()
-            grass_track.wall4.disable()
-            grass_track.wall_trigger.disable()
-            grass_track.wall_trigger_ramp.disable()
+            for g in grass_track.track:
+                g.disable()
 
-            snow_track.finish_line.disable()
-            snow_track.boundaries.disable()
-            snow_track.wall1.disable()
-            snow_track.wall2.disable()
-            snow_track.wall3.disable()
-            snow_track.wall4.disable()
-            snow_track.wall5.disable()
-            snow_track.wall6.disable()
-            snow_track.wall7.disable()
-            snow_track.wall8.disable()
-            snow_track.wall9.disable()
-            snow_track.wall10.disable()
-            snow_track.wall11.disable()
-            snow_track.wall12.disable()
-            snow_track.wall_trigger.disable()
-            snow_track.wall_trigger_end.disable()
+            for s in snow_track.track:
+                s.disable()
 
-            plains_track.enable()
-            plains_track.finish_line.enable()
-            plains_track.boundaries.enable()
-            plains_track.wall1.enable()
-            plains_track.wall2.enable()
-            plains_track.wall3.enable()
-            plains_track.wall4.enable()
-            plains_track.wall5.enable()
-            plains_track.wall6.enable()
-            plains_track.wall7.enable()
-            plains_track.wall8.enable()
-            plains_track.wall_trigger.enable()
+            for p in plains_track.track:
+                p.enable()
 
             if self.car.time_trial == False:
                 self.car.highscore_count = float(self.car.plains_track_hs)
@@ -629,8 +487,8 @@ class MainMenu(Entity):
             ai_button.disable()
             self.ai_slider.disable()
             self.car.time_trial = True
-            self.car.count = 60.0
-            self.car.reset_count = 60.0
+            self.car.count = 100.0
+            self.car.reset_count = 100.0
             self.car.ai = False
 
         def back_race():
@@ -740,7 +598,7 @@ class MainMenu(Entity):
         fullscreen_button = Button("Fullscreen: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.24, parent = self.video_menu)
         borderless_button = Button("Borderless: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.video_menu)
         fps_button = Button("FPS: Off", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.video_menu)
-        exit_button = Button("Exit Button: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.video_menu)
+        exit_button = Button("Exit Button: Off", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.video_menu)
         back_button_video = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.24, parent = self.video_menu)
 
         fullscreen_button.on_click = Func(fullscreen)
@@ -835,6 +693,12 @@ class MainMenu(Entity):
                 self.car.count = 0.0
                 self.car.reset_count = 0.0
                 self.car.timer_running = False
+            elif self.time_trial:
+                self.count = 100.0
+                self.reset_count = 100.0
+                self.laps = 0
+                self.timer_running = False
+                self.start_time = False
 
         def main_menu():
             self.car.position = (0, 0, 4)
@@ -846,6 +710,7 @@ class MainMenu(Entity):
             self.car.reset_count = 0.0
             self.car.laps = 0
             self.car.time_trial = False
+            self.car.start_time = False
             self.car.reset_count_timer.disable()
             self.car.timer_running = False
             self.car.anti_cheat = 1
@@ -894,7 +759,7 @@ class MainMenu(Entity):
             """
             Changes the car color to the selected color after a small animation.
             """
-            if self.start_spin == True:
+            if self.start_spin:
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             car.texture = f"car-{colour}.png"
 
@@ -949,7 +814,8 @@ class MainMenu(Entity):
         # Set the camera's position and make the car rotate
         if self.start_menu.enabled:
             if not held_keys["right mouse"]:
-                self.car.rotation_y += 15 * time.dt
+                if self.start_spin:
+                    self.car.rotation_y += 15 * time.dt
             else:
                 self.car.rotation_y = mouse.x * 500
             self.car.camera_follow.offset = (-25, 4, 0)
@@ -957,7 +823,8 @@ class MainMenu(Entity):
 
         if self.host_menu.enabled:
             if not held_keys["right mouse"]:
-                self.car.rotation_y += 15 * time.dt
+                if self.start_spin:
+                    self.car.rotation_y += 15 * time.dt
             else:
                 self.car.rotation_y = mouse.x * 500
             self.car.camera_follow.offset = (-25, 8, 0)
@@ -965,7 +832,8 @@ class MainMenu(Entity):
 
         if self.garage_menu.enabled:
             if not held_keys["right mouse"]:
-                self.car.rotation_y += 15 * time.dt
+                if self.start_spin:
+                    self.car.rotation_y += 15 * time.dt
             else:
                 self.car.rotation_y = mouse.x * 500
             self.car.camera_follow.offset = (-25, 5, 2)
@@ -973,7 +841,8 @@ class MainMenu(Entity):
 
         if self.server_menu.enabled:
             if not held_keys["right mouse"]:
-                self.car.rotation_y += 15 * time.dt
+                if self.start_spin:
+                    self.car.rotation_y += 15 * time.dt
             else:
                 self.car.rotation_y = mouse.x * 500
             self.car.camera_follow.offset = (-25, 6, 5)
@@ -1010,11 +879,6 @@ class MainMenu(Entity):
             self.leaderboard_03.disable()
             self.leaderboard_04.disable()
             self.leaderboard_05.disable()
-
-        if held_keys["w"] or held_keys["up arrow"]:
-            self.start_spin = False
-        else:
-            self.start_spin = True
             
     def start_leaderboard(self):
         self.leaderboard_background.enable()
@@ -1049,3 +913,8 @@ class MainMenu(Entity):
             self.car.timer.disable()
             self.car.highscore.disable()
             self.car.laps_text.disable()
+
+        if key == "w":
+            self.start_spin = False
+        elif key == "w up":
+            self.start_spin = True

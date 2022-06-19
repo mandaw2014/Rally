@@ -33,22 +33,15 @@ class SnowTrack(Entity):
         self.wall_trigger_end = Entity(model = "cube", position = (-70, -40.2, 100), collider = "box", rotation = (0, 0, 0), scale = (35, 20, 3), visible = False)
 
         self.disable()
-        self.finish_line.disable()
-        self.boundaries.disable()
-        self.wall1.disable()
-        self.wall2.disable()
-        self.wall3.disable()
-        self.wall4.disable()
-        self.wall5.disable()
-        self.wall6.disable()
-        self.wall7.disable()
-        self.wall8.disable()
-        self.wall9.disable()
-        self.wall10.disable()
-        self.wall11.disable()
-        self.wall12.disable()
-        self.wall_trigger.disable()
-        self.wall_trigger_end.disable()
+        
+        self.track = [
+            self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
+            self.wall4, self.wall5, self.wall6, self.wall7, self.wall8, self.wall9, 
+            self.wall10, self.wall11, self.wall12, self.wall_trigger, self.wall_trigger_end
+        ]
+
+        for i in self.track:
+            i.disable()
 
         self.played = False
 
@@ -79,7 +72,9 @@ class SnowTrack(Entity):
                         self.car.save_highscore()
 
                     elif self.car.time_trial:
-                        self.car.laps += 1
+                        if self.car.start_time:
+                            self.car.laps += 1
+                        self.car.start_time = True
 
                     self.wall1.disable()
                     self.wall2.disable()
