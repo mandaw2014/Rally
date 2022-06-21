@@ -1,6 +1,6 @@
 """
 Author: TheAssasin71 or megat69
-Repo: https://github.com/megat69/ProjectRebirth/blob/main/UrsinaAchievements/__init__.py
+Repo: https://github.com/megat69/UrsinaAchievements
 Init file for UrsinaAchievements, a system allowing users in Ursina engine to receive achievements.
 """
 from ursina import *
