@@ -10,7 +10,6 @@ from main_menu import MainMenu
 
 from sun import SunLight
 
-from UrsinaAchievements import *
 from achievements import RallyAchievements
 
 from tracks.sand_track import SandTrack
@@ -26,27 +25,48 @@ Text.default_font = "./assets/Roboto.ttf"
 app = Ursina()
 window.title = "Rally"
 window.borderless = False
-window.fullscreen = True
 window.show_ursina_splash = True
 window.cog_button.disable()
 window.fps_counter.disable()
 window.exit_button.disable()
 
-# Starting new thread for loading textures
+if sys.platform != "darwin":
+    window.fullscreen = True
+else:
+    window.size = window.fullscreen_size
+    window.position = Vec2(
+        int((window.screen_resolution[0] - window.fullscreen_size[0]) / 2),
+        int((window.screen_resolution[1] - window.fullscreen_size[1]) / 2)
+    )
 
-def load_car_textures():
+# Starting new thread for loading textures and models
+
+def load_textures():
     for car_texture in ("black", "blue", "green", "orange", "red", "white"):
         load_texture(f"assets/garage/car-{car_texture}.png")
+    for track_texture in ("sand_track/sand_track", "grass_track/grass_track", "snow_track/snow_track", "plains_track/plains_track"):
+        load_texture(f"assets/{track_texture}.png")
+    for particle_texture in ("sand", "grass", "snow", "plains"):
+        load_texture(f"assets/particles/particle_{particle_texture}_track.png")
+
+def load_models():
+    models_to_load = [
+        "car.obj", "sand_track.obj", "grass_track.obj", "snow_track.obj",
+        "plains_track.obj", "sand_track_bounds.obj", "grass_track_bounds.obj",
+        "snow_track_bounds.obj", "plains_track_bounds.obj"
+    ]
+    for i, m in enumerate(models_to_load):
+        load_model(m)
 
 try:
-    thread.start_new_thread(function = load_car_textures, args = "")
+    thread.start_new_thread(function = load_textures, args = "")
+    thread.start_new_thread(function = load_models, args = "")
 except Exception as e:
     print("error starting thread", e)
 
 # Car
 
 car = Car()
-car.disable()
 
 # Tracks
 
@@ -132,17 +152,18 @@ def update():
     
     if achievements.time_spent < 10:
         achievements.time_spent += time.dt
-    try:
-        thread.start_new_thread(function = achievement_updates, args = '')
-    except Exception as e:
-        print("Error starting new thread", e)
+
+    if car.enabled:
+        car.graphics_parent.enable()
+    else:
+        car.graphics_parent.disable()
 
 def input(key):
     # If multiplayer, send the client's position, rotation, texture, username and highscore to the server
     if car.multiplayer_update:
         multiplayer.client.send_message("MyPosition", tuple(multiplayer.car.position))
         multiplayer.client.send_message("MyRotation", tuple(multiplayer.car.rotation))
-        multiplayer.client.send_message("MyTexture", str(multiplayer.car.texture))
+        multiplayer.client.send_message("MyTexture", str(multiplayer.car.graphics.texture))
         multiplayer.client.send_message("MyUsername", str(multiplayer.car.username_text))
         multiplayer.client.send_message("MyHighscore", str(round(multiplayer.car.highscore_count, 2)))
 

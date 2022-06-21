@@ -1,7 +1,6 @@
 from ursinanetworking import *
 from ursina import *
 from car import CarRepresentation, CarUsername
-from sys import platform
 
 class Multiplayer(Entity):
     def __init__(self, car):
@@ -10,9 +9,6 @@ class Multiplayer(Entity):
         if str(self.car.ip.text) != "IP" and str(self.car.port.text) != "PORT":
             self.client = UrsinaNetworkingClient(self.car.ip.text, int(self.car.port.text))
             self.easy = EasyUrsinaNetworkingClient(self.client)
-
-            if platform != "darwin":
-                print("Joining Server: " + "\u0332".join(self.car.ip.text) + " on port " + "\u0332".join(self.car.port.text))
 
             self.players = {}
             self.players_target_name = {}

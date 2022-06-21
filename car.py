@@ -9,13 +9,15 @@ Text.default_resolution = 1080 * Text.size
 class Car(Entity):
     def __init__(self, position = (0, 0, 4), rotation = (0, 0, 0), topspeed = 30, acceleration = 0.35, braking_strength = 15, friction = 0.6, camera_speed = 8, drift_speed = 35):
         super().__init__(
-            model = "car.obj",
-            texture = "car-red.png",
             position = position,
             rotation = rotation,
             collider = "box",
             scale = (1, 1, 1)
         )
+
+        # Model + Texture
+        self.graphics_parent = Entity()
+        self.graphics = Entity(parent = self.graphics_parent, model = "car.obj", texture = "car-red.png", rotation_y = 180)
 
         # Camera's position
         camera.position = self.position + (20, 40, -50)
@@ -48,14 +50,15 @@ class Car(Entity):
         self.particle_pivot.parent = self
         self.particle_pivot.position = self.position - (0, 1, 5)
 
-        self.slope = 100
+        self.copy_normals = False
 
+        # Making tracks accessible in update
         self.sand_track = None
         self.grass_track = None
         self.snow_track = None
         self.plains_track = None
 
-        # Stopwatch
+        # Stopwatch/Timer
         self.timer_running = False
         self.count = 0.0
         self.highscore_count = None
@@ -81,6 +84,7 @@ class Car(Entity):
         self.ai = False
         self.ai_list = []
 
+        # Shows whether you are connected to a server or not
         self.connected_text = True
         self.disconnected_text = True
         
@@ -96,7 +100,7 @@ class Car(Entity):
         self.can_shake = False
         self.camera_shake_option = True
 
-        # Get highscore from text file
+        # Get highscore from json file
         path = os.path.dirname(os.path.abspath(__file__))
         self.highscore_path = os.path.join(path, "./highscore/highscore.json")
        
@@ -163,6 +167,7 @@ class Car(Entity):
         self.timer.text = str(round(self.count, 1))
         self.reset_count_timer.text = str(round(self.reset_count, 1))
 
+        # Read the username
         with open(self.username_path, "r") as username:
             self.username_text = username.read()
 
@@ -190,15 +195,19 @@ class Car(Entity):
             self.number_of_particles -= 2 * time.dt
             self.shake_amount -= 0.2 * time.dt
 
+        # The y rotation distance between the car and the pivot
         self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
 
+        # Check if the car is hitting the ground
         ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger])
 
         # Driving
         if held_keys[self.controls[0]] or held_keys["up arrow"]:
             if ground_check.hit:
                 self.speed += self.acceleration * 50 * time.dt
+                self.speed += -self.velocity_y * 2 * time.dt
 
+                # Particles + set particle colour depending on the track
                 self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
                 if self.sand_track.enabled == True:
                     self.particles.texture = "particle_sand_track.png"
@@ -260,6 +269,20 @@ class Car(Entity):
                 elif self.rotation_speed < 0:
                     self.rotation_speed += 5 * time.dt
 
+        # Rotation
+        rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+        
+        if self.copy_normals:
+            self.ground_normal = self.position + rotation_ray.world_normal
+        else:
+            self.ground_normal = self.position + (0, 180, 0)
+
+        self.graphics_parent.position = self.position
+        
+        # Set the car's rotation to the grounds
+        self.graphics_parent.look_at(self.ground_normal, axis = 'up')
+        self.graphics_parent.rotate((0, self.rotation_y, 0))
+
         # Cap the speed
         if self.speed >= self.topspeed:
             self.speed = self.topspeed
@@ -267,16 +290,13 @@ class Car(Entity):
             self.speed = 0.1
             self.pivot.rotation = self.rotation
 
-        if self.acceleration >= 0.4:
-            self.acceleration = 0.4
-        if self.acceleration <= 0.1:
-            self.acceleration = 0.1
-
+        # Cap the drifting
         if self.drift_speed <= 20:
             self.drift_speed = 20
         if self.drift_speed >= 40:
             self.drift_speed = 40
 
+        # Cap the steering
         if self.rotation_speed >= self.max_rotation_speed:
             self.rotation_speed = self.max_rotation_speed
         if self.rotation_speed <= -self.max_rotation_speed:
@@ -287,11 +307,13 @@ class Car(Entity):
             self.can_shake = True
             self.shake_amount += self.speed / 5000 * time.dt
 
+        # Cap the camera shake amount
         if self.shake_amount <= 0:
             self.shake_amount = 0
         if self.shake_amount >= 0.03:
             self.shake_amount = 0.03
 
+        # If the camera can shake and camera shake is on, then shake the camera
         if self.can_shake and self.camera_shake_option:
             self.shake_camera()
 
@@ -299,18 +321,24 @@ class Car(Entity):
         if self.y <= -100:
             self.reset_car()
 
-        if self.y >= 500:
+        # Reset the car's position if y value is greater than 300
+        if self.y >= 300:
             self.reset_car()
 
         # Gravity
         movementY = self.velocity_y * time.dt
         direction = (0, sign(movementY), 0)
 
-        y_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_y * 1.4 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+        # Main raycast for collision
+        y_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_y * 1.7 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
 
         if y_ray.hit:
-            self.jump_count = 0
             self.velocity_y = 0
+            if y_ray.distance <= 2.1:
+                # Check if hitting a wall or steep slope
+                if y_ray.world_normal.y > 0.7 and y_ray.world_point.y - self.world_y < 0.5:
+                    # Set the y value to the ground's y value
+                    self.y = y_ray.world_point.y + 1.5
         else:
             self.y += movementY * 50 * time.dt
             self.velocity_y -= 50 * time.dt
@@ -326,15 +354,6 @@ class Car(Entity):
 
             if not x_ray.hit:
                 self.x += movementX
-            else:
-                top_x_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_x / 2, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
-
-                if not top_x_ray.hit:
-                    self.x += movementX
-                    height_ray = raycast(origin = self.world_position + (sign(movementX) * self.scale_x / 2, -self.scale_y / 2, 0), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
-                    if height_ray.hit:
-                        if height_ray.distance < self.slope * 10:
-                            self.y += height_ray.distance
 
         if movementZ != 0:
             direction = (0, 0, sign(movementZ))
@@ -342,27 +361,18 @@ class Car(Entity):
 
             if not z_ray.hit:
                 self.z += movementZ
-            else:
-                top_z_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_z / 2, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
-
-                if not top_z_ray.hit:
-                    self.z += movementZ
-                    height_ray = raycast(origin = self.world_position + (0, -self.scale_y / 2, sign(movementZ) * self.scale_z / 2), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
-                    if height_ray.hit:
-                        if height_ray.distance < self.slope * 10:
-                            self.y += height_ray.distance
 
     def reset_car(self):
-        if self.grass_track.enabled is True:
+        if self.grass_track.enabled:
             self.position = (-80, -30, 15)
             self.rotation = (0, 90, 0)
-        elif self.sand_track.enabled is True:
+        elif self.sand_track.enabled:
             self.position = (-63, -40, -7)
             self.rotation = (0, 90, 0)
-        elif self.snow_track.enabled == True:
+        elif self.snow_track.enabled:
             self.position = (-5, -35, 90)
             self.rotation = (0, 90, 0)
-        elif self.plains_track.enabled == True:
+        elif self.plains_track.enabled:
             self.position = (12, -40, 73)
             self.rotation = (0, 90, 0)
         self.speed = 0

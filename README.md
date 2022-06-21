@@ -16,7 +16,7 @@ Code > Download Zip > Extract the Zip > Navigate to the folder in CMD or Termina
 pip install -r requirements.txt
 ```
 
-NOTE: This game has only been tested on ursina 4.1.1. Things might not work on newer versions.
+NOTE: Make sure you have the github version of ursina since some things use the latest features
 
 And then run
 

@@ -1,20 +1,21 @@
 """
-Author: TheAssasin71 or megat69
-Repo: https://github.com/megat69/ProjectRebirth/blob/main/UrsinaAchievements/__init__.py
-
 Init file for UrsinaAchievements, a system allowing users in Ursina engine to receive achievements.
 """
 from ursina import *
-from ursina import curve
 import json
+import os
 from direct.stdpy import thread
 
-path = os.path.dirname(os.path.abspath(__file__))
-json_path = os.path.join(path, "./achievements.json")
+_path = os.path.dirname(os.path.abspath(__file__))
 
 _achievements_list = []
-with open(json_path, "r", encoding="utf-8") as save_file:
-	_achievements_got = json.load(save_file)["achievements_got_names"].copy()
+try:
+	with open(f"{_path}/achievements.json", "r", encoding="utf-8") as save_file:
+		_achievements_got = json.load(save_file)["achievements_got_names"].copy()
+except FileNotFoundError:
+	with open(f"{_path}/achievements.json", "w", encoding="utf-8") as save_file:
+		_achievements_got = []
+		json.dump({"achievements_got_names": []}, save_file, indent=4)
 
 
 def create_achievement(name:str, unlock_condition, icon:str=None, ringtone:str="clicking", importance:int=1):
@@ -34,7 +35,7 @@ def create_achievement(name:str, unlock_condition, icon:str=None, ringtone:str="
 
 
 def _save_achievements():
-	with open(json_path, "w", encoding="utf-8") as save_file:
+	with open(f"{_path}/achievements.json", "w", encoding="utf-8") as save_file:
 		json.dump({"achievements_got_names": _achievements_got.copy()}, save_file, indent=2)
 
 
@@ -44,10 +45,13 @@ class Achievement(Entity):
 	"""
 	# The different ringtones
 	ringtones = {
-		"clicking": Audio("UrsinaAchievements/ringtones/clicking.ogg", autoplay=False),
-		"subtle": Audio("UrsinaAchievements/ringtones/subtle.ogg", autoplay=False),
-		"uplifting": Audio("UrsinaAchievements/ringtones/uplifting.ogg", autoplay=False)
+		"clicking": Audio(f"{_path}/ringtones/clicking.ogg", autoplay=False),
+		"subtle": Audio(f"{_path}/ringtones/subtle.ogg", autoplay=False),
+		"uplifting": Audio(f"{_path}/ringtones/uplifting.ogg", autoplay=False)
 	}
+	achievement_color = (64, 64, 64)
+	text_color = (255, 255, 255)
+	icon_color = (255, 255, 255)
 
 	def __init__(self, title:str, unlock_condition, icon:str=None, ringtone:str="clicking", importance:int=1):
 		"""
@@ -59,16 +63,13 @@ class Achievement(Entity):
 			"subtle", "uplifting", or the path to a wav/ogg file. It can also be None, and thus won't produce a sound.
 		:param importance: The higher the number is, the longer the achievement will stay on screen. Default is 1.
 		"""
-		achievement_color = (64, 64, 64)
-		text_color = (255, 255, 255)
-		icon_color = (255, 255, 255)
 		super().__init__(
 			parent=camera.ui,
 			model="quad",
 			position=((.5*window.aspect_ratio, -.5)),
 			origin=(.5, -.5),
 			scale=(.25, .15),
-			color=color.rgba(*achievement_color, 185),
+			color=color.rgba(*Achievement.achievement_color, 185),
 			always_on_top=True
 		)
 		# Adding the title
@@ -78,7 +79,7 @@ class Achievement(Entity):
 			position=(-.95, .9),
 			scale=(4, 5.5),
 			wordwrap=15,
-			color=color.rgba(*text_color, 255)
+			color=color.rgba(*Achievement.text_color, 255)
 		)
 		# Adding the icon if wanted
 		if icon is not None:
@@ -88,7 +89,7 @@ class Achievement(Entity):
 				texture=icon,
 				scale=(.4, .5),
 				position=(-.5, .3),
-			color=color.rgba(*icon_color, 255)
+			color=color.rgba(*Achievement.icon_color, 255)
 			)
 
 		# Plays a ringtone if wanted
@@ -104,15 +105,15 @@ class Achievement(Entity):
 		old_position = self.position
 		self.position = self.position + Vec2(0, -.2)
 		self.animate_position(old_position, duration=.4 * importance, curve=curve.out_back)
-		self.animate_color(color.rgba(*achievement_color, 0), duration=1.5 * importance, delay=2 * importance)
-		self.title.animate_color(color.rgba(*text_color, 0), duration=1.5 * importance, delay=2 * importance)
+		self.animate_color(color.rgba(*Achievement.achievement_color, 0), duration=1.5 * importance, delay=2 * importance)
+		self.title.animate_color(color.rgba(*Achievement.text_color, 0), duration=1.5 * importance, delay=2 * importance)
 		if icon is not None:
-			self.icon.animate_color(color.rgba(*icon_color, 0), duration=1.5 * importance, delay=2 * importance)
+			self.icon.animate_color(color.rgba(*Achievement.icon_color, 0), duration=1.5 * importance, delay=2 * importance)
 
 		invoke(destroy, self, delay=5 * importance)
 
 
-def achievement_updates():
+def _achievements_update():
 	"""
 	Checks if the achievement condition is met at each update.
 	"""
@@ -135,12 +136,19 @@ def achievement_updates():
 	for i in range(len(pop)):
 		_achievements_list.pop(pop[i] - i)
 
+Entity(update=_achievements_update)
 
 if __name__ == "__main__":
 	app = Ursina()
 	Sky()
+	do = False
 	def cond():
-		return mouse.velocity[0] != 0 and mouse.velocity[1] == 0
+		global do
+		return do
 	create_achievement("Bubbles.", cond, "bubbles.png", "subtle")
+	def setdo():
+		global do
+		do = True
+	invoke(setdo, delay=2)
 
 	app.run()

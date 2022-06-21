@@ -455,6 +455,8 @@ class MainMenu(Entity):
         self.leaderboard_04 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = -0.1, parent = self.leaderboard_background)
         self.leaderboard_05 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = -0.2, parent = self.leaderboard_background)
         
+        self.leaderboard_texts = [self.leaderboard_01, self.leaderboard_02, self.leaderboard_03, self.leaderboard_04, self.leaderboard_05]
+
         self.leaderboard_background.disable()
         self.leaderboard_title.disable()
 
@@ -761,7 +763,7 @@ class MainMenu(Entity):
             """
             if self.start_spin:
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
-            car.texture = f"car-{colour}.png"
+            car.graphics.texture = f"car-{colour}.png"
 
         self.start_spin = True
 
@@ -881,13 +883,8 @@ class MainMenu(Entity):
             self.leaderboard_05.disable()
             
     def start_leaderboard(self):
-        self.leaderboard_background.enable()
-        self.leaderboard_title.enable()
-        self.leaderboard_01.enable()
-        self.leaderboard_02.enable()
-        self.leaderboard_03.enable()
-        self.leaderboard_04.enable()
-        self.leaderboard_05.enable()
+        for l in self.leaderboard_texts:
+            l.enable()
 
         self.leaderboard_01.text = str(self.car.leaderboard_01)
         self.leaderboard_02.text = str(self.car.leaderboard_02)
@@ -913,6 +910,11 @@ class MainMenu(Entity):
             self.car.timer.disable()
             self.car.highscore.disable()
             self.car.laps_text.disable()
+
+        if self.start_spin:
+            self.car.copy_normals = False
+        else:
+            self.car.copy_normals = True
 
         if key == "w":
             self.start_spin = False
