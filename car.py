@@ -79,7 +79,7 @@ class Car(Entity):
         self.laps = 0
         self.laps_hs = 0
 
-        self.anti_cheat = 0
+        self.anti_cheat = 1
         self.ai = False
         self.ai_list = []
 
