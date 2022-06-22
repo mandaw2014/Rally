@@ -9,15 +9,15 @@ Text.default_resolution = 1080 * Text.size
 class Car(Entity):
     def __init__(self, position = (0, 0, 4), rotation = (0, 0, 0), topspeed = 30, acceleration = 0.35, braking_strength = 15, friction = 0.6, camera_speed = 8, drift_speed = 35):
         super().__init__(
+            model = "car.obj",
+            collider = "box",
             position = position,
             rotation = rotation,
-            collider = "box",
-            scale = (1, 1, 1)
+            visible = False,
         )
 
         # Model + Texture
-        self.graphics_parent = Entity()
-        self.graphics = Entity(parent = self.graphics_parent, model = "car.obj", texture = "car-red.png", rotation_y = 180)
+        self.graphics = Entity(model = "car.obj", texture = "car-red.png", rotation_y = 180)
 
         # Camera's position
         camera.position = self.position + (20, 40, -50)
@@ -79,10 +79,14 @@ class Car(Entity):
         self.laps = 0
         self.laps_hs = 0
 
-        self.anti_cheat = 1
-        self.server_running = False
+        self.anti_cheat = 0
         self.ai = False
         self.ai_list = []
+
+        # Multiplayer
+        self.multiplayer = False
+        self.multiplayer_update = False
+        self.server_running = False
 
         # Shows whether you are connected to a server or not
         self.connected_text = True
@@ -270,18 +274,19 @@ class Car(Entity):
                     self.rotation_speed += 5 * time.dt
 
         # Rotation
+        self.graphics.position = self.position
+
         rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
         
-        if self.copy_normals:
-            self.ground_normal = self.position + rotation_ray.world_normal
-        else:
-            self.ground_normal = self.position + (0, 180, 0)
-
-        self.graphics_parent.position = self.position
+        if rotation_ray.hit:
+            if self.copy_normals:
+                self.ground_normal = self.position + rotation_ray.world_normal
+            else:
+                self.ground_normal = self.position + (0, 180, 0)
         
         # Set the car's rotation to the grounds
-        self.graphics_parent.look_at(self.ground_normal, axis = 'up')
-        self.graphics_parent.rotate((0, self.rotation_y, 0))
+        self.graphics.look_at(self.ground_normal, axis = "up")
+        self.graphics.rotate((0, self.rotation_y + 180, 0))
 
         # Cap the speed
         if self.speed >= self.topspeed:
@@ -330,15 +335,14 @@ class Car(Entity):
         direction = (0, sign(movementY), 0)
 
         # Main raycast for collision
-        y_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_y * 1.7 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+        y_ray = boxcast(origin = self.world_position, direction = self.down, distance = self.scale_y * 1.7 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
 
         if y_ray.hit:
             self.velocity_y = 0
-            if y_ray.distance <= 2.1:
-                # Check if hitting a wall or steep slope
-                if y_ray.world_normal.y > 0.7 and y_ray.world_point.y - self.world_y < 0.5:
-                    # Set the y value to the ground's y value
-                    self.y = y_ray.world_point.y + 1.5
+            # Check if hitting a wall or steep slope
+            if y_ray.world_normal.y > 0.7 and y_ray.world_point.y - self.world_y < 0.5:
+                # Set the y value to the ground's y value
+                self.y = y_ray.world_point.y + 1.4
         else:
             self.y += movementY * 50 * time.dt
             self.velocity_y -= 50 * time.dt

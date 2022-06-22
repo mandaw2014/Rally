@@ -5,19 +5,24 @@ from particles import ParticleSystem
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
 class AICar(Entity):
-    def __init__(self, car, sand_track, grass_track, snow_track, plains_track):
+    def __init__(self, car, ai_list, sand_track, grass_track, snow_track, plains_track):
         super().__init__(
             model = "car.obj",
+            collider = "box",
             position = (0, 0, 0),
             rotation = (0, 0, 0),
-            collider = "box",
-            scale = (1, 1, 1)
+            visible = False
         )
+
+        # Model + Texture
+        self.graphics = Entity(model = "car.obj", rotation_y = 180)
 
         self.car = car
 
+        # Sets the texture of the car randomly
         self.set_random_texture()
 
+        # Values
         self.speed = 0
         self.velocity_y = 0
         self.rotation_speed = 0
@@ -28,26 +33,27 @@ class AICar(Entity):
         self.drift_speed = 35
         self.pivot_rotation_distance = 1
 
+        # Pivot for drifting
         self.pivot = Entity()
         self.pivot.position = self.position
         self.pivot.rotation = self.rotation
 
+        # Particles
         self.number_of_particles = 0.05
         self.particle_pivot = Entity()
         self.particle_pivot.parent = self
         self.particle_pivot.position = self.position - (0, 1, 2)
 
+        # Makes the tracks accessible
         self.sand_track = sand_track
         self.grass_track = grass_track
         self.snow_track = snow_track
         self.plains_track = plains_track
 
-        self.ai_list = None
+        self.ai_list = ai_list
         self.set_enabled = True
 
         self.old_pos = round(self.position)
-        
-        self.slope = 100
 
         # Sand Track Points
 
@@ -116,26 +122,34 @@ class AICar(Entity):
         self.plains_path = [self.plp1, self.plp2, self.plp3, self.plp4, self.plp5, self.plp6, self.plp7, self.plp8, self.plp9, self.plp10, self.plp11, self.plp12, self.plp13]
 
         self.next_path = self.gp1
+
+        # The speed of the AI
         self.difficulty = 50
 
         invoke(self.same_pos, delay = 5)
 
+        self.disable()
+
     def set_random_texture(self):
         i = random.randint(0, 5)
         if i == 0:
-            self.texture = "car-red.png"
+            self.graphics.texture = "car-red.png"
         elif i == 1:
-            self.texture = "car-blue.png"
+            self.graphics.texture = "car-blue.png"
         elif i == 2:
-            self.texture = "car-orange.png"
+            self.graphics.texture = "car-orange.png"
         elif i == 3:
-            self.texture = "car-green.png"
+            self.graphics.texture = "car-green.png"
         elif i == 4:
-            self.texture = "car-white.png"
+            self.graphics.texture = "car-white.png"
         elif i == 5:
-            self.texture = "car-black.png"
+            self.graphics.texture = "car-black.png"
 
     def same_pos(self):
+        '''
+        Checks if the AI is in the same position. If it is, it moved it randomly in
+        a certain direction. This stops the AI from getting stuck on things.
+        '''
         if self.enabled:
             distance = sqrt((self.position[0] - self.old_pos[0]) ** 2 + (self.position[1] - self.old_pos[1]) ** 2 + (self.position[2] - self.old_pos[2]) ** 2)
             if distance <= 2:
@@ -146,143 +160,147 @@ class AICar(Entity):
         invoke(self.same_pos, delay = 1)
 
     def update(self):
-        if self.enabled:
-            self.pivot.position = self.position
+        self.pivot.position = self.position
 
-            if self.pivot.rotation_y != self.rotation_y:
-                if self.pivot.rotation_y > self.rotation_y:
-                    self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
-                    self.speed += self.pivot_rotation_distance / 4.5 * time.dt
-                if self.pivot.rotation_y < self.rotation_y:
-                    self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
-                    self.speed -= self.pivot_rotation_distance / 4.5 * time.dt
+        if self.pivot.rotation_y != self.rotation_y:
+            if self.pivot.rotation_y > self.rotation_y:
+                self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
+                self.speed += self.pivot_rotation_distance / 4.5 * time.dt
+            if self.pivot.rotation_y < self.rotation_y:
+                self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
+                self.speed -= self.pivot_rotation_distance / 4.5 * time.dt
 
-            if self.pivot.rotation_y - self.rotation_y < -20 or self.pivot.rotation_y - self.rotation_y > 20:
-                self.number_of_particles += 1 * time.dt
-            else:
-                self.number_of_particles -= 2 * time.dt
+        if self.pivot.rotation_y - self.rotation_y < -20 or self.pivot.rotation_y - self.rotation_y > 20:
+            self.number_of_particles += 1 * time.dt
+        else:
+            self.number_of_particles -= 2 * time.dt
 
-            self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
+        self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
 
-            if self.sand_track.enabled or self.grass_track.enabled:
-                self.difficulty = 60
-            elif self.snow_track.enabled or self.plains_track.enabled:
-                self.difficulty = 40
+        if self.sand_track.enabled or self.grass_track.enabled:
+            self.difficulty = 60
+        elif self.snow_track.enabled or self.plains_track.enabled:
+            self.difficulty = 40
 
-            ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.car, self.ai_list[0], self.ai_list[1], self.ai_list[2], self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
-            
-            if ground_check.hit:
-                r = random.randint(0, 1)
-                if r == 0:
-                    self.speed += self.acceleration * self.difficulty * time.dt
+        ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.car, self.ai_list[0], self.ai_list[1], self.ai_list[2], self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
+        
+        if ground_check.hit:
+            r = random.randint(0, 1)
+            if r == 0:
+                self.speed += self.acceleration * self.difficulty * time.dt
 
-                    self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
-                    if self.sand_track.enabled == True:
-                        self.particles.texture = "particle_sand_track.png"
-                    elif self.grass_track.enabled == True:
-                        self.particles.texture = "particle_grass_track.png"
-                    elif self.snow_track.enabled == True:
-                        self.particles.texture = "particle_snow_track.png"
-                    elif self.plains_track.enabled == True:
-                        self.particles.texture = "particle_plains_track.png"
-                    else:
-                        self.particles.texture = "particle_sand_track.png"
-                    self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
-                    invoke(self.particles.disable, delay = 1)
-
-            # Main AI bit
-
-            # If the ai's rotation y does not equal the next paths rotation, change it
-            if self.next_path.rotation_y > self.rotation_y:
-                self.rotation_y += 80 * time.dt
-            elif self.next_path.rotation_y < self.rotation_y:
-                self.rotation_y -= 80 * time.dt
-
-            if self.sand_track.enabled:
-                for p in self.sand_path:
-                    if distance(p, self) < 12 and self.next_path == p:
-                        self.next_path = self.sand_path[self.sand_path.index(p) - len(self.sand_path) + 1]
-            elif self.grass_track.enabled:
-                for p in self.grass_path:
-                    if distance(p, self) < 14 and self.next_path == p:
-                        self.next_path = self.grass_path[self.grass_path.index(p) - len(self.grass_path) + 1]
-            elif self.snow_track.enabled:
-                for p in self.snow_path:
-                    if distance(p, self) < 12 and self.next_path == p:
-                        self.next_path = self.snow_path[self.snow_path.index(p) - len(self.snow_path) + 1]
-            elif self.plains_track.enabled:
-                if distance(self.plp10, self) < 12:
-                    self.rotation_y = 0
-                    self.pivot.rotation_y = self.rotation_y
-                for p in self.plains_path:
-                    if distance(p, self) < 12 and self.next_path == p:
-                        self.next_path = self.plains_path[self.plains_path.index(p) - len(self.plains_path) + 1]
-
-            if self.speed >= self.topspeed:
-                self.speed = self.topspeed
-            if self.speed <= 0.1:
-                self.speed = 0.1
-                self.pivot.rotation = self.rotation
-
-            if self.drift_speed <= 20:
-                self.drift_speed = 20
-            if self.drift_speed >= 40:
-                self.drift_speed = 40
-            
-            if self.y <= -100:
-                self.reset()
-
-            if self.y >= 200:
-                self.reset()
-
-            movementY = self.velocity_y * time.dt
-            direction = (0, sign(movementY), 0)
-
-            y_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_y * 1.4 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
-
-            if y_ray.hit:
-                self.jump_count = 0
-                self.velocity_y = 0
-            else:
-                self.y += movementY * 50 * time.dt
-                self.velocity_y -= 1
-
-            movementX = self.pivot.forward[0] * self.speed * time.dt
-            movementZ = self.pivot.forward[2] * self.speed * time.dt
-
-            if movementX != 0:
-                direction = (sign(movementX), 0, 0)
-                x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 2 + abs(movementX), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ], thickness = (1, 1))
-
-                if not x_ray.hit:
-                    self.x += movementX
+                self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
+                if self.sand_track.enabled == True:
+                    self.particles.texture = "particle_sand_track.png"
+                elif self.grass_track.enabled == True:
+                    self.particles.texture = "particle_grass_track.png"
+                elif self.snow_track.enabled == True:
+                    self.particles.texture = "particle_snow_track.png"
+                elif self.plains_track.enabled == True:
+                    self.particles.texture = "particle_plains_track.png"
                 else:
-                    top_x_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_x / 2, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
+                    self.particles.texture = "particle_sand_track.png"
+                self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
+                invoke(self.particles.disable, delay = 1)
 
-                    if not top_x_ray.hit:
-                        self.x += movementX
-                        height_ray = raycast(origin = self.world_position + (sign(movementX) * self.scale_x / 2, -self.scale_y / 2, 0), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
-                        if height_ray.hit and y_ray.hit:
-                            if height_ray.distance < self.slope * 10:
-                                if height_ray.entity != self.ai_list[0] or height_ray.entity != self.ai_list[1] or height_ray.entity != self.ai_list[2]:
-                                    self.y += height_ray.distance
+        self.graphics.position = self.position
 
-            if movementZ != 0:
-                direction = (0, 0, sign(movementZ))
-                z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 2 + abs(movementZ), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ], thickness = (1, 1))
+        rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+        
+        self.ground_normal = self.position + rotation_ray.world_normal
+        
+        # Set the car's rotation to the grounds
+        self.graphics.look_at(self.ground_normal, axis = "up")
+        self.graphics.rotate((0, self.rotation_y + 180, 0))
 
-                if not z_ray.hit:
-                    self.z += movementZ
-                else:
-                    top_z_ray = raycast(origin = self.world_position - (0, self.scale_y / 2 - 0.1, 0), direction = direction, distance = self.scale_z / 2, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
+        # Main AI bit
 
-                    if not top_z_ray.hit:
-                        self.z += movementZ
-                        height_ray = raycast(origin = self.world_position + (0, -self.scale_y / 2, sign(movementZ) * self.scale_z / 2), direction = (0, 1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
-                        if height_ray.hit and y_ray.hit:
-                            if height_ray.distance < self.slope * 10:
-                                if height_ray.entity != self.ai_list[0] or height_ray.entity != self.ai_list[1] or height_ray.entity != self.ai_list[2]:
-                                    self.y += height_ray.distance
+        # If the ai's rotation y does not equal the next paths rotation, change it
+        if self.next_path.rotation_y > self.rotation_y:
+            self.rotation_y += 80 * time.dt
+        elif self.next_path.rotation_y < self.rotation_y:
+            self.rotation_y -= 80 * time.dt
+
+        '''
+        If the distance between the next path point and the ai is less than 12, 
+        change the path point to be the next point in the list
+        '''
+        if self.sand_track.enabled:
+            for p in self.sand_path:
+                if distance(p, self) < 12 and self.next_path == p:
+                    self.next_path = self.sand_path[self.sand_path.index(p) - len(self.sand_path) + 1]
+        elif self.grass_track.enabled:
+            for p in self.grass_path:
+                if distance(p, self) < 14 and self.next_path == p:
+                    self.next_path = self.grass_path[self.grass_path.index(p) - len(self.grass_path) + 1]
+        elif self.snow_track.enabled:
+            for p in self.snow_path:
+                if distance(p, self) < 12 and self.next_path == p:
+                    self.next_path = self.snow_path[self.snow_path.index(p) - len(self.snow_path) + 1]
+        elif self.plains_track.enabled:
+            if distance(self.plp10, self) < 12:
+                self.rotation_y = 0
+                self.pivot.rotation_y = self.rotation_y
+            for p in self.plains_path:
+                if distance(p, self) < 12 and self.next_path == p:
+                    self.next_path = self.plains_path[self.plains_path.index(p) - len(self.plains_path) + 1]
+
+        # Cap the speed
+        if self.speed >= self.topspeed:
+            self.speed = self.topspeed
+        if self.speed <= 0.1:
+            self.speed = 0.1
+            self.pivot.rotation = self.rotation
+
+        # Cap the drifting
+        if self.drift_speed <= 20:
+            self.drift_speed = 20
+        if self.drift_speed >= 40:
+            self.drift_speed = 40
+        
+        # If the AI is below -100, reset the position
+        if self.y <= -100:
+            self.reset()
+
+        # If the AI is above 100, reset the position
+        if self.y >= 100:
+            self.reset()
+
+        # Gravity
+        movementY = self.velocity_y * time.dt
+        direction = (0, sign(movementY), 0)
+
+        # Main raycast for collision
+        y_ray = boxcast(origin = self.world_position, direction = self.down, distance = self.scale_y * 1.7 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+
+        if y_ray.hit:
+            self.velocity_y = 0
+            # Check if hitting a wall or steep slope
+            if y_ray.world_normal.y > 0.7 and y_ray.world_point.y - self.world_y < 0.5:
+                # Set the y value to the ground's y value
+                self.y = y_ray.world_point.y + 1.4
+        else:
+            self.y += movementY * 50 * time.dt
+            self.velocity_y -= 50 * time.dt
+
+        # Movement
+        movementX = self.pivot.forward[0] * self.speed * time.dt
+        movementZ = self.pivot.forward[2] * self.speed * time.dt
+
+        # Collision Detection
+        if movementX != 0:
+            direction = (sign(movementX), 0, 0)
+            x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 2 + abs(movementX), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ], thickness = (1, 1))
+
+            if not x_ray.hit:
+                self.x += movementX
+
+        if movementZ != 0:
+            direction = (0, 0, sign(movementZ))
+            z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 2 + abs(movementZ), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ], thickness = (1, 1))
+
+            if not z_ray.hit:
+                self.z += movementZ
 
     def reset(self):
         if self.grass_track.enabled == True:
@@ -305,6 +323,8 @@ class AICar(Entity):
             self.position = (0, 0, 0)
             self.rotation = (0, 0, 0)
         self.speed = 0
+
+# Path Point class
 
 class PathObject(Entity):
     def __init__(self, position = (0, 0, 0), rotation = (0, 0, 0)):

@@ -67,10 +67,6 @@ class Multiplayer(Entity):
             self.players[p].text_object.text = f"{self.players_target_name[p]}"
             self.players[p].highscore = f"{self.players_target_score[p]}"
 
-            if distance(self.players_target_pos[p], self.car.position) > 3:
-                self.client.send_message("MyPosition", tuple(self.car.position))
-                self.client.send_message("MyRotation", tuple(self.car.rotation))
-
             if self.car.enabled == False:
                 self.players[p].disable()
             elif self.car.enabled == True:

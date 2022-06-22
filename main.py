@@ -17,8 +17,8 @@ from tracks.grass_track import GrassTrack
 from tracks.snow_track import SnowTrack
 from tracks.plains_track import PlainsTrack
 
-Text.default_resolution = 1080 * Text.size
 Text.default_font = "./assets/Roboto.ttf"
+Text.default_resolution = 1080 * Text.size
 
 # Window
 
@@ -41,26 +41,27 @@ else:
 
 # Starting new thread for loading textures and models
 
-def load_textures():
-    for car_texture in ("black", "blue", "green", "orange", "red", "white"):
-        load_texture(f"assets/garage/car-{car_texture}.png")
-    for track_texture in ("sand_track/sand_track", "grass_track/grass_track", "snow_track/snow_track", "plains_track/plains_track"):
-        load_texture(f"assets/{track_texture}.png")
-    for particle_texture in ("sand", "grass", "snow", "plains"):
-        load_texture(f"assets/particles/particle_{particle_texture}_track.png")
-
-def load_models():
+def load_assets():
     models_to_load = [
         "car.obj", "sand_track.obj", "grass_track.obj", "snow_track.obj",
         "plains_track.obj", "sand_track_bounds.obj", "grass_track_bounds.obj",
         "snow_track_bounds.obj", "plains_track_bounds.obj"
     ]
+
+    textures_to_load = [
+        "car-red.png", "car-orange.png", "car-green.png", "car-white.png", "car-black.png",
+        "car-blue.png", "sand_track.png", "grass_track.png", "snow_track.png", "plains_track.png",
+        "particle_sand_track.png", "particle_grass_track.png", "particle_snow_track", "particle_plains_track.png"
+    ]
+
     for i, m in enumerate(models_to_load):
         load_model(m)
 
+    for i, t in enumerate(textures_to_load):
+        load_texture(t)
+
 try:
-    thread.start_new_thread(function = load_textures, args = "")
-    thread.start_new_thread(function = load_models, args = "")
+    thread.start_new_thread(function = load_assets, args = "")
 except Exception as e:
     print("error starting thread", e)
 
@@ -82,40 +83,31 @@ car.plains_track = plains_track
 
 # AI
 
-ai = AICar(car, sand_track, grass_track, snow_track, plains_track)
-ai1 = AICar(car, sand_track, grass_track, snow_track, plains_track)
-ai2 = AICar(car, sand_track, grass_track, snow_track, plains_track)
-ai.disable()
-ai1.disable()
-ai2.disable()
+ai_list = []
 
-ai_list = [ai, ai1, ai2]
+ai = AICar(car, ai_list, sand_track, grass_track, snow_track, plains_track)
+ai1 = AICar(car, ai_list, sand_track, grass_track, snow_track, plains_track)
+ai2 = AICar(car, ai_list, sand_track, grass_track, snow_track, plains_track)
+
+ai_list.append(ai)
+ai_list.append(ai1)
+ai_list.append(ai2)
 
 car.ai_list = ai_list
 
-ai.ai_list = ai_list
-ai1.ai_list = ai_list
-ai2.ai_list = ai_list
-
 # Main menu
-
 main_menu = MainMenu(car, ai_list, sand_track, grass_track, snow_track, plains_track)
-
-car.multiplayer = False
-car.multiplayer_update = False
 
 # Achievements
 achievements = RallyAchievements(car, main_menu, sand_track, grass_track, snow_track, plains_track)
 
 # Lighting + shadows
-
 sun = SunLight(direction = (-0.7, -0.9, 0.5), resolution = 2048, car = car)
 ambient = AmbientLight(color = Vec4(0.5, 0.55, 0.66, 0) * 0.75)
 
 render.setShaderAuto()
 
 # Sky
-
 Sky(texture = "sky")
 
 def update():
@@ -154,17 +146,23 @@ def update():
         achievements.time_spent += time.dt
 
     if car.enabled:
-        car.graphics_parent.enable()
+        car.graphics.enable()
     else:
-        car.graphics_parent.disable()
+        car.graphics.disable()
+
+    for ai in ai_list:
+        if ai.enabled:
+            ai.graphics.enable()
+        else:
+            ai.graphics.disable()
 
 def input(key):
     # If multiplayer, send the client's position, rotation, texture, username and highscore to the server
     if car.multiplayer_update:
-        multiplayer.client.send_message("MyPosition", tuple(multiplayer.car.position))
-        multiplayer.client.send_message("MyRotation", tuple(multiplayer.car.rotation))
-        multiplayer.client.send_message("MyTexture", str(multiplayer.car.graphics.texture))
-        multiplayer.client.send_message("MyUsername", str(multiplayer.car.username_text))
-        multiplayer.client.send_message("MyHighscore", str(round(multiplayer.car.highscore_count, 2)))
+        multiplayer.client.send_message("MyPosition", tuple(car.position))
+        multiplayer.client.send_message("MyRotation", tuple(car.rotation))
+        multiplayer.client.send_message("MyTexture", str(car.graphics.texture))
+        multiplayer.client.send_message("MyUsername", str(car.username_text))
+        multiplayer.client.send_message("MyHighscore", str(round(car.highscore_count, 2)))
 
 app.run()
