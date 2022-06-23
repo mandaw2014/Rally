@@ -145,6 +145,7 @@ def update():
     if achievements.time_spent < 10:
         achievements.time_spent += time.dt
 
+    # If the car is not enabled, disable the graphics
     if car.enabled:
         car.graphics.enable()
     else:

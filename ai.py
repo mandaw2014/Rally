@@ -15,7 +15,8 @@ class AICar(Entity):
         )
 
         # Model + Texture
-        self.graphics = Entity(model = "car.obj", rotation_y = 180)
+        self.graphics_parent = Entity()
+        self.graphics = Entity(model = "car.obj")
 
         self.car = car
 
@@ -203,15 +204,18 @@ class AICar(Entity):
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
                 invoke(self.particles.disable, delay = 1)
 
-        self.graphics.position = self.position
+        # Rotation
+        self.graphics_parent.position = self.position
+        self.graphics.position = self.graphics_parent.position
 
         rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
         
         self.ground_normal = self.position + rotation_ray.world_normal
         
         # Set the car's rotation to the grounds
-        self.graphics.look_at(self.ground_normal, axis = "up")
-        self.graphics.rotate((0, self.rotation_y + 180, 0))
+        self.graphics_parent.look_at(self.ground_normal, axis = "up")
+        self.graphics_parent.rotate((0, self.rotation_y + 180, 0))
+        self.graphics.quaternion = slerp(self.graphics.quaternion, self.graphics_parent.quaternion, 10 * time.dt)
 
         # Main AI bit
 
