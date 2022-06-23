@@ -1,5 +1,4 @@
-from ursina import *
-from UrsinaAchievements import *
+from UrsinaAchievements import create_achievement
 
 class RallyAchievements():
     def __init__(self, car, main_menu, sand_track, grass_track, snow_track, plains_track):

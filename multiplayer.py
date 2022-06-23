@@ -1,5 +1,5 @@
 from ursinanetworking import *
-from ursina import *
+from ursina import Entity, Vec3, color, destroy
 from car import CarRepresentation, CarUsername
 
 class Multiplayer(Entity):

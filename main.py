@@ -1,5 +1,4 @@
 from ursina import *
-from ursinanetworking import *
 from direct.stdpy import thread
 
 from car import Car
@@ -39,7 +38,7 @@ else:
         int((window.screen_resolution[1] - window.fullscreen_size[1]) / 2)
     )
 
-# Starting new thread for loading textures and models
+# Starting new thread for assets
 
 def load_assets():
     models_to_load = [
@@ -66,11 +65,9 @@ except Exception as e:
     print("error starting thread", e)
 
 # Car
-
 car = Car()
 
 # Tracks
-
 sand_track = SandTrack(car)
 grass_track = GrassTrack(car)
 snow_track = SnowTrack(car)
@@ -82,7 +79,6 @@ car.snow_track = snow_track
 car.plains_track = plains_track
 
 # AI
-
 ai_list = []
 
 ai = AICar(car, ai_list, sand_track, grass_track, snow_track, plains_track)

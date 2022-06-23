@@ -442,7 +442,7 @@ class MainMenu(Entity):
         back_button = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
         
         ai_button = Button(text = "AI: Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.28, x = 0, parent = self.maps_menu)
-        self.ai_slider = Slider(min = 1, max = 3, default = 3, text = "AI", y = -0.4, x = -0.3, scale = 1.3, parent = self.maps_menu, dynamic = True)
+        self.ai_slider = Slider(min = 1, max = 3, default = 1, text = "AI", y = -0.4, x = -0.3, scale = 1.3, parent = self.maps_menu, dynamic = True)
         self.ai_slider.step = 1
         self.ai_slider.disable()
 
@@ -690,7 +690,7 @@ class MainMenu(Entity):
                         ai.speed = 0
             self.car.speed = 0
             self.car.anti_cheat = 1
-
+            self.car.velocity_y = 0
             if self.car.time_trial == False:
                 self.car.count = 0.0
                 self.car.reset_count = 0.0
@@ -707,6 +707,7 @@ class MainMenu(Entity):
             self.car.disable()
             self.car.rotation = (0, 65, 0)
             self.car.speed = 0
+            self.car.velocity_y = 0
             self.car.count = 0.0
             self.car.last_count = 0.0
             self.car.reset_count = 0.0

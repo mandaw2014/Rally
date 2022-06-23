@@ -106,11 +106,31 @@ class Car(Entity):
         self.camera_shake_option = True
 
         # Get highscore from json file
+        self.highscore_dict = {
+            "highscore": {
+                "sand_track": 0.0,
+                "grass_track": 0.0,
+                "snow_track": 0.0,
+                "plains_track": 0.0
+            },
+
+            "time_trial": {
+                "sand_track": 0,
+                "grass_track": 0, 
+                "snow_track": 0, 
+                "plains_track": 0
+            }
+        }
+
         path = os.path.dirname(os.path.abspath(__file__))
         self.highscore_path = os.path.join(path, "./highscore/highscore.json")
-       
-        with open(self.highscore_path, "r") as hs:
-            self.highscores = json.load(hs)
+        
+        try:
+            with open(self.highscore_path, "r") as hs:
+                self.highscores = json.load(hs)
+        except FileNotFoundError:
+            with open(self.highscore_path, "w") as hs:
+                json.dump(self.highscore_dict, hs, indent = 4)
 
         self.sand_track_hs = self.highscores["highscore"]["sand_track"]
         self.grass_track_hs = self.highscores["highscore"]["grass_track"]
@@ -128,7 +148,6 @@ class Car(Entity):
         self.username_path = os.path.join(path, "./highscore/username.txt")
         with open(self.username_path, "r") as username:
             self.username_text = username.read()
-            print(self.username_text)
 
     def update(self):
         # Stopwatch/Timer
@@ -181,6 +200,9 @@ class Car(Entity):
         camera.rotation = (35, -20, 0)
         self.camera_follow.offset = self.camera_angle
 
+        # The y rotation distance between the car and the pivot
+        self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
+
         # Drifting
         if self.pivot.rotation_y != self.rotation_y:
             if self.pivot.rotation_y > self.rotation_y:
@@ -200,15 +222,29 @@ class Car(Entity):
             self.number_of_particles -= 2 * time.dt
             self.shake_amount -= 0.2 * time.dt
 
-        # The y rotation distance between the car and the pivot
-        self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
+        # Rotation
+        self.graphics_parent.position = self.position
+        self.graphics.position = self.position
+
+        self.graphics.quaternion = slerp(self.graphics.quaternion, self.graphics_parent.quaternion, 10 * time.dt)
 
         # Check if the car is hitting the ground
         ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger])
 
-        # Driving
-        if held_keys[self.controls[0]] or held_keys["up arrow"]:
-            if ground_check.hit:
+        if ground_check.hit:
+            # Raycast for getting the ground's normals
+            rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+
+            if self.copy_normals:
+                self.ground_normal = self.position + rotation_ray.world_normal
+            else:
+                self.ground_normal = self.position + (0, 180, 0)
+
+            self.graphics_parent.look_at(self.ground_normal, axis = "up")
+            self.graphics_parent.rotate((0, self.rotation_y + 180, 0))
+
+            # Driving
+            if held_keys[self.controls[0]] or held_keys["up arrow"]:
                 self.speed += self.acceleration * 50 * time.dt
                 self.speed += -self.velocity_y * 2 * time.dt
 
@@ -226,18 +262,15 @@ class Car(Entity):
                     self.particles.texture = "particle_sand_track.png"
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
                 invoke(self.particles.disable, delay = 1)
-        else:
-            if ground_check.hit:
+            else:
                 self.speed -= self.friction * 5 * time.dt
 
-        # Braking
-        if held_keys[self.controls[2] or held_keys["down arrow"]]:
-            if ground_check.hit:
+            # Braking
+            if held_keys[self.controls[2] or held_keys["down arrow"]]:
                 self.speed -= self.braking_strenth * time.dt
 
-        # Hand Braking
-        if held_keys["space"]:
-            if ground_check.hit:
+            # Hand Braking
+            if held_keys["space"]:
                 if self.rotation_speed < 0:
                     self.rotation_speed -= 3 * time.dt
                 elif self.rotation_speed > 0:
@@ -245,8 +278,11 @@ class Car(Entity):
                 self.drift_speed -= 20 * time.dt
                 self.speed -= 20 * time.dt
                 self.max_rotation_speed = 3
+            else:
+                self.max_rotation_speed = 2.6
+            
         else:
-            self.max_rotation_speed = 2.6
+            self.graphics_parent.rotation = self.rotation
 
         # Respawn
         if held_keys["g"]:
@@ -273,23 +309,6 @@ class Car(Entity):
                     self.rotation_speed -= 5 * time.dt
                 elif self.rotation_speed < 0:
                     self.rotation_speed += 5 * time.dt
-
-        # Rotation
-        self.graphics_parent.position = self.position
-        self.graphics.position = self.graphics_parent.position
-
-        rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
-        
-        if rotation_ray.hit:
-            if self.copy_normals:
-                self.ground_normal = self.position + rotation_ray.world_normal
-            else:
-                self.ground_normal = self.position + (0, 180, 0)
-        
-        # Set the car's rotation to the grounds
-        self.graphics_parent.look_at(self.ground_normal, axis = "up")
-        self.graphics_parent.rotate((0, self.rotation_y + 180, 0))
-        self.graphics.quaternion = slerp(self.graphics.quaternion, self.graphics_parent.quaternion, 10 * time.dt)
 
         # Cap the speed
         if self.speed >= self.topspeed:
@@ -383,6 +402,7 @@ class Car(Entity):
             self.position = (12, -40, 73)
             self.rotation = (0, 90, 0)
         self.speed = 0
+        self.velocity_y = 0
         self.anti_cheat = 1
         if self.time_trial == False:
             self.timer_running = False
@@ -413,7 +433,7 @@ class Car(Entity):
         }
 
         with open(self.highscore_path, "w") as hs:
-            json.dump(self.highscore_dict, hs)
+            json.dump(self.highscore_dict, hs, indent = 4)
 
     def reset_highscore(self):
         self.highscore_dict = {
@@ -433,7 +453,7 @@ class Car(Entity):
         }
 
         with open(self.highscore_path, "w") as hs:
-            json.dump(self.highscore_dict, hs)
+            json.dump(self.highscore_dict, hs, indent = 4)
     
     def reset_timer(self):
         self.count = self.reset_count
