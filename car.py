@@ -113,8 +113,9 @@ class Car(Entity):
             with open(self.highscore_path, "r") as hs:
                 self.highscores = json.load(hs)
         except FileNotFoundError:
-            with open(self.highscore_path, "w") as hs:
+            with open(self.highscore_path, "w+") as hs:
                 self.reset_highscore()
+                self.highscores = json.load(hs)
 
         self.sand_track_hs = self.highscores["highscore"]["sand_track"]
         self.grass_track_hs = self.highscores["highscore"]["grass_track"]
