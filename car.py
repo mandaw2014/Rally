@@ -106,22 +106,6 @@ class Car(Entity):
         self.camera_shake_option = True
 
         # Get highscore from json file
-        self.highscore_dict = {
-            "highscore": {
-                "sand_track": 0.0,
-                "grass_track": 0.0,
-                "snow_track": 0.0,
-                "plains_track": 0.0
-            },
-
-            "time_trial": {
-                "sand_track": 0,
-                "grass_track": 0, 
-                "snow_track": 0, 
-                "plains_track": 0
-            }
-        }
-
         path = os.path.dirname(os.path.abspath(__file__))
         self.highscore_path = os.path.join(path, "./highscore/highscore.json")
         
@@ -130,7 +114,7 @@ class Car(Entity):
                 self.highscores = json.load(hs)
         except FileNotFoundError:
             with open(self.highscore_path, "w") as hs:
-                json.dump(self.highscore_dict, hs, indent = 4)
+                self.reset_highscore()
 
         self.sand_track_hs = self.highscores["highscore"]["sand_track"]
         self.grass_track_hs = self.highscores["highscore"]["grass_track"]
@@ -226,7 +210,7 @@ class Car(Entity):
         self.graphics_parent.position = self.position
         self.graphics.position = self.position
 
-        self.graphics.quaternion = slerp(self.graphics.quaternion, self.graphics_parent.quaternion, 10 * time.dt)
+        self.graphics.quaternion = slerp(self.graphics.quaternion, self.graphics_parent.quaternion, 20 * time.dt)
 
         # Check if the car is hitting the ground
         ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger])
