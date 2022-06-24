@@ -207,27 +207,10 @@ class Car(Entity):
             self.number_of_particles -= 2 * time.dt
             self.shake_amount -= 0.2 * time.dt
 
-        # Rotation
-        self.graphics_parent.position = self.position
-        self.graphics.position = self.position
-
-        self.graphics.quaternion = slerp(self.graphics.quaternion, self.graphics_parent.quaternion, 20 * time.dt)
-
         # Check if the car is hitting the ground
         ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger])
 
         if ground_check.hit:
-            # Raycast for getting the ground's normals
-            rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
-
-            if self.copy_normals:
-                self.ground_normal = self.position + rotation_ray.world_normal
-            else:
-                self.ground_normal = self.position + (0, 180, 0)
-
-            self.graphics_parent.look_at(self.ground_normal, axis = "up")
-            self.graphics_parent.rotate((0, self.rotation_y + 180, 0))
-
             # Driving
             if held_keys[self.controls[0]] or held_keys["up arrow"]:
                 self.speed += self.acceleration * 50 * time.dt
@@ -265,13 +248,26 @@ class Car(Entity):
                 self.max_rotation_speed = 3
             else:
                 self.max_rotation_speed = 2.6
-            
-        else:
-            self.graphics_parent.rotation = self.rotation
 
-        # Respawn
-        if held_keys["g"]:
-            self.reset_car()
+        # Rotation
+        self.graphics_parent.position = self.position
+        self.graphics.position = self.position
+
+        self.graphics.quaternion = slerp(self.graphics.quaternion, self.graphics_parent.quaternion, 20 * time.dt)
+
+        # Raycast for getting the ground's normals
+        rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+
+        if self.copy_normals:
+            self.ground_normal = self.position + rotation_ray.world_normal
+        else:
+            self.ground_normal = self.position + (0, 180, 0)
+
+        if rotation_ray.distance <= 4:
+            self.graphics_parent.look_at(self.ground_normal, axis = "up")
+            self.graphics_parent.rotate((0, self.rotation_y + 180, 0))
+        else:
+            self.graphics_parent.rotation_y = self.rotation_y
 
         # Steering
         self.rotation_y += self.rotation_speed * 50 * time.dt
@@ -324,6 +320,10 @@ class Car(Entity):
             self.shake_amount = 0
         if self.shake_amount >= 0.03:
             self.shake_amount = 0.03
+
+        # Respawn
+        if held_keys["g"]:
+            self.reset_car()
 
         # If the camera can shake and camera shake is on, then shake the camera
         if self.can_shake and self.camera_shake_option:

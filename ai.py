@@ -183,19 +183,8 @@ class AICar(Entity):
             self.difficulty = 40
 
         ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.car, self.ai_list[0], self.ai_list[1], self.ai_list[2], self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
-        
-        self.graphics_parent.position = self.position
-        self.graphics.position = self.position
-        self.graphics.quaternion = slerp(self.graphics.quaternion, self.graphics_parent.quaternion, 10 * time.dt)
 
         if ground_check.hit:
-            # Rotation
-            rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
-            
-            # Set the car's rotation to the grounds
-            self.graphics_parent.look_at(self.position + rotation_ray.world_normal, axis = "up")
-            self.graphics_parent.rotate((0, self.rotation_y + 180, 0))
-        
             r = random.randint(0, 1)
             if r == 0:
                 self.speed += self.acceleration * self.difficulty * time.dt
@@ -215,6 +204,21 @@ class AICar(Entity):
                 invoke(self.particles.disable, delay = 1)
         else:
             self.graphics_parent.rotation = self.rotation
+
+        # Rotation
+        self.graphics_parent.position = self.position
+        self.graphics.position = self.position
+
+        self.graphics.quaternion = slerp(self.graphics.quaternion, self.graphics_parent.quaternion, 20 * time.dt)
+
+        # Raycast for getting the ground's normals
+        rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+
+        if rotation_ray.distance <= 3:
+            self.graphics_parent.look_at(self.position + rotation_ray.world_normal, axis = "up")
+            self.graphics_parent.rotate((0, self.rotation_y + 180, 0))
+        else:
+            self.graphics_parent.rotation_y = self.rotation_y
 
         # Main AI bit
 
