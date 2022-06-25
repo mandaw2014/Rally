@@ -1,13 +1,14 @@
 from UrsinaAchievements import create_achievement
 
 class RallyAchievements():
-    def __init__(self, car, main_menu, sand_track, grass_track, snow_track, plains_track):
+    def __init__(self, car, main_menu, sand_track, grass_track, snow_track, plains_track, savannah_track):
         self.car = car
         self.main_menu = main_menu
         self.sand_track = sand_track
         self.grass_track = grass_track
         self.snow_track = snow_track
         self.plains_track = plains_track
+        self.savannah_track = savannah_track
         
         self.time_spent = 0
 
@@ -16,6 +17,7 @@ class RallyAchievements():
         create_achievement("Race on Grass Track for the first time!", self.play_grass_track, icon = "confetti.png", ringtone = None)
         create_achievement("Race on Snow Track for the first time!", self.play_snow_track, icon = "confetti.png", ringtone = None)
         create_achievement("Race on Plains Track for the first time!", self.play_plains_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Race on Savannah Track for the first time!", self.play_savannah_track, icon = "confetti.png", ringtone = None)
         create_achievement("Race against AI!", self.race_against_ai, icon = "confetti.png", ringtone = None)
         create_achievement("Play Multiplayer!", self.play_multiplayer, icon = "confetti.png", ringtone = None)
         create_achievement("Go to the Garage!", self.garage, icon = "confetti.png", ringtone = None)
@@ -41,10 +43,16 @@ class RallyAchievements():
         create_achievement("Get under 26s on Plains Track!", self.twentysix_seconds_plains_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 24s on Plains Track!", self.twentyfour_seconds_plains_track, icon = "confetti.png", ringtone = None)
 
+        create_achievement("Get under 20s on Savannah Track!", self.twenty_seconds_savannah_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 18s on Savannah Track!", self.eighteen_seconds_savannah_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 17s on Savannah Track!", self.seventeen_seconds_savannah_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 16s on Savannah Track!", self.sixteen_seconds_savannah_track, icon = "confetti.png", ringtone = None)
+
         create_achievement("Beat Mandaw in Sand Track!", self.beat_mandaw_in_sand_track, icon = "confetti.png", ringtone = None)
         create_achievement("Beat Mandaw in Grass Track!", self.beat_mandaw_in_grass_track, icon = "confetti.png", ringtone = None)
         create_achievement("Beat Mandaw in Snow Track!", self.beat_mandaw_in_snow_track, icon = "confetti.png", ringtone = None)
         create_achievement("Beat Mandaw in Plains Track!", self.beat_mandaw_in_plains_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Beat Mandaw in Savannah Track!", self.beat_mandaw_in_savannah_track, icon = "confetti.png", ringtone = None)
 
     def play_the_game(self):
         return self.time_spent > 3
@@ -60,6 +68,9 @@ class RallyAchievements():
 
     def play_plains_track(self):
         return self.plains_track.played
+    
+    def play_savannah_track(self):
+        return self.savannah_track.played
 
     def race_against_ai(self):
         return self.car.ai_list[0].enabled
@@ -193,6 +204,38 @@ class RallyAchievements():
                         if self.car.last_count != 0:
                             return self.car.last_count <= 24
 
+    def twenty_seconds_savannah_track(self):
+        if self.savannah_track.enabled:
+            if self.car.enabled:
+                for menu in self.main_menu.menus:
+                    if menu.enabled == False:
+                        if self.car.last_count != 0:
+                            return self.car.last_count <= 20
+
+    def eighteen_seconds_savannah_track(self):
+        if self.savannah_track.enabled:
+            if self.car.enabled:
+                for menu in self.main_menu.menus:
+                    if menu.enabled == False:
+                        if self.car.last_count != 0:
+                            return self.car.last_count <= 18
+
+    def seventeen_seconds_savannah_track(self):
+        if self.savannah_track.enabled:
+            if self.car.enabled:
+                for menu in self.main_menu.menus:
+                    if menu.enabled == False:
+                        if self.car.last_count != 0:
+                            return self.car.last_count <= 17
+
+    def sixteen_seconds_savannah_track(self):
+        if self.savannah_track.enabled:
+            if self.car.enabled:
+                for menu in self.main_menu.menus:
+                    if menu.enabled == False:
+                        if self.car.last_count != 0:
+                            return self.car.last_count <= 16
+
     def beat_mandaw_in_sand_track(self):
         if self.sand_track.enabled:
             for menu in self.main_menu.menus:
@@ -205,7 +248,7 @@ class RallyAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.last_count != 0:
-                        return self.car.last_count <= 17.79
+                        return self.car.last_count <= 17.78
     
     def beat_mandaw_in_snow_track(self):
         if self.snow_track.enabled:
@@ -220,3 +263,10 @@ class RallyAchievements():
                 if menu.enabled == False:
                     if self.car.last_count != 0:
                         return self.car.last_count <= 24.66
+
+    def beat_mandaw_in_savannah_track(self):
+        if self.savannah_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.last_count != 0:
+                        return self.car.last_count <= 15.33

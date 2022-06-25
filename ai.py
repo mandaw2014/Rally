@@ -5,18 +5,17 @@ from particles import ParticleSystem
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
 class AICar(Entity):
-    def __init__(self, car, ai_list, sand_track, grass_track, snow_track, plains_track):
+    def __init__(self, car, ai_list, sand_track, grass_track, snow_track, plains_track, savannah_track):
         super().__init__(
             model = "car.obj",
+            texture = "car-red.png",
             collider = "box",
             position = (0, 0, 0),
             rotation = (0, 0, 0),
-            visible = False
         )
 
-        # Model + Texture
-        self.graphics_parent = Entity()
-        self.graphics = Entity(model = "car.obj")
+        # Rotation parent
+        self.rotation_parent = Entity()
 
         self.car = car
 
@@ -50,6 +49,7 @@ class AICar(Entity):
         self.grass_track = grass_track
         self.snow_track = snow_track
         self.plains_track = plains_track
+        self.savannah_track = savannah_track
 
         self.ai_list = ai_list
         self.set_enabled = True
@@ -117,10 +117,22 @@ class AICar(Entity):
         self.plp12 = PathObject((-18, -46, 40), (0, 0, 0))
         self.plp13 = PathObject((-3, -51, 75), (0, 120, 0))
 
+        # Savannah Track Points
+
+        self.svp1 = PathObject((28, -51, 40), (0, 90, 0))
+        self.svp2 = PathObject((50, -51, 40), (0, 160, 0))
+        self.svp3 = PathObject((61, -51, 18), (0, 260, 0))
+        self.svp4 = PathObject((-30, -51, -77), (0, 230, 0))
+        self.svp5 = PathObject((-64, -51, -50), (0, 390, 0))
+        self.svp6 = PathObject((-64, -45, 0), (0, 360, 0))
+        self.svp7 = PathObject((-50, -51, 40), (0, 500, 0))
+        self.svp8 = PathObject((-24, -51, 41), (0, 450, 0))
+
         self.sand_path = [self.sap1, self.sap2, self.sap3, self.sap4, self.sap5, self.sap6, self.sap7, self.sap8]
         self.grass_path = [self.gp1, self.gp2, self.gp3, self.gp4, self.gp5, self.gp6, self.gp7, self.gp8, self.gp9, self.gp10, self.gp11]
         self.snow_path = [self.snp1, self.snp2, self.snp3, self.snp4, self.snp5, self.snp6, self.snp7, self.snp8, self.snp9, self.snp10, self.snp11, self.snp12, self.snp13, self.snp14, self.snp15, self.snp16, self.snp17]
         self.plains_path = [self.plp1, self.plp2, self.plp3, self.plp4, self.plp5, self.plp6, self.plp7, self.plp8, self.plp9, self.plp10, self.plp11, self.plp12, self.plp13]
+        self.savannah_path = [self.svp1, self.svp2, self.svp3, self.svp4, self.svp5, self.svp6, self.svp7, self.svp8]
 
         self.next_path = self.gp1
 
@@ -134,17 +146,17 @@ class AICar(Entity):
     def set_random_texture(self):
         i = random.randint(0, 5)
         if i == 0:
-            self.graphics.texture = "car-red.png"
+            self.texture = "car-red.png"
         elif i == 1:
-            self.graphics.texture = "car-blue.png"
+            self.texture = "car-blue.png"
         elif i == 2:
-            self.graphics.texture = "car-orange.png"
+            self.texture = "car-orange.png"
         elif i == 3:
-            self.graphics.texture = "car-green.png"
+            self.texture = "car-green.png"
         elif i == 4:
-            self.graphics.texture = "car-white.png"
+            self.texture = "car-white.png"
         elif i == 5:
-            self.graphics.texture = "car-black.png"
+            self.texture = "car-black.png"
 
     def same_pos(self):
         '''
@@ -182,7 +194,7 @@ class AICar(Entity):
         elif self.snow_track.enabled or self.plains_track.enabled:
             self.difficulty = 40
 
-        ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.car, self.ai_list[0], self.ai_list[1], self.ai_list[2], self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
+        ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.car, self.ai_list[0], self.ai_list[1], self.ai_list[2], self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
 
         if ground_check.hit:
             r = random.randint(0, 1)
@@ -203,22 +215,23 @@ class AICar(Entity):
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
                 invoke(self.particles.disable, delay = 1)
         else:
-            self.graphics_parent.rotation = self.rotation
+            self.rotation_parent.rotation = self.rotation
 
         # Rotation
-        self.graphics_parent.position = self.position
-        self.graphics.position = self.position
+        self.rotation_parent.position = self.position
 
-        self.graphics.quaternion = slerp(self.graphics.quaternion, self.graphics_parent.quaternion, 20 * time.dt)
+        # Lerps the car's rotation to the rotation parent's rotation (Makes it smoother)
+        self.rotation_x = lerp(self.rotation_x, self.rotation_parent.rotation_x, 20 * time.dt)
+        self.rotation_z = lerp(self.rotation_z, self.rotation_parent.rotation_z, 20 * time.dt)
 
         # Raycast for getting the ground's normals
-        rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+        rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
 
-        if rotation_ray.distance <= 3:
-            self.graphics_parent.look_at(self.position + rotation_ray.world_normal, axis = "up")
-            self.graphics_parent.rotate((0, self.rotation_y + 180, 0))
+        if rotation_ray.distance <= 4:
+            self.rotation_parent.look_at(self.position + rotation_ray.world_normal, axis = "up")
+            self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
         else:
-            self.graphics_parent.rotation_y = self.rotation_y
+            self.rotation_parent.rotation_y = self.rotation_y
 
         # Main AI bit
 
@@ -251,6 +264,15 @@ class AICar(Entity):
             for p in self.plains_path:
                 if distance(p, self) < 12 and self.next_path == p:
                     self.next_path = self.plains_path[self.plains_path.index(p) - len(self.plains_path) + 1]
+        elif self.savannah_track.enabled:
+            if distance(self.svp4, self) < 10:
+                self.speed -= 10 * time.dt
+            if distance(self.svp8, self) < 12:
+                self.rotation_y = 90
+                self.pivot.rotation_y = self.rotation_y
+            for p in self.savannah_path:
+                if distance(p, self) < 15 and self.next_path == p:
+                    self.next_path = self.savannah_path[self.savannah_path.index(p) - len(self.savannah_path) + 1]
 
         # Cap the speed
         if self.speed >= self.topspeed:
@@ -278,7 +300,7 @@ class AICar(Entity):
         direction = (0, sign(movementY), 0)
 
         # Main raycast for collision
-        y_ray = boxcast(origin = self.world_position, direction = self.down, distance = self.scale_y * 1.7 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ])
+        y_ray = boxcast(origin = self.world_position, direction = (0, -1, 0), distance = self.scale_y * 1.7 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
 
         if y_ray.hit:
             self.velocity_y = 0
@@ -297,14 +319,14 @@ class AICar(Entity):
         # Collision Detection
         if movementX != 0:
             direction = (sign(movementX), 0, 0)
-            x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 2 + abs(movementX), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ], thickness = (1, 1))
+            x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 2 + abs(movementX), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ], thickness = (1, 1))
 
             if not x_ray.hit:
                 self.x += movementX
 
         if movementZ != 0:
             direction = (0, 0, sign(movementZ))
-            z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 2 + abs(movementZ), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, ], thickness = (1, 1))
+            z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 2 + abs(movementZ), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ], thickness = (1, 1))
 
             if not z_ray.hit:
                 self.z += movementZ

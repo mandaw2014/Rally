@@ -15,6 +15,7 @@ from tracks.sand_track import SandTrack
 from tracks.grass_track import GrassTrack
 from tracks.snow_track import SnowTrack
 from tracks.plains_track import PlainsTrack
+from tracks.savannah_track import SavannahTrack
 
 Text.default_font = "./assets/Roboto.ttf"
 Text.default_resolution = 1080 * Text.size
@@ -44,13 +45,15 @@ def load_assets():
     models_to_load = [
         "car.obj", "sand_track.obj", "grass_track.obj", "snow_track.obj",
         "plains_track.obj", "sand_track_bounds.obj", "grass_track_bounds.obj",
-        "snow_track_bounds.obj", "plains_track_bounds.obj"
+        "snow_track_bounds.obj", "plains_track_bounds.obj", "savannah_track.obj",
+        "savannah_track_bounds.obj"
     ]
 
     textures_to_load = [
         "car-red.png", "car-orange.png", "car-green.png", "car-white.png", "car-black.png",
         "car-blue.png", "sand_track.png", "grass_track.png", "snow_track.png", "plains_track.png",
-        "particle_sand_track.png", "particle_grass_track.png", "particle_snow_track", "particle_plains_track.png"
+        "savannah_track.png", "particle_sand_track.png", "particle_grass_track.png", "particle_snow_track", 
+        "particle_plains_track.png", "particle_savannah_track.png"
     ]
 
     for i, m in enumerate(models_to_load):
@@ -72,18 +75,20 @@ sand_track = SandTrack(car)
 grass_track = GrassTrack(car)
 snow_track = SnowTrack(car)
 plains_track = PlainsTrack(car)
+savannah_track = SavannahTrack(car)
 
 car.sand_track = sand_track
 car.grass_track = grass_track
 car.snow_track = snow_track
 car.plains_track = plains_track
+car.savannah_track = savannah_track
 
 # AI
 ai_list = []
 
-ai = AICar(car, ai_list, sand_track, grass_track, snow_track, plains_track)
-ai1 = AICar(car, ai_list, sand_track, grass_track, snow_track, plains_track)
-ai2 = AICar(car, ai_list, sand_track, grass_track, snow_track, plains_track)
+ai = AICar(car, ai_list, sand_track, grass_track, snow_track, plains_track, savannah_track)
+ai1 = AICar(car, ai_list, sand_track, grass_track, snow_track, plains_track, savannah_track)
+ai2 = AICar(car, ai_list, sand_track, grass_track, snow_track, plains_track, savannah_track)
 
 ai_list.append(ai)
 ai_list.append(ai1)
@@ -92,10 +97,10 @@ ai_list.append(ai2)
 car.ai_list = ai_list
 
 # Main menu
-main_menu = MainMenu(car, ai_list, sand_track, grass_track, snow_track, plains_track)
+main_menu = MainMenu(car, ai_list, sand_track, grass_track, snow_track, plains_track, savannah_track)
 
 # Achievements
-achievements = RallyAchievements(car, main_menu, sand_track, grass_track, snow_track, plains_track)
+achievements = RallyAchievements(car, main_menu, sand_track, grass_track, snow_track, plains_track, savannah_track)
 
 # Lighting + shadows
 sun = SunLight(direction = (-0.7, -0.9, 0.5), resolution = 2048, car = car)
@@ -141,24 +146,12 @@ def update():
     if achievements.time_spent < 10:
         achievements.time_spent += time.dt
 
-    # If the car is not enabled, disable the graphics
-    if car.enabled:
-        car.graphics.enable()
-    else:
-        car.graphics.disable()
-
-    for ai in ai_list:
-        if ai.enabled:
-            ai.graphics.enable()
-        else:
-            ai.graphics.disable()
-
 def input(key):
     # If multiplayer, send the client's position, rotation, texture, username and highscore to the server
     if car.multiplayer_update:
         multiplayer.client.send_message("MyPosition", tuple(car.position))
         multiplayer.client.send_message("MyRotation", tuple(car.rotation))
-        multiplayer.client.send_message("MyTexture", str(car.graphics.texture))
+        multiplayer.client.send_message("MyTexture", str(car.texture))
         multiplayer.client.send_message("MyUsername", str(car.username_text))
         multiplayer.client.send_message("MyHighscore", str(round(car.highscore_count, 2)))
 
