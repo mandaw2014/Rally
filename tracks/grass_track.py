@@ -13,7 +13,7 @@ class GrassTrack(Entity):
 
         self.car = car
 
-        self.finish_line = Entity(model = "cube", position = (-62, -40.2, 15.8), collider = "box", rotation = (0, 90, 0), scale = (30, 8, 3), visible = False)
+        self.finish_line = Entity(model = "cube", position = (-62, -40, 15), collider = "box", rotation = (0, 0, 0), scale = (3, 8, 30), visible = False)
         self.boundaries = Entity(model = "grass_track_bounds.obj", collider = "mesh", position = (0, -50, 0), rotation = (0, 270, 0), scale = (25, 25, 25), visible = False)
 
         self.wall1 = Entity(model = "cube", position = (-5, -40, 35), rotation = (0, 90, 0), collider = "box", scale = (5, 30, 50), visible = False)
@@ -21,8 +21,8 @@ class GrassTrack(Entity):
         self.wall3 = Entity(model = "cube", position = (-21, -40, 15), rotation = (0, 0, 0), collider = "box", scale = (5, 30, 50), visible = False)
         self.wall4 = Entity(model = "cube", position = (9, -40, 14), rotation = (0, 0, 0), collider = "box", scale = (5, 30, 50), visible = False)
 
-        self.wall_trigger = Entity(model = "cube", position = (25, -40.2, 65), collider = "box", rotation = (0, 90, 0), scale = (40, 20, 3), visible = False)
-        self.wall_trigger_ramp = Entity(model = "cube", position = (-82, -34, -64), collider = "box", rotation = (0, 90, 0), scale = (40, 20, 3), visible = False)
+        self.wall_trigger = Entity(model = "cube", position = (25, -40.2, 65), collider = "box", rotation = (0, 0, 0), scale = (3, 20, 50), visible = False)
+        self.wall_trigger_ramp = Entity(model = "cube", position = (-82, -34, -64), collider = "box", rotation = (0, 0, 0), scale = (3, 20, 50), visible = False)
         
         self.track = [
             self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
@@ -35,9 +35,7 @@ class GrassTrack(Entity):
         self.played = False
 
     def update(self):
-        ray = self.car.intersects()
-
-        if ray.entity == self.finish_line:
+        if self.car.simple_intersects(self.finish_line):
             if self.car.anti_cheat == 1:
                 self.car.timer_running = True
                 self.car.last_count = self.car.count
@@ -51,13 +49,13 @@ class GrassTrack(Entity):
             self.wall3.disable()
             self.wall4.disable()
 
-        if ray.entity == self.wall_trigger:
+        if self.car.simple_intersects(self.wall_trigger):
             self.wall1.disable()
             self.wall2.disable()
             self.wall3.enable()
             self.wall4.enable()
             self.car.anti_cheat = 0.5
 
-        if ray.entity == self.wall_trigger_ramp:
+        if self.car.simple_intersects(self.wall_trigger_ramp):
             if self.car.anti_cheat == 0.5:
                 self.car.anti_cheat = 1

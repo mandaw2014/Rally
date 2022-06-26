@@ -14,7 +14,7 @@ class SnowTrack(Entity):
         self.car = car
 
         self.finish_line = Entity(model = "cube", position = (11, -42, 90), collider = "box", rotation = (0, 90, 0), scale = (30, 8, 3), visible = False)
-        self.boundaries = Entity(model = "snow_track_bounds.obj", collider = "mesh", rotation = (0, 90, 0), position = (0, 0, 0), scale = (8, 8, 8), visible = False)
+        self.boundaries = Entity(model = "snow_track_bounds.obj", collider = "mesh", rotation = (0, 90, 0), position = (0, -50, 0), scale = (8, 8, 8), visible = False)
 
         self.wall1 = Entity(model = "cube", position = (-10, -42, 38), rotation = (0, 0, 0), collider = "box", scale = (5, 30, 50), visible = False)
         self.wall2 = Entity(model = "cube", position = (-36, -42, 38), rotation = (0, 0, 0), collider = "box", scale = (5, 30, 50), visible = False)
@@ -46,9 +46,7 @@ class SnowTrack(Entity):
         self.played = False
 
     def update(self):
-        ray = self.car.intersects()
-
-        if ray.entity == self.finish_line:
+        if self.car.simple_intersects(self.finish_line):
             if self.car.anti_cheat == 1:
                 self.car.timer_running = True
                 self.car.last_count = self.car.count
@@ -72,7 +70,7 @@ class SnowTrack(Entity):
 
                 invoke(self.car.reset_timer, delay = 3)
 
-        if ray.entity == self.wall_trigger:
+        if self.car.simple_intersects(self.wall_trigger):
             self.wall1.enable()
             self.wall2.enable()
             self.wall3.disable()
@@ -87,7 +85,7 @@ class SnowTrack(Entity):
             self.wall12.disable()
             self.car.anti_cheat = 0.5
         
-        if ray.entity == self.wall_trigger_end:
+        if self.car.simple_intersects(self.wall_trigger_end):
             self.wall9.disable()
             self.wall10.disable()
             self.wall11.enable()

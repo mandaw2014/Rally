@@ -255,27 +255,6 @@ class Car(Entity):
             else:
                 self.max_rotation_speed = 2.6
 
-        # Rotation
-        self.rotation_parent.position = self.position
-
-        # Lerps the car's rotation to the rotation parent's rotation (Makes it smoother)
-        self.rotation_x = lerp(self.rotation_x, self.rotation_parent.rotation_x, 20 * time.dt)
-        self.rotation_z = lerp(self.rotation_z, self.rotation_parent.rotation_z, 20 * time.dt)
-
-        # Raycast for getting the ground's normals
-        rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
-
-        if self.copy_normals:
-            self.ground_normal = self.position + rotation_ray.world_normal
-        else:
-            self.ground_normal = self.position + (0, 180, 0)
-
-        if rotation_ray.distance <= 4:
-            self.rotation_parent.look_at(self.ground_normal, axis = "up")
-            self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
-        else:
-            self.rotation_parent.rotation_y = self.rotation_y
-
         # Steering
         self.rotation_y += self.rotation_speed * 50 * time.dt
 
@@ -297,6 +276,27 @@ class Car(Entity):
                     self.rotation_speed -= 5 * time.dt
                 elif self.rotation_speed < 0:
                     self.rotation_speed += 5 * time.dt
+
+        # Rotation
+        self.rotation_parent.position = self.position
+
+        # Lerps the car's rotation to the rotation parent's rotation (Makes it smoother)
+        self.rotation_x = lerp(self.rotation_x, self.rotation_parent.rotation_x, 20 * time.dt)
+        self.rotation_z = lerp(self.rotation_z, self.rotation_parent.rotation_z, 20 * time.dt)
+
+        # Raycast for getting the ground's normals
+        rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
+
+        if rotation_ray.distance <= 4:
+            if self.copy_normals:
+                self.ground_normal = self.position + rotation_ray.world_normal
+            else:
+                self.ground_normal = self.position + (0, 180, 0)
+
+            self.rotation_parent.look_at(self.ground_normal, axis = "up")
+            self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
+        else:
+            self.rotation_parent.rotation_y = self.rotation_y
 
         # Cap the speed
         if self.speed >= self.topspeed:
@@ -409,6 +409,27 @@ class Car(Entity):
             self.laps = 0
             self.timer_running = False
             self.start_time = False
+
+    def simple_intersects(self, entity):
+        minXA = self.x - self.scale_x
+        maxXA = self.x + self.scale_x
+        minYA = self.y - self.scale_y + (self.scale_y / 2)
+        maxYA = self.y + self.scale_y - (self.scale_y / 2)
+        minZA = self.z - self.scale_z
+        maxZA = self.z + self.scale_z
+
+        minXB = entity.x - entity.scale_x + (entity.scale_x / 2)
+        maxXB = entity.x + entity.scale_x - (entity.scale_x / 2)
+        minYB = entity.y - entity.scale_y + (entity.scale_y / 2)
+        maxYB = entity.y + entity.scale_y - (entity.scale_y / 2)
+        minZB = entity.z - entity.scale_z + (entity.scale_z / 2)
+        maxZB = entity.z + entity.scale_z - (entity.scale_z / 2)
+        
+        return (
+            (minXA <= maxXB and maxXA >= minXB) and
+            (minYA <= maxYB and maxYA >= minYB) and
+            (minZA <= maxZB and maxZA >= minZB)
+        )
 
     def check_highscore(self):
         if self.time_trial == False:

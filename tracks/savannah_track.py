@@ -13,9 +13,9 @@ class SavannahTrack(Entity):
 
         self.car = car
 
-        self.finish_line = Entity(model = "cube", position = (3, -50, 41), collider = "box", rotation = (0, 90, 0), scale = (30, 8, 3), visible = False)
+        self.finish_line = Entity(model = "cube", position = (3, -50, 41), collider = "box", rotation = (0, 0, 0), scale = (3, 8, 30), visible = False)
         self.boundaries = Entity(model = "savannah_track_bounds.obj", collider = "mesh", position = (0, -50, 0), rotation = (0, 270, 0), scale = (27, 27, 27), visible = False)
-        self.wall_trigger = Entity(model = "cube", position = (-63, -48, -47), collider = "box", rotation = (0, 0, 0), scale = (60, 20, 3), visible = False)
+        self.wall_trigger = Entity(model = "cube", position = (-63, -48, -47), collider = "box", rotation = (0, 0, 0), scale = (50, 20, 3), visible = False)
   
         self.track = [
             self.finish_line, self.boundaries, self.wall_trigger
@@ -29,9 +29,7 @@ class SavannahTrack(Entity):
         self.disable()
 
     def update(self):
-        ray = self.car.intersects()
-
-        if ray.entity == self.finish_line:
+        if self.car.simple_intersects(self.finish_line):
             if self.car.anti_cheat == 1:
                 self.car.timer_running = True
                 self.car.last_count = self.car.count
@@ -40,5 +38,5 @@ class SavannahTrack(Entity):
 
                 self.car.check_highscore()
 
-        if ray.entity == self.wall_trigger:
+        if self.car.simple_intersects(self.wall_trigger):
             self.car.anti_cheat = 1

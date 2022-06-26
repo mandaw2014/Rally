@@ -269,4 +269,4 @@ class RallyAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.last_count != 0:
-                        return self.car.last_count <= 15.33
+                        return self.car.last_count <= 14.51

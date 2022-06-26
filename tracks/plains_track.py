@@ -13,7 +13,7 @@ class PlainsTrack(Entity):
 
         self.car = car
 
-        self.finish_line = Entity(model = "cube", position = (31, -48, 72), collider = "box", rotation = (0, 90, 0), scale = (30, 8, 3), visible = False)
+        self.finish_line = Entity(model = "cube", position = (31, -48, 72), collider = "box", rotation = (0, 0, 0), scale = (3, 8, 30), visible = False)
         self.boundaries = Entity(model = "plains_track_bounds.obj", collider = "mesh", position = (0, -50, 0), rotation = (0, 270, 0), scale = (12, 12, 12), visible = False)
 
         self.wall1 = Entity(model = "cube", position = (-16, -48, 50), rotation = (0, 90, 0), collider = "box", scale = (5, 30, 50), visible = False)
@@ -25,7 +25,7 @@ class PlainsTrack(Entity):
         self.wall7 = Entity(model = "cube", position = (-4, -48, -15), rotation = (0, 0, 0), collider = "box", scale = (5, 30, 50), visible = False)
         self.wall8 = Entity(model = "cube", position = (-30, -48, -15), rotation = (0, 0, 0), collider = "box", scale = (5, 30, 50), visible = False)
 
-        self.wall_trigger = Entity(model = "cube", position = (11, -45, -70), collider = "box", rotation = (0, 90, 0), scale = (40, 20, 3), visible = False)
+        self.wall_trigger = Entity(model = "cube", position = (11, -45, -70), collider = "box", rotation = (0, 0, 0), scale = (3, 20, 40), visible = False)
 
         self.track = [
             self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
@@ -40,9 +40,7 @@ class PlainsTrack(Entity):
         self.played = False
 
     def update(self):
-        ray = self.car.intersects()
-
-        if ray.entity == self.finish_line:
+        if self.car.simple_intersects(self.finish_line):
             if self.car.anti_cheat == 1:
                 self.car.timer_running = True
                 self.car.last_count = self.car.count
@@ -60,7 +58,7 @@ class PlainsTrack(Entity):
                 self.wall7.disable()
                 self.wall8.disable()
 
-        if ray.entity == self.wall_trigger:
+        if self.car.simple_intersects(self.wall_trigger):
             if self.car.anti_cheat == 0:
                 self.wall1.disable()
                 self.wall2.disable()

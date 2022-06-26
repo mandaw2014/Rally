@@ -398,7 +398,7 @@ class MainMenu(Entity):
 
             grass_track.disable()
             sand_track.disable()
-            snow_track.disable
+            snow_track.disable()
             plains_track.enable()
             savannah_track.disable()
 
@@ -443,7 +443,7 @@ class MainMenu(Entity):
 
             grass_track.disable()
             sand_track.disable()
-            snow_track.disable
+            snow_track.disable()
             plains_track.disable()
             savannah_track.enable()
 
