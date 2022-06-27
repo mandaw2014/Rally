@@ -345,7 +345,7 @@ class Car(Entity):
             self.reset_car()
 
         # Gravity
-        movementY = self.velocity_y * time.dt
+        movementY = self.velocity_y / 50
         direction = (0, sign(movementY), 0)
 
         # Main raycast for collision
