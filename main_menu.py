@@ -531,7 +531,7 @@ class MainMenu(Entity):
         self.leaderboard_04 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = -0.1, parent = self.leaderboard_background)
         self.leaderboard_05 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = -0.2, parent = self.leaderboard_background)
         
-        self.leaderboard_texts = [self.leaderboard_01, self.leaderboard_02, self.leaderboard_03, self.leaderboard_04, self.leaderboard_05]
+        self.leaderboard_texts = [self.leaderboard_background, self.leaderboard_title, self.leaderboard_01, self.leaderboard_02, self.leaderboard_03, self.leaderboard_04, self.leaderboard_05]
 
         self.leaderboard_background.disable()
         self.leaderboard_title.disable()
@@ -791,7 +791,7 @@ class MainMenu(Entity):
                 self.car.count = 0.0
                 self.car.reset_count = 0.0
                 self.car.timer_running = False
-            elif self.time_trial:
+            elif self.car.time_trial:
                 self.count = 100.0
                 self.reset_count = 100.0
                 self.laps = 0
@@ -960,26 +960,16 @@ class MainMenu(Entity):
 
         # If multiplayer, start leaderboard
         if self.car.multiplayer_update:
-            if self.main_menu.enabled == False and self.server_menu.enabled == False and self.maps_menu.enabled == False:
-                if self.garage_menu.enabled == False and self.settings_menu.enabled == False and self.controls_menu.enabled == False and self.gameplay_menu.enabled == False and self.video_menu.enabled == False:
+            for menu in self.menus:
+                if menu.enabled == False:
                     if self.sand_track.enabled or self.grass_track.enabled or self.snow_track.enabled or self.plains_track.enabled or self.savannah_track.enabled:
                         invoke(self.start_leaderboard, delay = 0.1)
-            else:
-                self.leaderboard_background.disable()
-                self.leaderboard_title.disable()
-                self.leaderboard_01.disable()
-                self.leaderboard_02.disable()
-                self.leaderboard_03.disable()
-                self.leaderboard_04.disable()
-                self.leaderboard_05.disable()
+                else:
+                    for l in self.leaderboard_texts:
+                        l.disable()
         else:
-            self.leaderboard_background.disable()
-            self.leaderboard_title.disable()
-            self.leaderboard_01.disable()
-            self.leaderboard_02.disable()
-            self.leaderboard_03.disable()
-            self.leaderboard_04.disable()
-            self.leaderboard_05.disable()
+            for l in self.leaderboard_texts:
+                l.disable()
             
     def start_leaderboard(self):
         for l in self.leaderboard_texts:
@@ -1007,6 +997,7 @@ class MainMenu(Entity):
         
         else:
             self.car.timer.disable()
+            self.car.reset_count_timer.disable()
             self.car.highscore.disable()
             self.car.laps_text.disable()
 

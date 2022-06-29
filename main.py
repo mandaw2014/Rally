@@ -113,7 +113,7 @@ Sky(texture = "sky")
 
 def update():
     # If multiplayer, Call the Multiplayer class
-    if car.multiplayer == True:
+    if car.multiplayer:
         global multiplayer
         multiplayer = Multiplayer(car)
         car.multiplayer_update = True
@@ -123,14 +123,14 @@ def update():
     if car.multiplayer_update:
         multiplayer.update_multiplayer()
         if multiplayer.client.connected:
-            if car.connected_text == True:
+            if car.connected_text:
                 main_menu.connected.enable()
                 car.connected_text = False
             else:
                 invoke(main_menu.connected.disable, delay = 2)
             main_menu.not_connected.disable()
         else:
-            if car.disconnected_text == True:
+            if car.disconnected_text:
                 main_menu.not_connected.enable()
                 car.disconnected_text = False
             else:
@@ -140,7 +140,7 @@ def update():
     # If the user is hosting the server, update the server
     if car.server_running:
         car.server.update_server()
-        if car.server.server_update == True:
+        if car.server.server_update:
             car.server.easy.process_net_events()
     
     if achievements.time_spent < 10:

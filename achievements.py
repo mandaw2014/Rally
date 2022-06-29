@@ -262,7 +262,7 @@ class RallyAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.last_count != 0:
-                        return self.car.last_count <= 24.66
+                        return self.car.last_count <= 24.33
 
     def beat_mandaw_in_savannah_track(self):
         if self.savannah_track.enabled:
