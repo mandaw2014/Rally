@@ -54,6 +54,11 @@ class RallyAchievements():
         create_achievement("Beat Mandaw in Plains Track!", self.beat_mandaw_in_plains_track, icon = "confetti.png", ringtone = None)
         create_achievement("Beat Mandaw in Savannah Track!", self.beat_mandaw_in_savannah_track, icon = "confetti.png", ringtone = None)
 
+        create_achievement("Unlock Grass Track!", self.unlock_grass_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Snow Track!", self.unlock_snow_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Plains Track!", self.unlock_plains_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Savannah Track!", self.unlock_savannah_track, icon = "confetti.png", ringtone = None)
+
     def play_the_game(self):
         return self.time_spent > 3
 
@@ -83,6 +88,46 @@ class RallyAchievements():
 
     def time_trial(self):
         return self.car.time_trial
+
+    def unlock_grass_track(self):
+        for menu in self.main_menu.menus:
+            if menu.enabled == False:
+                if self.car.enabled and self.car.last_count != 0:
+                    if self.sand_track.enabled and self.sand_track.unlocked:
+                        if self.car.last_count <= 16:
+                            self.grass_track.unlocked = True
+                            self.car.save_unlocked()
+                        return self.car.last_count <= 16
+    
+    def unlock_snow_track(self):
+        for menu in self.main_menu.menus:
+            if menu.enabled == False:
+                if self.car.enabled and self.car.last_count != 0:
+                    if self.grass_track.enabled and self.grass_track.unlocked:
+                        if self.car.last_count <= 18.5:
+                            self.snow_track.unlocked = True
+                            self.car.save_unlocked()
+                        return self.car.last_count <= 18.5
+
+    def unlock_plains_track(self):
+        for menu in self.main_menu.menus:
+            if menu.enabled == False:
+                if self.car.enabled and self.car.last_count != 0:
+                    if self.snow_track.enabled and self.snow_track.unlocked:
+                        if self.car.last_count <= 33:
+                            self.plains_track.unlocked = True
+                            self.car.save_unlocked()
+                        return self.car.last_count <= 33
+
+    def unlock_savannah_track(self):
+        for menu in self.main_menu.menus:
+            if menu.enabled == False:
+                if self.car.enabled and self.car.last_count != 0:
+                    if self.plains_track.enabled and self.plains_track.unlocked:
+                        if self.car.last_count <= 26:
+                            self.savannah_track.unlocked = True
+                            self.car.save_unlocked()
+                        return self.car.last_count <= 25
 
     def twenty_seconds_sand_track(self):
         if self.sand_track.enabled:

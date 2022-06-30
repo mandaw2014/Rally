@@ -33,6 +33,7 @@ class GrassTrack(Entity):
             i.disable()
 
         self.played = False
+        self.unlocked = False
 
     def update(self):
         if self.car.simple_intersects(self.finish_line):

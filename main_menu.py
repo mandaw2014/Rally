@@ -40,6 +40,10 @@ class MainMenu(Entity):
         self.savannah_track = savannah_track
         self.ai_list = ai_list
 
+        self.tracks = [
+            self.sand_track, self.grass_track, self.snow_track, self.plains_track, self.savannah_track
+        ]
+
         # Animate the menu
         for menu in (self.start_menu, self.main_menu, self.race_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu, self.controls_menu, self.pause_menu):
             def animate_in_menu(menu = menu):
@@ -234,6 +238,9 @@ class MainMenu(Entity):
             snow_track.disable()
             plains_track.disable()
             savannah_track.disable()
+            unlocked_text.disable()
+            for track in self.tracks:
+                track.alpha = 255
 
         def ai_func():
             self.car.ai = not self.car.ai
@@ -245,269 +252,262 @@ class MainMenu(Entity):
                 self.ai_slider.disable()
 
         def sand_track_func():
-            self.car.enable()
-            mouse.locked = True
-            self.maps_menu.disable()
-            self.car.position = (-63, -30, -7)
-            self.car.rotation = (0, 90, 0)
-            self.car.reset_count_timer.enable()
+            if sand_track.unlocked:
+                self.car.enable()
+                mouse.locked = True
+                self.maps_menu.disable()
+                self.car.position = (-63, -30, -7)
+                self.car.rotation = (0, 90, 0)
+                self.car.reset_count_timer.enable()
 
-            if self.car.multiplayer_update == False and self.car.ai:
-                for ai in ai_list:
-                    if ai.set_enabled:
-                        ai.enable()
-                    ai.position = (-63, -40, -7) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
-                    ai.rotation = (0, 65, 0)
-                    ai.set_random_texture()
-                    ai.next_path = ai.sap1
-                    
-            sand_track.enable()
-            grass_track.disable()
-            snow_track.disable()
-            plains_track.disable()
-            savannah_track.disable()
+                if self.car.multiplayer_update == False and self.car.ai:
+                    for ai in ai_list:
+                        if ai.set_enabled:
+                            ai.enable()
+                        ai.position = (-63, -40, -7) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.rotation = (0, 65, 0)
+                        ai.set_random_texture()
+                        ai.next_path = ai.sap1
+                        
+                for track in self.tracks:
+                    track.disable()
+                    for i in track.track:
+                        i.disable()
 
-            sand_track.played = True
+                sand_track.enable()
+                sand_track.played = True
 
-            for s in sand_track.track:
-                s.enable()
+                for s in sand_track.track:
+                    s.enable()
 
-            for g in grass_track.track:
-                g.disable()
-
-            for s in snow_track.track:
-                s.disable()
-
-            for p in plains_track.track:
-                p.disable()
-
-            for s in savannah_track.track:
-                s.disable()
-
-            if self.car.time_trial == False:
-                self.car.highscore_count = float(self.car.sand_track_hs)
+                if self.car.time_trial == False:
+                    self.car.highscore_count = float(self.car.sand_track_hs)
+                else:
+                    self.car.highscore_count = float(self.car.sand_track_laps)
             else:
-                self.car.highscore_count = float(self.car.sand_track_laps)
+                unlocked_text.shake()
 
         def grass_track_func():
-            self.car.enable()
-            mouse.locked = True
-            self.maps_menu.disable()
-            self.car.position = (-80, -30, 15)
-            self.car.rotation = (0, 90, 0)
-            self.car.reset_count_timer.enable()
+            if grass_track.unlocked:
+                self.car.enable()
+                mouse.locked = True
+                self.maps_menu.disable()
+                self.car.position = (-80, -30, 15)
+                self.car.rotation = (0, 90, 0)
+                self.car.reset_count_timer.enable()
 
-            if self.car.multiplayer_update == False and self.car.ai:
-                for ai in ai_list:
-                    if ai.set_enabled:
-                        ai.enable()
-                    ai.position = (-80, -35, 15) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
-                    ai.rotation = (0, 90, 0)
-                    ai.set_random_texture()
-                    ai.next_path = ai.gp1
+                if self.car.multiplayer_update == False and self.car.ai:
+                    for ai in ai_list:
+                        if ai.set_enabled:
+                            ai.enable()
+                        ai.position = (-80, -35, 15) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.rotation = (0, 90, 0)
+                        ai.set_random_texture()
+                        ai.next_path = ai.gp1
 
-            grass_track.enable()
-            sand_track.disable()
-            snow_track.disable()
-            plains_track.disable()
-            savannah_track.disable()
+                for track in self.tracks:
+                    track.disable()
+                    for i in track.track:
+                        i.disable()
 
-            grass_track.played = True
+                grass_track.enable()
+                grass_track.played = True
 
-            for s in sand_track.track:
-                s.disable()
+                for g in grass_track.track:
+                    g.enable()
 
-            for g in grass_track.track:
-                g.enable()
-
-            for s in snow_track.track:
-                s.disable()
-
-            for p in plains_track.track:
-                p.disable()
-
-            for s in savannah_track.track:
-                s.disable()
-
-            if self.car.time_trial == False:
-                self.car.highscore_count = float(self.car.grass_track_hs)
+                if self.car.time_trial == False:
+                    self.car.highscore_count = float(self.car.grass_track_hs)
+                else:
+                    self.car.highscore_count = float(self.car.grass_track_laps)
             else:
-                self.car.highscore_count = float(self.car.grass_track_laps)
+                unlocked_text.shake()
 
         def snow_track_func():
-            self.car.enable()
-            mouse.locked = True
-            self.maps_menu.disable()
-            self.car.position = (-5, -35, 90)
-            self.car.rotation = (0, 90, 0)
-            self.car.reset_count_timer.enable()
+            if snow_track.unlocked:
+                self.car.enable()
+                mouse.locked = True
+                self.maps_menu.disable()
+                self.car.position = (-5, -35, 90)
+                self.car.rotation = (0, 90, 0)
+                self.car.reset_count_timer.enable()
 
-            if self.car.multiplayer_update == False and self.car.ai:
-                for ai in ai_list:
-                    if ai.set_enabled:
-                        ai.enable()
-                    ai.position = (-5, -40, 90) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
-                    ai.rotation = (0, 90, 0)
-                    ai.set_random_texture()
-                    ai.next_path = ai.snp1
-                    
-            grass_track.disable()
-            sand_track.disable()
-            snow_track.enable()
-            plains_track.disable()
-            savannah_track.disable()
+                if self.car.multiplayer_update == False and self.car.ai:
+                    for ai in ai_list:
+                        if ai.set_enabled:
+                            ai.enable()
+                        ai.position = (-5, -40, 90) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.rotation = (0, 90, 0)
+                        ai.set_random_texture()
+                        ai.next_path = ai.snp1
+                        
+                for track in self.tracks:
+                    track.disable()
+                    for i in track.track:
+                        i.disable()
 
-            snow_track.played = True
-            
-            for s in sand_track.track:
-                s.disable()
+                snow_track.enable()
+                snow_track.played = True
 
-            for g in grass_track.track:
-                g.disable()
+                for s in snow_track.track:
+                    s.enable()
 
-            for s in snow_track.track:
-                s.enable()
-
-            for p in plains_track.track:
-                p.disable()
-
-            for s in savannah_track.track:
-                s.disable()
-
-            if self.car.time_trial == False:
-                self.car.highscore_count = float(self.car.snow_track_hs)
+                if self.car.time_trial == False:
+                    self.car.highscore_count = float(self.car.snow_track_hs)
+                else:
+                    self.car.highscore_count = float(self.car.snow_track_laps)
             else:
-                self.car.highscore_count = float(self.car.snow_track_laps)
+                unlocked_text.shake()
 
         def plains_track_func():
-            self.car.enable()
-            mouse.locked = True
-            self.maps_menu.disable()
-            self.car.position = (12, -35, 73)
-            self.car.rotation = (0, 90, 0)
-            self.car.reset_count_timer.enable()
+            if plains_track.unlocked:
+                self.car.enable()
+                mouse.locked = True
+                self.maps_menu.disable()
+                self.car.position = (12, -35, 73)
+                self.car.rotation = (0, 90, 0)
+                self.car.reset_count_timer.enable()
 
-            if self.car.multiplayer_update == False and self.car.ai:
-                for ai in ai_list:
-                    if ai.set_enabled:
-                        ai.enable()
-                    ai.position = (12, -40, 73) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
-                    ai.rotation = (0, 90, 0)
-                    ai.set_random_texture()
-                    ai.next_path = ai.plp1
+                if self.car.multiplayer_update == False and self.car.ai:
+                    for ai in ai_list:
+                        if ai.set_enabled:
+                            ai.enable()
+                        ai.position = (12, -40, 73) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.rotation = (0, 90, 0)
+                        ai.set_random_texture()
+                        ai.next_path = ai.plp1
 
-            grass_track.disable()
-            sand_track.disable()
-            snow_track.disable()
-            plains_track.enable()
-            savannah_track.disable()
+                for track in self.tracks:
+                    track.disable()
+                    for i in track.track:
+                        i.disable()
 
-            plains_track.played = True
-            
-            for s in sand_track.track:
-                s.disable()
+                plains_track.enable()
+                plains_track.played = True
+                
+                for p in plains_track.track:
+                    p.enable()
 
-            for g in grass_track.track:
-                g.disable()
-
-            for s in snow_track.track:
-                s.disable()
-
-            for p in plains_track.track:
-                p.enable()
-
-            for s in savannah_track.track:
-                s.disable()
-
-            if self.car.time_trial == False:
-                self.car.highscore_count = float(self.car.plains_track_hs)
+                if self.car.time_trial == False:
+                    self.car.highscore_count = float(self.car.plains_track_hs)
+                else:
+                    self.car.highscore_count = float(self.car.plains_track_laps)
             else:
-                self.car.highscore_count = float(self.car.plains_track_laps)
+                unlocked_text.shake()
 
         def savannah_track_func():
-            self.car.enable()
-            mouse.locked = True
-            self.maps_menu.disable()
-            self.car.position = (-12, -35, 40)
-            self.car.rotation = (0, 90, 0)
-            self.car.reset_count_timer.enable()
+            if savannah_track.unlocked:
+                self.car.enable()
+                mouse.locked = True
+                self.maps_menu.disable()
+                self.car.position = (-12, -35, 40)
+                self.car.rotation = (0, 90, 0)
+                self.car.reset_count_timer.enable()
 
-            if self.car.multiplayer_update == False and self.car.ai:
-                for ai in ai_list:
-                    if ai.set_enabled:
-                        ai.enable()
-                    ai.position = (-12, -35, 40) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
-                    ai.rotation = (0, 90, 0)
-                    ai.set_random_texture()
-                    ai.next_path = ai.svp1
+                if self.car.multiplayer_update == False and self.car.ai:
+                    for ai in ai_list:
+                        if ai.set_enabled:
+                            ai.enable()
+                        ai.position = (-12, -35, 40) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.rotation = (0, 90, 0)
+                        ai.set_random_texture()
+                        ai.next_path = ai.svp1
 
-            grass_track.disable()
-            sand_track.disable()
-            snow_track.disable()
-            plains_track.disable()
-            savannah_track.enable()
+                for track in self.tracks:
+                    track.disable()
+                    for i in track.track:
+                        i.disable()
 
-            savannah_track.played = True
-            
-            for s in sand_track.track:
-                s.disable()
+                savannah_track.enable()
+                savannah_track.played = True
 
-            for g in grass_track.track:
-                g.disable()
+                for s in savannah_track.track:
+                    s.enable()
 
-            for s in snow_track.track:
-                s.disable()
-
-            for p in plains_track.track:
-                p.disable()
-
-            for s in savannah_track.track:
-                s.enable()
-
-            if self.car.time_trial == False:
-                self.car.highscore_count = float(self.car.savannah_track_hs)
+                if self.car.time_trial == False:
+                    self.car.highscore_count = float(self.car.savannah_track_hs)
+                else:
+                    self.car.highscore_count = float(self.car.savannah_track_laps)
             else:
-                self.car.highscore_count = float(self.car.savannah_track_laps)
+                unlocked_text.shake()
 
         def sand_track_hover():
-            grass_track.disable()
+            for track in self.tracks:
+                track.disable()
             sand_track.enable()
-            snow_track.disable()
-            plains_track.disable()
-            savannah_track.disable()
             self.car.position = (-40, 30, -175)
+            unlocked_text.disable()
+            if not self.car.time_trial:
+                highscore_text.enable()
+                highscore_text.text = "Highscore: " + str(round(self.car.sand_track_hs, 2)) + "\n Mandaw: 14.49"
 
         def grass_track_hover():
+            for track in self.tracks:
+                track.disable()
             grass_track.enable()
-            sand_track.disable()
-            snow_track.disable()
-            plains_track.disable()
-            savannah_track.disable()
             self.car.position = (20, 30, -100)
+            if grass_track.unlocked == False:
+                grass_track.alpha = 200
+                unlocked_text.enable()
+                unlocked_text.text = "Get Less Than 16 seconds on Sand Track"
+                highscore_text.disable()
+            else:
+                if not self.car.time_trial:
+                    highscore_text.enable()
+                    highscore_text.text = "Highscore: " + str(round(self.car.grass_track_hs, 2)) + "\n Mandaw: 17.76"
+                unlocked_text.disable()
+                grass_track.alpha = 255
 
         def snow_track_hover():
-            grass_track.disable()
-            sand_track.disable()
+            for track in self.tracks:
+                track.disable()
             snow_track.enable()
-            plains_track.disable()
-            savannah_track.disable()
             self.car.position = (20, 30, -80)
-
+            if snow_track.unlocked == False:
+                snow_track.alpha = 200
+                unlocked_text.enable()
+                unlocked_text.text = "Get Less Than 18.5 seconds on Grass Track"
+                highscore_text.disable()
+            else:
+                if not self.car.time_trial:
+                    highscore_text.enable()
+                    highscore_text.text = "Highscore: " + str(round(self.car.snow_track_hs, 2)) + "\n Mandaw: 31.45"
+                unlocked_text.disable()
+                snow_track.alpha = 255
+        
         def plains_track_hover():
-            grass_track.disable()
-            sand_track.disable()
-            snow_track.disable()
+            for track in self.tracks:
+                track.disable()
             plains_track.enable()
-            savannah_track.disable()
             self.car.position = (50, 30, -100)
+            if plains_track.unlocked == False:
+                plains_track.alpha = 200
+                unlocked_text.enable()
+                unlocked_text.text = "Get Less Than 33 seconds on Snow Track"
+                highscore_text.disable()
+            else:
+                if not self.car.time_trial:
+                    highscore_text.enable()
+                    highscore_text.text = "Highscore: " + str(round(self.car.plains_track_hs, 2)) + "\n Mandaw: 24.28"
+                unlocked_text.disable()
+                plains_track.alpha = 255
 
         def savannah_track_hover():
-            grass_track.disable()
-            sand_track.disable()
-            snow_track.disable()
-            plains_track.disable()
+            for track in self.tracks:
+                track.disable()
             savannah_track.enable()
             self.car.position = (25, 30, -130)
+            if savannah_track.unlocked == False:
+                savannah_track.alpha = 200
+                unlocked_text.enable()
+                unlocked_text.text = "Get Less Than 26 seconds on Plains Track"
+                highscore_text.disable()
+            else:
+                if not self.car.time_trial:
+                    highscore_text.enable()
+                    highscore_text.text = "Highscore: " + str(round(self.car.savannah_track_hs, 2)) + "\n Mandaw: 14.13"
+                unlocked_text.disable()
+                savannah_track.alpha = 255
 
         start_button = Button(text = "Start Game", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.02, parent = self.main_menu)
         sand_track_button = Button(text = "Sand Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = -0.5, parent = self.maps_menu)
@@ -517,6 +517,12 @@ class MainMenu(Entity):
         savannah_track_button = Button(text = "Savannah Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = 0, parent = self.maps_menu)
         back_button = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
         
+        unlocked_text = Text("Get Less Than 16 seconds on Sand Track to Unlock Grass Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = -0.1, parent = self.maps_menu)
+        unlocked_text.disable()
+
+        highscore_text = Text("", scale = 1.2, color = color.white, line_height = 2, origin = 0, y = -0.07, parent = self.maps_menu)
+        highscore_text.disable()
+
         ai_button = Button(text = "AI: Off", color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.28, x = 0, parent = self.maps_menu)
         self.ai_slider = Slider(min = 1, max = 3, default = 1, text = "AI", y = -0.4, x = -0.3, scale = 1.3, parent = self.maps_menu, dynamic = True)
         self.ai_slider.step = 1
@@ -815,11 +821,10 @@ class MainMenu(Entity):
             self.car.anti_cheat = 1
             self.main_menu.enable()
             self.pause_menu.disable()
-            sand_track.disable()
-            snow_track.disable()
-            plains_track.disable()
+            for track in self.tracks:
+                track.disable()
+                track.alpha = 255
             grass_track.enable()
-            savannah_track.disable()
 
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
@@ -983,7 +988,7 @@ class MainMenu(Entity):
     
     def input(self, key):
         # Pause menu
-        if self.start_menu.enabled == False and self.main_menu.enabled == False and self.server_menu.enabled == False and self.settings_menu.enabled == False and self.race_menu.enabled == False and self.maps_menu.enabled == False and self.settings_menu.enabled == False and self.garage_menu.enabled == False and self.controls_menu.enabled == False and self.host_menu.enabled == False and self.created_server_menu.enabled == False and self.video_menu.enabled == False and self.gameplay_menu.enabled == False:
+        if not self.start_menu.enabled and not self.main_menu.enabled and not self.server_menu.enabled and not self.settings_menu.enabled and not self.race_menu.enabled and not self.maps_menu.enabled and not self.settings_menu.enabled and not self.garage_menu.enabled and not self.controls_menu.enabled and not self.host_menu.enabled and not self.created_server_menu.enabled and not self.video_menu.enabled and not self.gameplay_menu.enabled:
             if key == "escape":
                 self.pause_menu.enabled = not self.pause_menu.enabled
                 mouse.locked = not mouse.locked

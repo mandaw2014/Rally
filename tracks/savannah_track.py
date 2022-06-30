@@ -25,6 +25,7 @@ class SavannahTrack(Entity):
             i.disable()
 
         self.played = False
+        self.unlocked = False
 
         self.disable()
 

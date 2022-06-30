@@ -34,6 +34,7 @@ class SandTrack(Entity):
             i.disable()
 
         self.played = False
+        self.unlocked = True
 
     def update(self):
         if self.car.simple_intersects(self.finish_line):

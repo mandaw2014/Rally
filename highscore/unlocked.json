@@ -1,0 +1,10 @@
+{
+    "tracks": {
+        "sand_track": true,
+        "grass_track": true,
+        "snow_track": false,
+        "plains_track": false,
+        "savannah_track": false
+    },
+    "texture": {}
+}

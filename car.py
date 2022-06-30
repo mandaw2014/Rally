@@ -136,6 +136,17 @@ class Car(Entity):
         with open(self.username_path, "r") as username:
             self.username_text = username.read()
 
+        self.unlocked_json = os.path.join(path, "./highscore/unlocked.json")
+        try:
+            with open(self.unlocked_json, "r") as u:
+                self.unlocked = json.load(u)
+        except FileNotFoundError:
+            with open(self.unlocked_json, "w+") as u:
+                self.save_unlocked()
+                self.unlocked = json.load(u)
+
+        invoke(self.set_unlocked, delay = 1)
+
     def update(self):
         # Stopwatch/Timer
         if self.time_trial == False:
@@ -506,6 +517,31 @@ class Car(Entity):
 
         with open(self.highscore_path, "w") as hs:
             json.dump(self.highscore_dict, hs, indent = 4)
+
+    def set_unlocked(self):
+        self.sand_track.unlocked = self.unlocked["tracks"]["sand_track"]
+        self.grass_track.unlocked = self.unlocked["tracks"]["grass_track"]
+        self.snow_track.unlocked = self.unlocked["tracks"]["snow_track"]
+        self.plains_track.unlocked = self.unlocked["tracks"]["plains_track"]
+        self.savannah_track.unlocked = self.unlocked["tracks"]["savannah_track"]
+
+    def save_unlocked(self):
+        self.unlocked_dict = {
+            "tracks": {
+                "sand_track": self.sand_track.unlocked,
+                "grass_track": self.grass_track.unlocked,
+                "snow_track": self.snow_track.unlocked,
+                "plains_track": self.plains_track.unlocked,
+                "savannah_track": self.savannah_track.unlocked
+            },
+
+            "texture": {
+
+            }
+        }
+
+        with open(self.unlocked_json, "w") as hs:
+            json.dump(self.unlocked_dict, hs, indent = 4)
     
     def reset_timer(self):
         self.count = self.reset_count
