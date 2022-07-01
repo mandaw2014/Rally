@@ -43,17 +43,29 @@ else:
 
 def load_assets():
     models_to_load = [
+        # Tracks
         "car.obj", "sand_track.obj", "grass_track.obj", "snow_track.obj",
-        "plains_track.obj", "sand_track_bounds.obj", "grass_track_bounds.obj",
-        "snow_track_bounds.obj", "plains_track_bounds.obj", "savannah_track.obj",
-        "savannah_track_bounds.obj"
+        "plains_track.obj", "savannah_track.obj",
+        # Track Bounds
+        "sand_track_bounds.obj", "grass_track_bounds.obj",
+        "snow_track_bounds.obj", "plains_track_bounds.obj", "savannah_track_bounds.obj",
+        # Cosmetics
+        "viking_helmet.obj", "duck.obj", "banana.obj", "surfinbird.obj"
     ]
 
     textures_to_load = [
+        # Car Textures
         "car-red.png", "car-orange.png", "car-green.png", "car-white.png", "car-black.png",
-        "car-blue.png", "sand_track.png", "grass_track.png", "snow_track.png", "plains_track.png",
-        "savannah_track.png", "particle_sand_track.png", "particle_grass_track.png", "particle_snow_track", 
-        "particle_plains_track.png", "particle_savannah_track.png"
+        "car-blue.png", 
+        # Track Textures
+        "sand_track.png", "grass_track.png", "snow_track.png", "plains_track.png",
+        "savannah_track.png", 
+        # Particle Textures
+        "particle_sand_track.png", "particle_grass_track.png", "particle_snow_track", 
+        "particle_plains_track.png", "particle_savannah_track.png",
+        # Cosmetic Textures + Icons
+        "viking_helmet.png", "bird.png", "viking_helmet-icon.png", "duck-icon.png",
+        "banana-icon.png"
     ]
 
     for i, m in enumerate(models_to_load):

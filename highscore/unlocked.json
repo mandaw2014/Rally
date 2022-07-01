@@ -6,5 +6,25 @@
         "plains_track": false,
         "savannah_track": false
     },
-    "texture": {}
+    "beat_mandaw": {
+        "sand_track": false,
+        "grass_track": false,
+        "snow_track": false,
+        "plains_track": false,
+        "savannah_track": false
+    },
+    "textures": {
+        "red": true,
+        "blue": true,
+        "green": false,
+        "orange": false,
+        "black": false,
+        "white": false
+    },
+    "cosmetics": {
+        "viking_helmet": false,
+        "duck": false,
+        "banana": false,
+        "surfinbird": false
+    }
 }

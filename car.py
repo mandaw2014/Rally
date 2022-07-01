@@ -59,6 +59,16 @@ class Car(Entity):
         self.plains_track = None
         self.savannah_track = None
 
+        # Cosmetics
+        self.viking_helmet = Entity(model = "viking_helmet.obj", texture = "viking_helmet.png", parent = self)
+        self.duck = Entity(model = "duck.obj", parent = self)
+        self.banana = Entity(model = "banana.obj", parent = self)
+        self.bird = Entity(model = "surfinbird.obj", texture = "bird.png", parent = self)
+        self.viking_helmet.disable()
+        self.duck.disable()
+        self.banana.disable()
+        self.bird.disable()
+
         # Stopwatch/Timer
         self.timer_running = False
         self.count = 0.0
@@ -144,6 +154,12 @@ class Car(Entity):
             with open(self.unlocked_json, "w+") as u:
                 self.save_unlocked()
                 self.unlocked = json.load(u)
+
+        self.beat_mandaw_sand_track = False
+        self.beat_mandaw_grass_track = False
+        self.beat_mandaw_snow_track = False
+        self.beat_mandaw_plains_track = False
+        self.beat_mandaw_savannah_track = False
 
         invoke(self.set_unlocked, delay = 1)
 
@@ -525,6 +541,24 @@ class Car(Entity):
         self.plains_track.unlocked = self.unlocked["tracks"]["plains_track"]
         self.savannah_track.unlocked = self.unlocked["tracks"]["savannah_track"]
 
+        self.beat_mandaw_sand_track = self.unlocked["beat_mandaw"]["sand_track"]
+        self.beat_mandaw_grass_track = self.unlocked["beat_mandaw"]["grass_track"]
+        self.beat_mandaw_snow_track = self.unlocked["beat_mandaw"]["snow_track"]
+        self.beat_mandaw_plains_track = self.unlocked["beat_mandaw"]["plains_track"]
+        self.beat_mandaw_savannah_track = self.unlocked["beat_mandaw"]["savannah_track"]
+
+        self.red_unlocked = self.unlocked["textures"]["red"]
+        self.blue_unlocked = self.unlocked["textures"]["blue"]
+        self.green_unlocked = self.unlocked["textures"]["green"]
+        self.orange_unlocked = self.unlocked["textures"]["orange"]
+        self.black_unlocked = self.unlocked["textures"]["black"]
+        self.white_unlocked = self.unlocked["textures"]["white"]
+
+        self.viking_helmet_unlocked = self.unlocked["cosmetics"]["viking_helmet"]
+        self.duck_unlocked = self.unlocked["cosmetics"]["duck"]
+        self.banana_unlocked = self.unlocked["cosmetics"]["banana"]
+        self.bird_unlocked = self.unlocked["cosmetics"]["surfinbird"]
+
     def save_unlocked(self):
         self.unlocked_dict = {
             "tracks": {
@@ -534,9 +568,26 @@ class Car(Entity):
                 "plains_track": self.plains_track.unlocked,
                 "savannah_track": self.savannah_track.unlocked
             },
-
-            "texture": {
-
+            "beat_mandaw": {
+                "sand_track": self.beat_mandaw_sand_track,
+                "grass_track": self.beat_mandaw_grass_track,
+                "snow_track": self.beat_mandaw_snow_track,
+                "plains_track": self.beat_mandaw_plains_track,
+                "savannah_track": self.beat_mandaw_savannah_track,
+            },
+            "textures": {
+                "red": self.red_unlocked,
+                "blue": self.blue_unlocked,
+                "green": self.green_unlocked,
+                "orange": self.orange_unlocked,
+                "black": self.black_unlocked,
+                "white": self.white_unlocked
+            },
+            "cosmetics": {
+                "viking_helmet": self.viking_helmet_unlocked,
+                "duck": self.duck_unlocked,
+                "banana": self.banana_unlocked,
+                "surfinbird": self.bird_unlocked
             }
         }
 

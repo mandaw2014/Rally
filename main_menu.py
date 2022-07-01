@@ -449,7 +449,7 @@ class MainMenu(Entity):
             if grass_track.unlocked == False:
                 grass_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 16 seconds on Sand Track"
+                unlocked_text.text = "Get Less Than 17 seconds on Sand Track"
                 highscore_text.disable()
             else:
                 if not self.car.time_trial:
@@ -466,7 +466,7 @@ class MainMenu(Entity):
             if snow_track.unlocked == False:
                 snow_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 18.5 seconds on Grass Track"
+                unlocked_text.text = "Get Less Than 19 seconds on Grass Track"
                 highscore_text.disable()
             else:
                 if not self.car.time_trial:
@@ -865,9 +865,76 @@ class MainMenu(Entity):
             """
             Changes the car color to the selected color after a small animation.
             """
-            if self.start_spin:
+            if colour == "red":
+                car.texture = "car-red.png"
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
-            car.texture = f"car-{colour}.png"
+            if colour == "blue":
+                car.texture = "car-blue.png"
+                car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+            if colour == "green":
+                if car.green_unlocked:
+                    car.texture = "car-green.png"
+                    car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                else:
+                    self.garage_locked_text("Get Less Than 19s on Grass Track")
+            if colour == "orange":
+                if car.orange_unlocked:
+                    car.texture = "car-orange.png"
+                    car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                else:
+                    self.garage_locked_text("Get Less Than 16s on Sand Track")
+            if colour == "black":
+                if car.black_unlocked:
+                    car.texture = "car-black.png"
+                    car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                else:
+                    self.garage_locked_text("Get Less Than 16s on Savannah Track")
+            if colour == "white":
+                if car.white_unlocked:
+                    car.texture = "car-white.png"
+                    car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                else:
+                    self.garage_locked_text("Get Less Than 33s on Snow Track")
+
+        def viking_helmet():
+            if self.car.viking_helmet_unlocked:
+                car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                car.viking_helmet.enabled = not car.viking_helmet.enabled
+                car.duck.disable()
+                car.banana.disable()
+                car.bird.disable()
+            else:
+                self.garage_locked_text("Get Less Than 15s on Sand Track")
+
+        def duck():
+            if self.car.duck_unlocked:
+                car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                car.duck.enabled = not car.duck.enabled
+                car.viking_helmet.disable()
+                car.banana.disable()
+                car.bird.disable()
+            else:
+                self.garage_locked_text("Get Less Than 25s on Plains Track")
+
+        def banana():
+            if self.car.banana_unlocked:
+                car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                car.banana.enabled = not car.banana.enabled
+                car.duck.disable()
+                car.viking_helmet.disable()
+                car.bird.disable()
+            else:
+                self.garage_locked_text("Beat Mandaw on Grass Track")
+
+        def surfinbird():
+            if self.car.bird_unlocked:
+                car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                car.bird.enabled = not car.bird.enabled
+                car.viking_helmet.disable()
+                car.duck.disable()
+                car.banana.disable()
+            else:
+                self.garage_locked_text("Beat Mandaw in Every Track")
 
         self.start_spin = True
 
@@ -875,12 +942,20 @@ class MainMenu(Entity):
 
         back_button_garage = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.garage_menu)
 
-        red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.7, parent = self.garage_menu)
-        blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.garage_menu)
-        green_button = Button(color = color.lime, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.3, parent = self.garage_menu)
-        orange_button = Button(color = color.orange, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.7, parent = self.garage_menu)
-        black_button = Button(color = color.black, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.5, parent = self.garage_menu)
-        white_button = Button(color = color.white, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.3, parent = self.garage_menu)
+        red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.3, x = -0.7, parent = self.garage_menu)
+        blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.3, x = -0.5, parent = self.garage_menu)
+        green_button = Button(color = color.lime, scale_y = 0.1, scale_x = 0.15, y = 0.3, x = -0.3, parent = self.garage_menu)
+        orange_button = Button(color = color.orange, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.7, parent = self.garage_menu)
+        black_button = Button(color = color.black, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.garage_menu)
+        white_button = Button(color = color.white, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.3, parent = self.garage_menu)
+
+        viking_helmet_button = Button(texture = "viking_helmet-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.15, x = -0.7, alpha = 255, parent = self.garage_menu)
+        duck_button = Button(texture = "duck-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.15, x = -0.5, alpha = 255, parent = self.garage_menu)
+        banana_button = Button(texture = "banana-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.15, x = -0.3, alpha = 255, parent = self.garage_menu)
+        surfinbird_button = Button(texture = "bird.png", color = color.white, scale = (0.16, 0.1), y = -0.3, x = -0.7, alpha = 255, parent = self.garage_menu)
+
+        self.garage_unlocked_text = Text("Beat Mandaw in Every Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = -0.3, parent = self.garage_menu)
+        self.garage_unlocked_text.disable()
 
         garage_button.on_click = Func(garage_button_func)
         back_button_garage.on_click = Func(back_garage)
@@ -891,12 +966,23 @@ class MainMenu(Entity):
         black_button.on_click = Func(change_colour, "black")
         white_button.on_click = Func(change_colour, "white")
 
+        viking_helmet_button.on_click = Func(viking_helmet)
+        duck_button.on_click = Func(duck)
+        banana_button.on_click = Func(banana)
+        surfinbird_button.on_click = Func(surfinbird)
+
         # Error Log
 
         self.connected = Text(text = "Connected to server!", scale = 1.5, color = color.hex("4dff4d"), line_height = 2, x = -0.55, origin = 0, y = 0.45, parent = camera.ui)
         self.not_connected = Text(text = "Not connected to server...", scale = 1.5, color = color.hex("FF2E2E"), line_height = 2, x = -0.55, origin = 0, y = 0.45, parent = camera.ui)
         self.connected.disable()
         self.not_connected.disable()
+
+    def garage_locked_text(self, warning):
+        self.garage_unlocked_text.enable()
+        self.garage_unlocked_text.text = warning
+        self.garage_unlocked_text.shake()
+        invoke(self.garage_unlocked_text.disable, delay = 1)
 
     def update(self):
         # AI Slider
@@ -923,7 +1009,7 @@ class MainMenu(Entity):
                 if self.start_spin:
                     self.car.rotation_y += 15 * time.dt
             else:
-                self.car.rotation_y = mouse.x * 500
+                self.car.rotation_y = mouse.x * 200
             self.car.camera_follow.offset = (-25, 4, 0)
             camera.rotation = (5, 90, 0)
 
@@ -932,7 +1018,7 @@ class MainMenu(Entity):
                 if self.start_spin:
                     self.car.rotation_y += 15 * time.dt
             else:
-                self.car.rotation_y = mouse.x * 500
+                self.car.rotation_y = mouse.x * 200
             self.car.camera_follow.offset = (-25, 8, 0)
             camera.rotation = (14, 90, 0)
 
@@ -941,7 +1027,7 @@ class MainMenu(Entity):
                 if self.start_spin:
                     self.car.rotation_y += 15 * time.dt
             else:
-                self.car.rotation_y = mouse.x * 500
+                self.car.rotation_y = mouse.x * 200
             self.car.camera_follow.offset = (-25, 5, 2)
             camera.rotation = (10, 90, 0)
 
@@ -950,7 +1036,7 @@ class MainMenu(Entity):
                 if self.start_spin:
                     self.car.rotation_y += 15 * time.dt
             else:
-                self.car.rotation_y = mouse.x * 500
+                self.car.rotation_y = mouse.x * 200
             self.car.camera_follow.offset = (-25, 6, 5)
             camera.rotation = (10, 90, 0)
 
