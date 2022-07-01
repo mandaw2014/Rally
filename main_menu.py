@@ -861,6 +861,14 @@ class MainMenu(Entity):
             grass_track.disable()
             sand_track.enable()
 
+        def left():
+            self.page1.enable()
+            self.page2.disable()
+
+        def right():
+            self.page1.disable()
+            self.page2.enable()
+
         def change_colour(colour):
             """
             Changes the car color to the selected color after a small animation.
@@ -939,26 +947,33 @@ class MainMenu(Entity):
         self.start_spin = True
 
         garage_button = Button(text = "Garage", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.main_menu)
+        self.page1 = Entity(parent = self.garage_menu)
+        self.page2 = Entity(parent = self.garage_menu)
+        self.page2.disable()
 
         back_button_garage = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.garage_menu)
+        left_arrow = Button(text = "<-", color = color.gray, scale_y = 0.05, scale_x = 0.1, y = -0.3, x = -0.6, parent = self.garage_menu)
+        right_arrow = Button(text = "->", color = color.gray, scale_y = 0.05, scale_x = 0.1, y = -0.3, x = -0.4, parent = self.garage_menu)
 
-        red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.3, x = -0.7, parent = self.garage_menu)
-        blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.3, x = -0.5, parent = self.garage_menu)
-        green_button = Button(color = color.lime, scale_y = 0.1, scale_x = 0.15, y = 0.3, x = -0.3, parent = self.garage_menu)
-        orange_button = Button(color = color.orange, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.7, parent = self.garage_menu)
-        black_button = Button(color = color.black, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.garage_menu)
-        white_button = Button(color = color.white, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.3, parent = self.garage_menu)
+        red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.7, parent = self.page1)
+        blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.page1)
+        green_button = Button(color = color.lime, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.3, parent = self.page1)
+        orange_button = Button(color = color.orange, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.7, parent = self.page1)
+        black_button = Button(color = color.black, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.5, parent = self.page1)
+        white_button = Button(color = color.white, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.3, parent = self.page1)
 
-        viking_helmet_button = Button(texture = "viking_helmet-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.15, x = -0.7, alpha = 255, parent = self.garage_menu)
-        duck_button = Button(texture = "duck-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.15, x = -0.5, alpha = 255, parent = self.garage_menu)
-        banana_button = Button(texture = "banana-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.15, x = -0.3, alpha = 255, parent = self.garage_menu)
-        surfinbird_button = Button(texture = "bird.png", color = color.white, scale = (0.16, 0.1), y = -0.3, x = -0.7, alpha = 255, parent = self.garage_menu)
+        viking_helmet_button = Button(texture = "viking_helmet-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.7, alpha = 255, parent = self.page2)
+        duck_button = Button(texture = "duck-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.5, alpha = 255, parent = self.page2)
+        banana_button = Button(texture = "banana-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.3, alpha = 255, parent = self.page2)
+        surfinbird_button = Button(texture = "bird.png", color = color.white, scale = (0.16, 0.1), y = -0.1, x = -0.7, alpha = 255, parent = self.page2)
 
-        self.garage_unlocked_text = Text("Beat Mandaw in Every Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = -0.3, parent = self.garage_menu)
+        self.garage_unlocked_text = Text("Beat Mandaw in Every Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = 0.3, parent = self.garage_menu)
         self.garage_unlocked_text.disable()
 
         garage_button.on_click = Func(garage_button_func)
         back_button_garage.on_click = Func(back_garage)
+        left_arrow.on_click = Func(left)
+        right_arrow.on_click = Func(right)
         red_button.on_click = Func(change_colour, "red")
         blue_button.on_click = Func(change_colour, "blue")
         green_button.on_click = Func(change_colour, "green")
