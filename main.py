@@ -50,7 +50,7 @@ def load_assets():
         "sand_track_bounds.obj", "grass_track_bounds.obj",
         "snow_track_bounds.obj", "plains_track_bounds.obj", "savannah_track_bounds.obj",
         # Cosmetics
-        "viking_helmet.obj", "duck.obj", "banana.obj", "surfinbird.obj"
+        "viking_helmet.obj", "duck.obj", "banana.obj", "surfinbird.obj", "surfboard.obj"
     ]
 
     textures_to_load = [
@@ -64,8 +64,8 @@ def load_assets():
         "particle_sand_track.png", "particle_grass_track.png", "particle_snow_track", 
         "particle_plains_track.png", "particle_savannah_track.png",
         # Cosmetic Textures + Icons
-        "viking_helmet.png", "bird.png", "viking_helmet-icon.png", "duck-icon.png",
-        "banana-icon.png"
+        "viking_helmet.png", "surfinbird.png", "surfboard.png", "viking_helmet-icon.png", "duck-icon.png",
+        "banana-icon.png", "surfinbird-icon.png"
     ]
 
     for i, m in enumerate(models_to_load):

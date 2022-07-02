@@ -63,11 +63,12 @@ class Car(Entity):
         self.viking_helmet = Entity(model = "viking_helmet.obj", texture = "viking_helmet.png", parent = self)
         self.duck = Entity(model = "duck.obj", parent = self)
         self.banana = Entity(model = "banana.obj", parent = self)
-        self.bird = Entity(model = "surfinbird.obj", texture = "bird.png", parent = self)
+        self.surfinbird = Entity(model = "surfinbird.obj", texture = "surfinbird.png", parent = self)
+        self.surfboard = Entity(model = "surfboard.obj", texture = "surfboard.png", parent = self.surfinbird)
         self.viking_helmet.disable()
         self.duck.disable()
         self.banana.disable()
-        self.bird.disable()
+        self.surfinbird.disable()
 
         # Stopwatch/Timer
         self.timer_running = False
@@ -109,8 +110,6 @@ class Car(Entity):
         camera.add_script(self.camera_follow)
 
         # Camera shake
-        self.original_camera_position = camera.position
-        self.shake_duration = 2.0
         self.shake_amount = 0.1
         self.can_shake = False
         self.camera_shake_option = True
@@ -236,7 +235,7 @@ class Car(Entity):
             self.shake_amount += 1 * self.speed * time.dt
         else:
             self.number_of_particles -= 2 * time.dt
-            self.shake_amount -= 0.2 * time.dt
+            self.shake_amount -= 0.2 * self.speed * time.dt
 
         # Check if the car is hitting the ground
         ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
@@ -344,24 +343,9 @@ class Car(Entity):
         if self.rotation_speed <= -self.max_rotation_speed:
             self.rotation_speed = -self.max_rotation_speed
 
-        # Camera Shake
-        if self.speed >= 1:
-            self.can_shake = True
-            self.shake_amount += self.speed / 5000 * time.dt
-
-        # Cap the camera shake amount
-        if self.shake_amount <= 0:
-            self.shake_amount = 0
-        if self.shake_amount >= 0.03:
-            self.shake_amount = 0.03
-
         # Respawn
         if held_keys["g"]:
             self.reset_car()
-
-        # If the camera can shake and camera shake is on, then shake the camera
-        if self.can_shake and self.camera_shake_option:
-            self.shake_camera()
 
         # Reset the car's position if y value is less than -100
         if self.y <= -100:
@@ -370,6 +354,21 @@ class Car(Entity):
         # Reset the car's position if y value is greater than 300
         if self.y >= 300:
             self.reset_car()
+
+        # Camera Shake
+        if self.speed >= 1:
+            self.can_shake = True
+            self.shake_amount = self.speed / 120
+
+        # Cap the camera shake amount
+        if self.shake_amount <= 0:
+            self.shake_amount = 0
+        if self.shake_amount >= 0.03:
+            self.shake_amount = 0.03
+
+        # If the camera can shake and camera shake is on, then shake the camera
+        if self.can_shake and self.camera_shake_option:
+            self.shake_camera()
 
         # Gravity
         movementY = self.velocity_y / 50
@@ -408,6 +407,9 @@ class Car(Entity):
                 self.z += movementZ
 
     def reset_car(self):
+        """
+        Resets the car
+        """
         if self.grass_track.enabled:
             self.position = (-80, -30, 15)
             self.rotation = (0, 90, 0)
@@ -438,6 +440,10 @@ class Car(Entity):
             self.start_time = False
 
     def simple_intersects(self, entity):
+        """
+        A faster AABB intersects for detecting collision with
+        simple objects, doesn't take rotation into account
+        """
         minXA = self.x - self.scale_x
         maxXA = self.x + self.scale_x
         minYA = self.y - self.scale_y + (self.scale_y / 2)
@@ -459,6 +465,9 @@ class Car(Entity):
         )
 
     def check_highscore(self):
+        """
+        Checks if the score is lower than the highscore
+        """
         if self.time_trial == False:
             self.reset_count = 0.0
             self.timer.disable()
@@ -467,11 +476,17 @@ class Car(Entity):
             if self.highscore_count == 0:
                 if self.last_count >= 10:
                     self.highscore_count = self.last_count
+                    self.animate_highscore("up")
+                    invoke(self.animate_highscore, delay = 0.2)
             if self.last_count <= self.highscore_count:
                 if self.last_count >= 10.0:
                     self.highscore_count = self.last_count
+                    self.animate_highscore("up")
+                    invoke(self.animate_highscore, delay = 0.2)
                 if self.highscore_count <= 13:
                     self.highscore_count = self.last_count
+                    self.animate_highscore("up")
+                    invoke(self.animate_highscore, delay = 0.2)
 
             if self.sand_track.enabled:
                 self.sand_track_hs = float(self.highscore_count)
@@ -491,6 +506,9 @@ class Car(Entity):
             self.start_time = True
 
     def save_highscore(self):
+        """
+        Saves the highscore to a json file
+        """
         self.highscore_dict = {
             "race": {
                 "sand_track": self.sand_track_hs,
@@ -513,28 +531,27 @@ class Car(Entity):
             json.dump(self.highscore_dict, hs, indent = 4)
 
     def reset_highscore(self):
-        self.highscore_dict = {
-            "race": {
-                "sand_track": 0.0,
-                "grass_track": 0.0,
-                "snow_track": 0.0,
-                "plains_track": 0.0,
-                "savannah_track": 0.0
-            },
+        """
+        Resets all of the highscores
+        """
+        self.sand_track_hs = 0.0
+        self.grass_track_hs = 0.0
+        self.snow_track_hs = 0.0
+        self.plains_track_hs = 0.0
+        self.savannah_track_hs = 0.0
 
-            "time_trial": {
-                "sand_track": 0,
-                "grass_track": 0, 
-                "snow_track": 0, 
-                "plains_track": 0,
-                "savannah_track": 0
-            }
-        }
+        self.sand_track_laps = 0
+        self.grass_track_laps = 0
+        self.snow_track_laps = 0
+        self.plains_track_laps = 0
+        self.savannah_track_laps = 0
 
-        with open(self.highscore_path, "w") as hs:
-            json.dump(self.highscore_dict, hs, indent = 4)
+        self.save_highscore()
 
     def set_unlocked(self):
+        """
+        Declares variables with data from a json file
+        """
         self.sand_track.unlocked = self.unlocked["tracks"]["sand_track"]
         self.grass_track.unlocked = self.unlocked["tracks"]["grass_track"]
         self.snow_track.unlocked = self.unlocked["tracks"]["snow_track"]
@@ -557,9 +574,12 @@ class Car(Entity):
         self.viking_helmet_unlocked = self.unlocked["cosmetics"]["viking_helmet"]
         self.duck_unlocked = self.unlocked["cosmetics"]["duck"]
         self.banana_unlocked = self.unlocked["cosmetics"]["banana"]
-        self.bird_unlocked = self.unlocked["cosmetics"]["surfinbird"]
+        self.surfinbird_unlocked = self.unlocked["cosmetics"]["surfinbird"]
 
     def save_unlocked(self):
+        """
+        Saves the unlocks to a json file
+        """
         self.unlocked_dict = {
             "tracks": {
                 "sand_track": self.sand_track.unlocked,
@@ -587,7 +607,7 @@ class Car(Entity):
                 "viking_helmet": self.viking_helmet_unlocked,
                 "duck": self.duck_unlocked,
                 "banana": self.banana_unlocked,
-                "surfinbird": self.bird_unlocked
+                "surfinbird": self.surfinbird_unlocked
             }
         }
 
@@ -595,13 +615,23 @@ class Car(Entity):
             json.dump(self.unlocked_dict, hs, indent = 4)
     
     def reset_timer(self):
+        """
+        Resets the timer
+        """
         self.count = self.reset_count
         self.timer.enable()
         self.reset_count_timer.disable()
 
-    def update_camera_pos(self):
-        self.original_camera_position = camera.position
-
+    def animate_highscore(self, direction = "down"):
+        """
+        Animates the scale of the highscore text
+        """
+        if self.last_count > 1:
+            if direction == "up":
+                self.highscore.animate_scale((1.2, 1.2, 1.2), duration = 0.2, curve = curve.out_expo)
+            elif direction == "down":
+                self.highscore.animate_scale((0.6, 0.6, 0.6), duration = 0.1, curve = curve.linear)
+    
     def shake_camera(self):
         camera.x += random.randint(-1, 1) * self.shake_amount
         camera.y += random.randint(-1, 1) * self.shake_amount

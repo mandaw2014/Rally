@@ -89,6 +89,10 @@ class MainMenu(Entity):
             grass_track.disable()
             snow_track.enable()
 
+        def quit():
+            application.quit()
+            os._exit(0)
+
         start_title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.start_menu, y = 0.3)
         quit_button_start = Button(text = "X", color = color.hex("FF1414"), highlight_color = color.hex("FF4747"), scale_y = 0.058, scale_x = 0.06, y = 0.43, x = 0.85, parent = self.start_menu)
 
@@ -100,7 +104,7 @@ class MainMenu(Entity):
         
         singleplayer_button.on_click = Func(singleplayer)
         multiplayer_button.on_click = Func(multiplayer)
-        quit_button_start.on_click = Func(application.quit)
+        quit_button_start.on_click = Func(quit)
 
         # Host Server Menu
 
@@ -207,15 +211,20 @@ class MainMenu(Entity):
 
         # Main Menu
 
-        def quit_app():
-            application.quit()
+        def back_singleplayer():
+            self.car.position = (-80, -42, 18.8)
+            self.car.rotation = (0, 90, 0)
+            self.car.enable()
+            self.grass_track.enable()
+            self.start_menu.enable()
+            self.main_menu.disable()
             if self.car.multiplayer_update:
-                os._exit(0)
+                self.car.multiplayer_update = False
 
         title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.main_menu, y = 0.3)
 
-        quit_button = Button(text = "Quit", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.34, parent = self.main_menu)
-        quit_button.on_click = Func(quit_app)
+        back_button_singleplayer = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.34, parent = self.main_menu)
+        back_button_singleplayer.on_click = Func(back_singleplayer)
 
         # Maps Menu
 
@@ -913,7 +922,7 @@ class MainMenu(Entity):
                 car.viking_helmet.enabled = not car.viking_helmet.enabled
                 car.duck.disable()
                 car.banana.disable()
-                car.bird.disable()
+                car.surfinbird.disable()
             else:
                 self.garage_locked_text("Get Less Than 15s on Sand Track")
 
@@ -923,7 +932,7 @@ class MainMenu(Entity):
                 car.duck.enabled = not car.duck.enabled
                 car.viking_helmet.disable()
                 car.banana.disable()
-                car.bird.disable()
+                car.surfinbird.disable()
             else:
                 self.garage_locked_text("Get Less Than 25s on Plains Track")
 
@@ -933,14 +942,14 @@ class MainMenu(Entity):
                 car.banana.enabled = not car.banana.enabled
                 car.duck.disable()
                 car.viking_helmet.disable()
-                car.bird.disable()
+                car.surfinbird.disable()
             else:
                 self.garage_locked_text("Beat Mandaw on Grass Track")
 
         def surfinbird():
-            if self.car.bird_unlocked:
+            if self.car.surfinbird_unlocked:
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
-                car.bird.enabled = not car.bird.enabled
+                car.surfinbird.enabled = not car.surfinbird.enabled
                 car.viking_helmet.disable()
                 car.duck.disable()
                 car.banana.disable()
@@ -966,7 +975,7 @@ class MainMenu(Entity):
         viking_helmet_button = Button(texture = "viking_helmet-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.7, alpha = 255, parent = self.garage_page2)
         duck_button = Button(texture = "duck-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.5, alpha = 255, parent = self.garage_page2)
         banana_button = Button(texture = "banana-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.3, alpha = 255, parent = self.garage_page2)
-        surfinbird_button = Button(texture = "bird.png", color = color.white, scale = (0.16, 0.1), y = -0.1, x = -0.7, alpha = 255, parent = self.garage_page2)
+        surfinbird_button = Button(texture = "surfinbird-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.1, x = -0.7, alpha = 255, parent = self.garage_page2)
 
         self.garage_unlocked_text = Text("Beat Mandaw in Every Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = 0.3, parent = self.garage_menu)
         self.garage_unlocked_text.disable()

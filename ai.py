@@ -316,20 +316,8 @@ class AICar(Entity):
         movementX = self.pivot.forward[0] * self.speed * time.dt
         movementZ = self.pivot.forward[2] * self.speed * time.dt
 
-        # Collision Detection
-        if movementX != 0:
-            direction = (sign(movementX), 0, 0)
-            x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 2 + abs(movementX), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ], thickness = (1, 1))
-
-            if not x_ray.hit:
-                self.x += movementX
-
-        if movementZ != 0:
-            direction = (0, 0, sign(movementZ))
-            z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 2 + abs(movementZ), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ], thickness = (1, 1))
-
-            if not z_ray.hit:
-                self.z += movementZ
+        self.x += movementX
+        self.z += movementZ
 
     def reset(self):
         if self.grass_track.enabled == True:
