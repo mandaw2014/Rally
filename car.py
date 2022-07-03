@@ -231,7 +231,7 @@ class Car(Entity):
                 self.rotation_speed += 1 * time.dt
 
         # Change number of particles depending on the rotation of the car
-        if self.pivot_rotation_distance > 20 or self.pivot_rotation_distance:
+        if self.pivot_rotation_distance > 20 or self.pivot_rotation_distance < -20:
             self.number_of_particles += 1 * time.dt
         else:
             self.number_of_particles -= 2 * time.dt
