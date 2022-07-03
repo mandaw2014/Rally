@@ -956,6 +956,26 @@ class MainMenu(Entity):
             else:
                 self.garage_locked_text("Beat Mandaw in Every Track")
 
+        def viking_hover():
+            self.garage_name_text.enable()
+            self.garage_name_text.text = "Viking Helmet"
+
+        def duck_hover():
+            self.garage_name_text.enable()
+            self.garage_name_text.text = "Duck"
+        
+        def banana_hover():
+            self.garage_name_text.enable()
+            self.garage_name_text.text = "Banana"
+
+        def banana_hover():
+            self.garage_name_text.enable()
+            self.garage_name_text.text = "Banana"
+        
+        def surfinbird_hover():
+            self.garage_name_text.enable()
+            self.garage_name_text.text = "Surfin Bird"
+
         self.start_spin = True
 
         garage_button = Button(text = "Garage", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.main_menu)
@@ -977,6 +997,9 @@ class MainMenu(Entity):
         banana_button = Button(texture = "banana-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.3, alpha = 255, parent = self.garage_page2)
         surfinbird_button = Button(texture = "surfinbird-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.1, x = -0.7, alpha = 255, parent = self.garage_page2)
 
+        self.garage_name_text = Text("Surfin Bird", scale = 1.5, color = color.white, line_height = 2, origin = 0, x = -0.5, y = -0.4, parent = self.garage_menu)
+        self.garage_name_text.disable()
+
         self.garage_unlocked_text = Text("Beat Mandaw in Every Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = 0.3, parent = self.garage_menu)
         self.garage_unlocked_text.disable()
 
@@ -995,6 +1018,15 @@ class MainMenu(Entity):
         duck_button.on_click = Func(duck)
         banana_button.on_click = Func(banana)
         surfinbird_button.on_click = Func(surfinbird)
+
+        viking_helmet_button.on_mouse_enter = Func(viking_hover)
+        viking_helmet_button.on_mouse_exit = Func(self.garage_name_text.disable)
+        duck_button.on_mouse_enter = Func(duck_hover)
+        duck_button.on_mouse_exit = Func(self.garage_name_text.disable)
+        banana_button.on_mouse_enter = Func(banana_hover)
+        banana_button.on_mouse_exit = Func(self.garage_name_text.disable)
+        surfinbird_button.on_mouse_enter = Func(surfinbird_hover)
+        surfinbird_button.on_mouse_exit = Func(self.garage_name_text.disable)
 
         # Error Log
 
