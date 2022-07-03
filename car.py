@@ -51,6 +51,7 @@ class Car(Entity):
         self.particle_pivot.position = self.position - (0, 1, 5)
 
         self.copy_normals = False
+        self.hitting_wall = False
 
         # Making tracks accessible in update
         self.sand_track = None
@@ -230,17 +231,15 @@ class Car(Entity):
                 self.rotation_speed += 1 * time.dt
 
         # Change number of particles depending on the rotation of the car
-        if self.pivot.rotation_y - self.rotation_y < -20 or self.pivot.rotation_y - self.rotation_y > 20:
+        if self.pivot_rotation_distance > 20 or self.pivot_rotation_distance:
             self.number_of_particles += 1 * time.dt
-            self.shake_amount += 1 * self.speed * time.dt
         else:
             self.number_of_particles -= 2 * time.dt
-            self.shake_amount -= 0.2 * self.speed * time.dt
-
+        
         # Check if the car is hitting the ground
-        ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
+        ground_check = raycast(origin = self.position, direction = self.down, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
 
-        if ground_check.hit:
+        if ground_check.distance <= 5:
             # Driving
             if held_keys[self.controls[0]] or held_keys["up arrow"]:
                 self.speed += self.acceleration * 50 * time.dt
@@ -303,27 +302,6 @@ class Car(Entity):
                 elif self.rotation_speed < 0:
                     self.rotation_speed += 5 * time.dt
 
-        # Rotation
-        self.rotation_parent.position = self.position
-
-        # Lerps the car's rotation to the rotation parent's rotation (Makes it smoother)
-        self.rotation_x = lerp(self.rotation_x, self.rotation_parent.rotation_x, 20 * time.dt)
-        self.rotation_z = lerp(self.rotation_z, self.rotation_parent.rotation_z, 20 * time.dt)
-
-        # Raycast for getting the ground's normals
-        rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
-
-        if rotation_ray.distance <= 4:
-            if self.copy_normals:
-                self.ground_normal = self.position + rotation_ray.world_normal
-            else:
-                self.ground_normal = self.position + (0, 180, 0)
-
-            self.rotation_parent.look_at(self.ground_normal, axis = "up")
-            self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
-        else:
-            self.rotation_parent.rotation_y = self.rotation_y
-
         # Cap the speed
         if self.speed >= self.topspeed:
             self.speed = self.topspeed
@@ -356,9 +334,11 @@ class Car(Entity):
             self.reset_car()
 
         # Camera Shake
-        if self.speed >= 1:
+        if self.speed >= 1 and held_keys[self.controls[0]] or held_keys["up arrow"]:
             self.can_shake = True
-            self.shake_amount = self.speed / 120
+            self.shake_amount = self.speed / 100
+        else:
+            self.can_shake = False
 
         # Cap the camera shake amount
         if self.shake_amount <= 0:
@@ -369,6 +349,13 @@ class Car(Entity):
         # If the camera can shake and camera shake is on, then shake the camera
         if self.can_shake and self.camera_shake_option:
             self.shake_camera()
+
+        # Rotation
+        self.rotation_parent.position = self.position
+
+        # Lerps the car's rotation to the rotation parent's rotation (Makes it smoother)
+        self.rotation_x = lerp(self.rotation_x, self.rotation_parent.rotation_x, 20 * time.dt)
+        self.rotation_z = lerp(self.rotation_z, self.rotation_parent.rotation_z, 20 * time.dt)
 
         # Gravity
         movementY = self.velocity_y / 50
@@ -383,27 +370,47 @@ class Car(Entity):
             if y_ray.world_normal.y > 0.7 and y_ray.world_point.y - self.world_y < 0.5:
                 # Set the y value to the ground's y value
                 self.y = y_ray.world_point.y + 1.4
+                self.hitting_wall = False
+            else:
+                # Car is hitting a wall
+                self.hitting_wall = True
+
+            if self.copy_normals:
+                self.ground_normal = self.position + y_ray.world_normal
+            else:
+                self.ground_normal = self.position + (0, 180, 0)
+
+            # Rotates the car according to the grounds normals
+            self.rotation_parent.look_at(self.ground_normal, axis = "up")
+            self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
         else:
             self.y += movementY * 50 * time.dt
             self.velocity_y -= 50 * time.dt
+            self.rotation_parent.rotation_y = self.rotation_y
 
         # Movement
         movementX = self.pivot.forward[0] * self.speed * time.dt
         movementZ = self.pivot.forward[2] * self.speed * time.dt
 
         # Collision Detection
-        if movementX != 0:
-            direction = (sign(movementX), 0, 0)
-            x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 2 + abs(movementX), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ], thickness = (1, 1))
+        if self.hitting_wall:
+            if movementX != 0:
+                direction = (sign(movementX), 0, 0)
+                x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 2 + abs(movementX), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ], thickness = (1, 1))
 
-            if not x_ray.hit:
+                if not x_ray.hit:
+                    self.x += movementX
+
+            if movementZ != 0:
+                direction = (0, 0, sign(movementZ))
+                z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 2 + abs(movementZ), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ], thickness = (1, 1))
+
+                if not z_ray.hit:
+                    self.z += movementZ
+        else:
+            if movementX != 0:
                 self.x += movementX
-
-        if movementZ != 0:
-            direction = (0, 0, sign(movementZ))
-            z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 2 + abs(movementZ), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ], thickness = (1, 1))
-
-            if not z_ray.hit:
+            if movementZ != 0:
                 self.z += movementZ
 
     def reset_car(self):
@@ -633,6 +640,9 @@ class Car(Entity):
                 self.highscore.animate_scale((0.6, 0.6, 0.6), duration = 0.1, curve = curve.linear)
     
     def shake_camera(self):
+        """
+        Camera shake
+        """
         camera.x += random.randint(-1, 1) * self.shake_amount
         camera.y += random.randint(-1, 1) * self.shake_amount
         camera.z += random.randint(-1, 1) * self.shake_amount

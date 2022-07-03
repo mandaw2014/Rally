@@ -54,10 +54,10 @@ class AICar(Entity):
         self.ai_list = ai_list
         self.set_enabled = True
 
+        # Makes sure the AI doesn't get stuck
         self.old_pos = round(self.position)
 
         # Sand Track Points
-
         self.sap1 = PathObject((-41, -50, -7), (0, 90, 0))
         self.sap2 = PathObject((-20, -50, -30), (0, 180, 0))
         self.sap3 = PathObject((-48, -47, -55), (0, 270, 0))
@@ -68,7 +68,6 @@ class AICar(Entity):
         self.sap8 = PathObject((-75, -50, -34), (0, 0, 0))
 
         # Grass Track Points
-
         self.gp1 = PathObject((-47, -41, 15), (0, 90, 0))
         self.gp2 = PathObject((12, -42, 14), (0, 90, 0))
         self.gp3 = PathObject((48, -42, 34), (0, 0, 0))
@@ -82,7 +81,6 @@ class AICar(Entity):
         self.gp11 = PathObject((-60, -42, 15), (0, 120, 0))
 
         # Snow Track Points
-
         self.snp1 = PathObject((32, -44, 94), (0, 90, 0))
         self.snp2 = PathObject((48, -44, 72), (0, 180, 0))
         self.snp3 = PathObject((39, -44, 42), (0, 280, 0))
@@ -102,7 +100,6 @@ class AICar(Entity):
         self.snp17 = PathObject((-14, -44, 94), (0, 90, 0))
 
         # Plains Track Points
-
         self.plp1 = PathObject((57, -51, 76), (0, 90, 0))
         self.plp2 = PathObject((82, -51, 63), (0, 180, 0))
         self.plp3 = PathObject((57, -51, 36), (0, 275, 0))
@@ -118,7 +115,6 @@ class AICar(Entity):
         self.plp13 = PathObject((-3, -51, 75), (0, 120, 0))
 
         # Savannah Track Points
-
         self.svp1 = PathObject((28, -51, 40), (0, 90, 0))
         self.svp2 = PathObject((50, -51, 40), (0, 160, 0))
         self.svp3 = PathObject((61, -51, 18), (0, 260, 0))
@@ -128,12 +124,14 @@ class AICar(Entity):
         self.svp7 = PathObject((-50, -51, 40), (0, 500, 0))
         self.svp8 = PathObject((-24, -51, 41), (0, 450, 0))
 
+        # Path points lists
         self.sand_path = [self.sap1, self.sap2, self.sap3, self.sap4, self.sap5, self.sap6, self.sap7, self.sap8]
         self.grass_path = [self.gp1, self.gp2, self.gp3, self.gp4, self.gp5, self.gp6, self.gp7, self.gp8, self.gp9, self.gp10, self.gp11]
         self.snow_path = [self.snp1, self.snp2, self.snp3, self.snp4, self.snp5, self.snp6, self.snp7, self.snp8, self.snp9, self.snp10, self.snp11, self.snp12, self.snp13, self.snp14, self.snp15, self.snp16, self.snp17]
         self.plains_path = [self.plp1, self.plp2, self.plp3, self.plp4, self.plp5, self.plp6, self.plp7, self.plp8, self.plp9, self.plp10, self.plp11, self.plp12, self.plp13]
         self.savannah_path = [self.svp1, self.svp2, self.svp3, self.svp4, self.svp5, self.svp6, self.svp7, self.svp8]
 
+        # The next point the ai is going to
         self.next_path = self.gp1
 
         # The speed of the AI
@@ -144,6 +142,9 @@ class AICar(Entity):
         self.disable()
 
     def set_random_texture(self):
+        """
+        Sets a random car colour
+        """
         i = random.randint(0, 5)
         if i == 0:
             self.texture = "car-red.png"
@@ -159,10 +160,10 @@ class AICar(Entity):
             self.texture = "car-black.png"
 
     def same_pos(self):
-        '''
+        """
         Checks if the AI is in the same position. If it is, it moved it randomly in
         a certain direction. This stops the AI from getting stuck on things.
-        '''
+        """
         if self.enabled:
             distance = sqrt((self.position[0] - self.old_pos[0]) ** 2 + (self.position[1] - self.old_pos[1]) ** 2 + (self.position[2] - self.old_pos[2]) ** 2)
             if distance <= 2:
@@ -173,6 +174,7 @@ class AICar(Entity):
         invoke(self.same_pos, delay = 1)
 
     def update(self):
+        # Drifting
         self.pivot.position = self.position
         self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
 
@@ -194,9 +196,23 @@ class AICar(Entity):
         elif self.snow_track.enabled or self.plains_track.enabled:
             self.difficulty = 40
 
-        ground_check = raycast(origin = self.position, direction = self.down, distance = 5, ignore = [self, self.car, self.ai_list[0], self.ai_list[1], self.ai_list[2], self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.plains_track.wall1, self.plains_track.wall2, self.plains_track.wall3, self.plains_track.wall4, self.plains_track.wall5, self.plains_track.wall6, self.plains_track.wall7, self.plains_track.wall8, ])
+        """
+        Rotation
+        """
+        # Set the position of the rotation parent to the car's position
+        self.rotation_parent.position = self.position
 
-        if ground_check.hit:
+        # Lerps the car's rotation to the rotation parent's rotation (Makes it smoother)
+        self.rotation_x = lerp(self.rotation_x, self.rotation_parent.rotation_x, 20 * time.dt)
+        self.rotation_z = lerp(self.rotation_z, self.rotation_parent.rotation_z, 20 * time.dt)
+
+        # Gravity
+        movementY = self.velocity_y * time.dt
+
+        # Main raycast for collision
+        y_ray = boxcast(origin = self.world_position, direction = (0, -1, 0), distance = self.scale_y * 1.7 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
+
+        if y_ray.hit:
             r = random.randint(0, 1)
             if r == 0:
                 self.speed += self.acceleration * self.difficulty * time.dt
@@ -214,37 +230,18 @@ class AICar(Entity):
                     self.particles.texture = "particle_sand_track.png"
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
                 invoke(self.particles.disable, delay = 1)
-        else:
-            self.rotation_parent.rotation = self.rotation
-
-        # Rotation
-        self.rotation_parent.position = self.position
-
-        # Lerps the car's rotation to the rotation parent's rotation (Makes it smoother)
-        self.rotation_x = lerp(self.rotation_x, self.rotation_parent.rotation_x, 20 * time.dt)
-        self.rotation_z = lerp(self.rotation_z, self.rotation_parent.rotation_z, 20 * time.dt)
-
-        # Raycast for getting the ground's normals
-        rotation_ray = raycast(origin = self.position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
-
-        if rotation_ray.distance <= 4:
-            self.rotation_parent.look_at(self.position + rotation_ray.world_normal, axis = "up")
-            self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
-        else:
-            self.rotation_parent.rotation_y = self.rotation_y
 
         # Main AI bit
-
         # If the ai's rotation y does not equal the next paths rotation, change it
         if self.next_path.rotation_y > self.rotation_y:
             self.rotation_y += 80 * time.dt
         elif self.next_path.rotation_y < self.rotation_y:
             self.rotation_y -= 80 * time.dt
 
-        '''
+        """
         If the distance between the next path point and the ai is less than 12, 
         change the path point to be the next point in the list
-        '''
+        """
         if self.sand_track.enabled:
             for p in self.sand_path:
                 if distance(p, self) < 12 and self.next_path == p:
@@ -295,29 +292,29 @@ class AICar(Entity):
         if self.y >= 100:
             self.reset()
 
-        # Gravity
-        movementY = self.velocity_y * time.dt
-        direction = (0, sign(movementY), 0)
-
-        # Main raycast for collision
-        y_ray = boxcast(origin = self.world_position, direction = (0, -1, 0), distance = self.scale_y * 1.7 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
-
         if y_ray.hit:
             self.velocity_y = 0
             # Check if hitting a wall or steep slope
             if y_ray.world_normal.y > 0.7 and y_ray.world_point.y - self.world_y < 0.5:
                 # Set the y value to the ground's y value
                 self.y = y_ray.world_point.y + 1.4
+
+            if y_ray.entity != self.ai_list[0] and y_ray.entity != self.ai_list[1] and y_ray.entity != self.ai_list[2]:
+                self.rotation_parent.look_at(self.position + y_ray.world_normal, axis = "up")
+                self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
         else:
             self.y += movementY * 50 * time.dt
             self.velocity_y -= 50 * time.dt
+            self.rotation_parent.rotation_y = self.rotation_y
 
         # Movement
         movementX = self.pivot.forward[0] * self.speed * time.dt
         movementZ = self.pivot.forward[2] * self.speed * time.dt
 
-        self.x += movementX
-        self.z += movementZ
+        if movementX != 0:
+            self.x += movementX
+        if movementZ != 0:
+            self.z += movementZ
 
     def reset(self):
         if self.grass_track.enabled == True:
@@ -343,7 +340,6 @@ class AICar(Entity):
         self.velocity_y = 0
 
 # Path Point class
-
 class PathObject(Entity):
     def __init__(self, position = (0, 0, 0), rotation = (0, 0, 0)):
         super().__init__(
