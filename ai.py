@@ -53,6 +53,7 @@ class AICar(Entity):
 
         self.ai_list = ai_list
         self.set_enabled = True
+        self.hitting_wall = False
 
         # Makes sure the AI doesn't get stuck
         self.old_pos = round(self.position)
@@ -298,14 +299,19 @@ class AICar(Entity):
             if y_ray.world_normal.y > 0.7 and y_ray.world_point.y - self.world_y < 0.5:
                 # Set the y value to the ground's y value
                 self.y = y_ray.world_point.y + 1.4
+                self.hitting_wall = False
+            else:
+                self.hitting_wall = True
 
-            if y_ray.entity != self.ai_list[0] and y_ray.entity != self.ai_list[1] and y_ray.entity != self.ai_list[2]:
+            if not self.hitting_wall:
                 self.rotation_parent.look_at(self.position + y_ray.world_normal, axis = "up")
                 self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
+            else:
+                self.rotation_parent.rotation = self.rotation
         else:
             self.y += movementY * 50 * time.dt
             self.velocity_y -= 50 * time.dt
-            self.rotation_parent.rotation_y = self.rotation_y
+            self.rotation_parent.rotation = self.rotation
 
         # Movement
         movementX = self.pivot.forward[0] * self.speed * time.dt

@@ -381,12 +381,15 @@ class Car(Entity):
                 self.ground_normal = self.position + (0, 180, 0)
 
             # Rotates the car according to the grounds normals
-            self.rotation_parent.look_at(self.ground_normal, axis = "up")
-            self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
+            if not self.hitting_wall:
+                self.rotation_parent.look_at(self.ground_normal, axis = "up")
+                self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
+            else:
+                self.rotation_parent.rotation = self.rotation
         else:
             self.y += movementY * 50 * time.dt
             self.velocity_y -= 50 * time.dt
-            self.rotation_parent.rotation_y = self.rotation_y
+            self.rotation_parent.rotation = self.rotation
 
         # Movement
         movementX = self.pivot.forward[0] * self.speed * time.dt
