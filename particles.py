@@ -30,3 +30,6 @@ class ParticleSystem(Entity):
             self.number_of_particles = 0.1
         elif self.number_of_particles <= 0.05:
             self.number_of_particles = 0.05
+
+    def destroy(self):
+        destroy(self)

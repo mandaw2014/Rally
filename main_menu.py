@@ -1028,8 +1028,7 @@ class MainMenu(Entity):
         surfinbird_button.on_mouse_enter = Func(surfinbird_hover)
         surfinbird_button.on_mouse_exit = Func(self.garage_name_text.disable)
 
-        # Error Log
-
+        # Server Error Log
         self.connected = Text(text = "Connected to server!", scale = 1.5, color = color.hex("4dff4d"), line_height = 2, x = -0.55, origin = 0, y = 0.45, parent = camera.ui)
         self.not_connected = Text(text = "Not connected to server...", scale = 1.5, color = color.hex("FF2E2E"), line_height = 2, x = -0.55, origin = 0, y = 0.45, parent = camera.ui)
         self.connected.disable()
@@ -1061,50 +1060,30 @@ class MainMenu(Entity):
                 self.ai_list[2].set_enabled = True
 
         # Set the camera's position and make the car rotate
-        if self.start_menu.enabled:
+        if self.start_menu.enabled or self.host_menu.enabled or self.garage_menu.enabled or self.server_menu.enabled:
             if not held_keys["right mouse"]:
                 if self.start_spin:
                     self.car.rotation_y += 15 * time.dt
             else:
                 self.car.rotation_y = mouse.x * 200
-            self.car.camera_follow.offset = (-25, 4, 0)
-            camera.rotation = (5, 90, 0)
 
-        if self.host_menu.enabled:
-            if not held_keys["right mouse"]:
-                if self.start_spin:
-                    self.car.rotation_y += 15 * time.dt
+            if self.start_menu.enabled:
+                self.car.camera_follow.offset = (-25, 4, 0)
+                camera.rotation = (5, 90, 0)
+            elif self.host_menu.enabled:
+                self.car.camera_follow.offset = (-25, 8, 0)
+                camera.rotation = (14, 90, 0)
             else:
-                self.car.rotation_y = mouse.x * 200
-            self.car.camera_follow.offset = (-25, 8, 0)
-            camera.rotation = (14, 90, 0)
-
-        if self.garage_menu.enabled:
-            if not held_keys["right mouse"]:
-                if self.start_spin:
-                    self.car.rotation_y += 15 * time.dt
-            else:
-                self.car.rotation_y = mouse.x * 200
-            self.car.camera_follow.offset = (-25, 5, 2)
-            camera.rotation = (10, 90, 0)
-
-        if self.server_menu.enabled:
-            if not held_keys["right mouse"]:
-                if self.start_spin:
-                    self.car.rotation_y += 15 * time.dt
-            else:
-                self.car.rotation_y = mouse.x * 200
-            self.car.camera_follow.offset = (-25, 6, 5)
-            camera.rotation = (10, 90, 0)
+                self.car.camera_follow.offset = (-25, 6, 5)
+                camera.rotation = (10, 90, 0)
 
         # If the host menu or server menu is enabled, save username
-        if self.host_menu.enabled or self.server_menu.enabled:
+        if self.host_menu.enabled or self.server_menu.enabled or self.created_server_menu.enabled:
             with open(self.car.username_path, "w") as user:
-                user.write(self.car.username.text)
-            
-        if self.created_server_menu.enabled:
-            with open(self.car.username_path, "w") as user:
-                user.write(self.username_created_server.text)
+                if self.created_server_menu.enabled:
+                    user.write(self.username_created_server.text)
+                else:
+                    user.write(self.car.username.text)
 
         # If multiplayer, start leaderboard
         if self.car.multiplayer_update:

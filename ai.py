@@ -211,9 +211,9 @@ class AICar(Entity):
         movementY = self.velocity_y * time.dt
 
         # Main raycast for collision
-        y_ray = boxcast(origin = self.world_position, direction = (0, -1, 0), distance = self.scale_y * 1.7 + abs(movementY), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
+        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
 
-        if y_ray.hit:
+        if y_ray.distance <= 4:
             r = random.randint(0, 1)
             if r == 0:
                 self.speed += self.acceleration * self.difficulty * time.dt
@@ -230,7 +230,7 @@ class AICar(Entity):
                 else:
                     self.particles.texture = "particle_sand_track.png"
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
-                invoke(self.particles.disable, delay = 1)
+                invoke(self.particles.destroy, delay = 1)
 
         # Main AI bit
         # If the ai's rotation y does not equal the next paths rotation, change it
@@ -293,7 +293,7 @@ class AICar(Entity):
         if self.y >= 100:
             self.reset()
 
-        if y_ray.hit:
+        if y_ray.distance <= self.scale_y * 1.7 + abs(movementY):
             self.velocity_y = 0
             # Check if hitting a wall or steep slope
             if y_ray.world_normal.y > 0.7 and y_ray.world_point.y - self.world_y < 0.5:

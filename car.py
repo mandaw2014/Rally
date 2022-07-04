@@ -235,11 +235,15 @@ class Car(Entity):
             self.number_of_particles += 1 * time.dt
         else:
             self.number_of_particles -= 2 * time.dt
-        
-        # Check if the car is hitting the ground
-        ground_check = raycast(origin = self.position, direction = self.down, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
 
-        if ground_check.distance <= 5:
+        # Gravity
+        movementY = self.velocity_y / 50
+        direction = (0, sign(movementY), 0)
+
+        # Main raycast for collision
+        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
+
+        if y_ray.distance <= 5:
             # Driving
             if held_keys[self.controls[0]] or held_keys["up arrow"]:
                 self.speed += self.acceleration * 50 * time.dt
@@ -260,7 +264,7 @@ class Car(Entity):
                 else:
                     self.particles.texture = "particle_sand_track.png"
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
-                invoke(self.particles.disable, delay = 1)
+                invoke(self.particles.destroy, delay = 1)
             else:
                 self.speed -= self.friction * 5 * time.dt
 
@@ -357,13 +361,7 @@ class Car(Entity):
         self.rotation_x = lerp(self.rotation_x, self.rotation_parent.rotation_x, 20 * time.dt)
         self.rotation_z = lerp(self.rotation_z, self.rotation_parent.rotation_z, 20 * time.dt)
 
-        # Gravity
-        movementY = self.velocity_y / 50
-        direction = (0, sign(movementY), 0)
-
-        # Main raycast for collision
-        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
-
+        # Check if car is hitting the ground
         if y_ray.distance <= self.scale_y * 1.7 + abs(movementY):
             self.velocity_y = 0
             # Check if hitting a wall or steep slope
@@ -396,24 +394,18 @@ class Car(Entity):
         movementZ = self.pivot.forward[2] * self.speed * time.dt
 
         # Collision Detection
-        if self.hitting_wall:
-            if movementX != 0:
-                direction = (sign(movementX), 0, 0)
-                x_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_x / 2 + abs(movementX), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ], thickness = (1, 1))
+        if movementX != 0:
+            direction = (sign(movementX), 0, 0)
+            x_ray = raycast(origin = self.world_position, direction = direction, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
 
-                if not x_ray.hit:
-                    self.x += movementX
-
-            if movementZ != 0:
-                direction = (0, 0, sign(movementZ))
-                z_ray = boxcast(origin = self.world_position, direction = direction, distance = self.scale_z / 2 + abs(movementZ), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ], thickness = (1, 1))
-
-                if not z_ray.hit:
-                    self.z += movementZ
-        else:
-            if movementX != 0:
+            if x_ray.distance > self.scale_x / 2 + abs(movementX):
                 self.x += movementX
-            if movementZ != 0:
+
+        if movementZ != 0:
+            direction = (0, 0, sign(movementZ))
+            z_ray = raycast(origin = self.world_position, direction = direction, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
+
+            if z_ray.distance > self.scale_z / 2 + abs(movementZ):
                 self.z += movementZ
 
     def reset_car(self):
