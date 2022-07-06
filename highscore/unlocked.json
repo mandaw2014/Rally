@@ -3,14 +3,14 @@
         "sand_track": true,
         "grass_track": false,
         "snow_track": false,
-        "plains_track": false,
+        "forest_track": false,
         "savannah_track": false
     },
     "beat_mandaw": {
         "sand_track": false,
         "grass_track": false,
         "snow_track": false,
-        "plains_track": false,
+        "forest_track": false,
         "savannah_track": false
     },
     "textures": {

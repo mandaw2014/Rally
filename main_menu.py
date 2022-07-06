@@ -6,7 +6,7 @@ import os
 Text.default_resolution = 1080 * Text.size
 
 class MainMenu(Entity):
-    def __init__(self, car, ai_list, sand_track, grass_track, snow_track, plains_track, savannah_track):
+    def __init__(self, car, ai_list, sand_track, grass_track, snow_track, forest_track, savannah_track):
         super().__init__(
             parent = camera.ui
         )
@@ -39,12 +39,12 @@ class MainMenu(Entity):
         self.sand_track = sand_track
         self.grass_track = grass_track
         self.snow_track = snow_track
-        self.plains_track = plains_track
+        self.forest_track = forest_track
         self.savannah_track = savannah_track
         self.ai_list = ai_list
 
         self.tracks = [
-            self.sand_track, self.grass_track, self.snow_track, self.plains_track, self.savannah_track
+            self.sand_track, self.grass_track, self.snow_track, self.forest_track, self.savannah_track
         ]
 
         # Animate the menu
@@ -80,6 +80,11 @@ class MainMenu(Entity):
             camera.rotation = (35, -20, 0)
             self.car.camera_follow.offset = self.car.camera_angle
             self.car.disable()
+            for track in self.tracks:
+                for i in track.track:
+                    i.disable()
+            for track in self.grass_track.track:
+                track.enable()
 
         def multiplayer():
             self.start_menu.disable()
@@ -88,6 +93,11 @@ class MainMenu(Entity):
             self.car.position = (-3, -44.5, 92)
             grass_track.disable()
             snow_track.enable()
+            for track in self.tracks:
+                for i in track.track:
+                    i.disable()
+            for track in self.snow_track.track:
+                track.enable()
 
         def quit():
             application.quit()
@@ -121,6 +131,11 @@ class MainMenu(Entity):
                 snow_track.disable()
                 sand_track.enable()
                 back_button_server.disable()
+                for track in self.tracks:
+                    for i in track.track:
+                        i.disable()
+                for track in self.sand_track.track:
+                    track.enable()
 
         def join_server_func():
             self.host_menu.disable()
@@ -129,6 +144,11 @@ class MainMenu(Entity):
             self.car.position = (-105, -50, -59)
             snow_track.disable()
             sand_track.enable()
+            for track in self.tracks:
+                for i in track.track:
+                    i.disable()
+            for track in self.sand_track.track:
+                track.enable()
 
         def back_host():
             self.host_menu.disable()
@@ -138,6 +158,11 @@ class MainMenu(Entity):
             self.car.enable()
             self.grass_track.enable()
             self.snow_track.disable()
+            for track in self.tracks:
+                for i in track.track:
+                    i.disable()
+            for track in self.grass_track.track:
+                track.enable()
         
         self.car.host_ip = InputField(default_value = "IP", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.host_menu)
         self.car.host_port = InputField(default_value = "PORT", limit_content_to = "0123456789", color = color.black, alpha = 100, y = 0.02, parent = self.host_menu)
@@ -164,6 +189,11 @@ class MainMenu(Entity):
             self.car.disable()
             self.sand_track.disable()
             self.grass_track.enable()
+            for track in self.tracks:
+                for i in track.track:
+                    i.disable()
+            for track in self.grass_track.track:
+                track.enable()
 
         def stop_server():
             application.quit()
@@ -191,6 +221,10 @@ class MainMenu(Entity):
                 self.car.camera_follow.offset = self.car.camera_angle
                 self.car.disable()
                 self.car.connected = False
+                for track in self.tracks.track:
+                    track.disable()
+                for track in self.grass_track.track:
+                    track.enable()
 
         def back_server():
             self.host_menu.enable()
@@ -199,6 +233,11 @@ class MainMenu(Entity):
             self.car.position = (-3, -44.5, 92)
             sand_track.disable()
             snow_track.enable()
+            for track in self.tracks:
+                for i in track.track:
+                    i.disable()
+            for track in self.snow_track.track:
+                track.enable()
 
         car.username = InputField(default_value = car.username_text, color = color.black, alpha = 100, y = 0.18, parent = self.server_menu)
         car.ip = InputField(default_value = "IP", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.server_menu)
@@ -220,6 +259,11 @@ class MainMenu(Entity):
             self.main_menu.disable()
             if self.car.multiplayer_update:
                 self.car.multiplayer_update = False
+            for track in self.tracks:
+                for i in track.track:
+                    i.disable()
+            for track in self.grass_track.track:
+                track.enable()
 
         title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.main_menu, y = 0.3)
 
@@ -245,14 +289,15 @@ class MainMenu(Entity):
                 self.race_menu.enable()
                 
             self.car.position = (0, 0, 4)
-            sand_track.disable()
-            grass_track.enable()
-            snow_track.disable()
-            plains_track.disable()
-            savannah_track.disable()
             unlocked_text.disable()
             for track in self.tracks:
                 track.alpha = 255
+                track.disable()
+                for i in track.track:
+                    i.disable()
+            for track in self.grass_track.track:
+                track.enable()
+            grass_track.enable()
 
         def ai_func():
             self.car.ai = not self.car.ai
@@ -371,8 +416,8 @@ class MainMenu(Entity):
             else:
                 unlocked_text.shake()
 
-        def plains_track_func():
-            if plains_track.unlocked:
+        def forest_track_func():
+            if forest_track.unlocked:
                 self.car.enable()
                 mouse.locked = True
                 self.maps_menu.disable()
@@ -387,23 +432,23 @@ class MainMenu(Entity):
                         ai.position = (12, -40, 73) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_texture()
-                        ai.next_path = ai.plp1
+                        ai.next_path = ai.fp1
 
                 for track in self.tracks:
                     track.disable()
                     for i in track.track:
                         i.disable()
 
-                plains_track.enable()
-                plains_track.played = True
+                forest_track.enable()
+                forest_track.played = True
                 
-                for p in plains_track.track:
+                for p in forest_track.track:
                     p.enable()
 
                 if self.car.time_trial == False:
-                    self.car.highscore_count = float(self.car.plains_track_hs)
+                    self.car.highscore_count = float(self.car.forest_track_hs)
                 else:
-                    self.car.highscore_count = float(self.car.plains_track_laps)
+                    self.car.highscore_count = float(self.car.forest_track_laps)
             else:
                 unlocked_text.shake()
 
@@ -446,6 +491,11 @@ class MainMenu(Entity):
         def sand_track_hover():
             for track in self.tracks:
                 track.disable()
+                for i in track.track:
+                    if track != sand_track:
+                        i.disable()
+                    else:
+                        i.enable()
             sand_track.enable()
             self.car.position = (-40, 30, -175)
             unlocked_text.disable()
@@ -456,6 +506,11 @@ class MainMenu(Entity):
         def grass_track_hover():
             for track in self.tracks:
                 track.disable()
+                for i in track.track:
+                    if track != grass_track:
+                        i.disable()
+                    else:
+                        i.enable()
             grass_track.enable()
             self.car.position = (20, 30, -100)
             if grass_track.unlocked == False:
@@ -463,6 +518,8 @@ class MainMenu(Entity):
                 unlocked_text.enable()
                 unlocked_text.text = "Get Less Than 17 seconds on Sand Track"
                 highscore_text.disable()
+                for track in grass_track.track:
+                    i.alpha = 200
             else:
                 if not self.car.time_trial:
                     highscore_text.enable()
@@ -473,6 +530,11 @@ class MainMenu(Entity):
         def snow_track_hover():
             for track in self.tracks:
                 track.disable()
+                for i in track.track:
+                    if track != snow_track:
+                        i.disable()
+                    else:
+                        i.enable()
             snow_track.enable()
             self.car.position = (20, 30, -80)
             if snow_track.unlocked == False:
@@ -480,6 +542,8 @@ class MainMenu(Entity):
                 unlocked_text.enable()
                 unlocked_text.text = "Get Less Than 19 seconds on Grass Track"
                 highscore_text.disable()
+                for track in snow_track.track:
+                    i.alpha = 200
             else:
                 if not self.car.time_trial:
                     highscore_text.enable()
@@ -487,33 +551,47 @@ class MainMenu(Entity):
                 unlocked_text.disable()
                 snow_track.alpha = 255
         
-        def plains_track_hover():
+        def forest_track_hover():
             for track in self.tracks:
                 track.disable()
-            plains_track.enable()
+                for i in track.track:
+                    if track != forest_track:
+                        i.disable()
+                    else:
+                        i.enable()
+            forest_track.enable()
             self.car.position = (50, 30, -100)
-            if plains_track.unlocked == False:
-                plains_track.alpha = 200
+            if forest_track.unlocked == False:
+                forest_track.alpha = 200
                 unlocked_text.enable()
                 unlocked_text.text = "Get Less Than 33 seconds on Snow Track"
                 highscore_text.disable()
+                for track in forest_track.track:
+                    i.alpha = 200
             else:
                 if not self.car.time_trial:
                     highscore_text.enable()
-                    highscore_text.text = "Highscore: " + str(round(self.car.plains_track_hs, 2)) + "\n Mandaw: 24.28"
+                    highscore_text.text = "Highscore: " + str(round(self.car.forest_track_hs, 2)) + "\n Mandaw: 24.28"
                 unlocked_text.disable()
-                plains_track.alpha = 255
+                forest_track.alpha = 255
 
         def savannah_track_hover():
             for track in self.tracks:
                 track.disable()
+                for i in track.track:
+                    if track != savannah_track:
+                        i.disable()
+                    else:
+                        i.enable()
             savannah_track.enable()
             self.car.position = (25, 30, -130)
             if savannah_track.unlocked == False:
                 savannah_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 26 seconds on Plains Track"
+                unlocked_text.text = "Get Less Than 26 seconds on Forest Track"
                 highscore_text.disable()
+                for track in savannah_track.track:
+                    i.alpha = 200
             else:
                 if not self.car.time_trial:
                     highscore_text.enable()
@@ -525,7 +603,7 @@ class MainMenu(Entity):
         sand_track_button = Button(text = "Sand Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = -0.5, parent = self.maps_menu)
         grass_track_button = Button(text = "Grass Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0, parent = self.maps_menu)
         snow_track_button = Button(text = "Snow Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0.5, parent = self.maps_menu)
-        plains_track_button = Button(text = "Plains Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = -0.5, parent = self.maps_menu)
+        forest_track_button = Button(text = "Forest Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = -0.5, parent = self.maps_menu)
         savannah_track_button = Button(text = "Savannah Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = 0, parent = self.maps_menu)
         back_button = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
         
@@ -557,14 +635,14 @@ class MainMenu(Entity):
         sand_track_button.on_mouse_enter = Func(sand_track_hover)
         grass_track_button.on_mouse_enter = Func(grass_track_hover)
         snow_track_button.on_mouse_enter = Func(snow_track_hover)
-        plains_track_button.on_mouse_enter = Func(plains_track_hover)
+        forest_track_button.on_mouse_enter = Func(forest_track_hover)
         savannah_track_button.on_mouse_enter = Func(savannah_track_hover)
 
         start_button.on_click = Func(start)
         sand_track_button.on_click = Func(sand_track_func)
         grass_track_button.on_click = Func(grass_track_func)
         snow_track_button.on_click = Func(snow_track_func)
-        plains_track_button.on_click = Func(plains_track_func)
+        forest_track_button.on_click = Func(forest_track_func)
         savannah_track_button.on_click = Func(savannah_track_func)
         ai_button.on_click = Func(ai_func)
         back_button.on_click = Func(back)
@@ -774,7 +852,7 @@ class MainMenu(Entity):
                         ai.next_path = ai.snp1
                         ai.speed = 0
                         ai.velocity_y = 0
-            elif plains_track.enabled:
+            elif forest_track.enabled:
                 self.car.position = (12, -35, 73)
                 self.car.rotation = (0, 90, 0)
                 if self.car.multiplayer_update == False and self.car.ai:
@@ -785,7 +863,7 @@ class MainMenu(Entity):
                         ai.position = (12, -40, 73) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_texture()
-                        ai.next_path = ai.plp1
+                        ai.next_path = ai.fp1
                         ai.speed = 0
                         ai.velocity_y = 0
             elif savannah_track.enabled:
@@ -836,6 +914,8 @@ class MainMenu(Entity):
             for track in self.tracks:
                 track.disable()
                 track.alpha = 255
+                for i in track.track:
+                    i.disable()
             grass_track.enable()
 
             if self.car.multiplayer_update == False and self.car.ai:
@@ -862,6 +942,11 @@ class MainMenu(Entity):
             self.car.disable()
             grass_track.enable()
             sand_track.disable()
+            for track in self.tracks:
+                for i in track.track:
+                    i.disable()
+            for track in self.grass_track.track:
+                track.enable()
 
             self.car.highscore_count = float(self.car.grass_track_hs)
 
@@ -872,6 +957,11 @@ class MainMenu(Entity):
             self.car.position = (-105, -50, -59)
             grass_track.disable()
             sand_track.enable()
+            for track in self.tracks:
+                for i in track.track:
+                    i.disable()
+            for track in self.sand_track.track:
+                track.enable()
 
         def left():
             self.garage_page1.enable()
@@ -934,7 +1024,7 @@ class MainMenu(Entity):
                 car.banana.disable()
                 car.surfinbird.disable()
             else:
-                self.garage_locked_text("Get Less Than 25s on Plains Track")
+                self.garage_locked_text("Get Less Than 25s on Forest Track")
 
         def banana():
             if self.car.banana_unlocked:
@@ -1089,7 +1179,7 @@ class MainMenu(Entity):
         if self.car.multiplayer_update:
             for menu in self.menus:
                 if menu.enabled == False:
-                    if self.sand_track.enabled or self.grass_track.enabled or self.snow_track.enabled or self.plains_track.enabled or self.savannah_track.enabled:
+                    if self.sand_track.enabled or self.grass_track.enabled or self.snow_track.enabled or self.forest_track.enabled or self.savannah_track.enabled:
                         invoke(self.start_leaderboard, delay = 0.1)
                 else:
                     for l in self.leaderboard_texts:

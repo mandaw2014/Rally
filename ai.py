@@ -5,7 +5,7 @@ from particles import ParticleSystem
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
 class AICar(Entity):
-    def __init__(self, car, ai_list, sand_track, grass_track, snow_track, plains_track, savannah_track):
+    def __init__(self, car, ai_list, sand_track, grass_track, snow_track, forrest_track, savannah_track):
         super().__init__(
             model = "car.obj",
             texture = "car-red.png",
@@ -48,7 +48,7 @@ class AICar(Entity):
         self.sand_track = sand_track
         self.grass_track = grass_track
         self.snow_track = snow_track
-        self.plains_track = plains_track
+        self.forrest_track = forrest_track
         self.savannah_track = savannah_track
 
         self.ai_list = ai_list
@@ -100,20 +100,20 @@ class AICar(Entity):
         self.snp16 = PathObject((-30, -44, 90), (0, 90, 0))
         self.snp17 = PathObject((-14, -44, 94), (0, 90, 0))
 
-        # Plains Track Points
-        self.plp1 = PathObject((57, -51, 76), (0, 90, 0))
-        self.plp2 = PathObject((82, -51, 63), (0, 180, 0))
-        self.plp3 = PathObject((57, -51, 36), (0, 275, 0))
-        self.plp4 = PathObject((-29, -51, 36), (0, 270, 0))
-        self.plp5 = PathObject((-62, -51, 16), (0, 170, 0))
-        self.plp6 = PathObject((-42, -51, -11), (0, 80, 0))
-        self.plp7 = PathObject((4, -51, -11), (0, 90, 0))
-        self.plp8 = PathObject((41, -51, -40), (0, 180, 0))
-        self.plp9 = PathObject((5, -51, -66), (0, 270, 0))
-        self.plp10 = PathObject((-17, -51, -53), (0, 360, 0))
-        self.plp11 = PathObject((-18, -51, -6), (0, 0, 0))
-        self.plp12 = PathObject((-18, -46, 40), (0, 0, 0))
-        self.plp13 = PathObject((-3, -51, 75), (0, 120, 0))
+        # Forrest Track Points
+        self.fp1 = PathObject((57, -51, 76), (0, 90, 0))
+        self.fp2 = PathObject((82, -51, 63), (0, 180, 0))
+        self.fp3 = PathObject((57, -51, 36), (0, 275, 0))
+        self.fp4 = PathObject((-29, -51, 36), (0, 270, 0))
+        self.fp5 = PathObject((-62, -51, 16), (0, 170, 0))
+        self.fp6 = PathObject((-42, -51, -11), (0, 80, 0))
+        self.fp7 = PathObject((4, -51, -11), (0, 90, 0))
+        self.fp8 = PathObject((41, -51, -40), (0, 180, 0))
+        self.fp9 = PathObject((5, -51, -66), (0, 270, 0))
+        self.fp10 = PathObject((-17, -51, -53), (0, 360, 0))
+        self.fp11 = PathObject((-18, -51, -6), (0, 0, 0))
+        self.fp12 = PathObject((-18, -46, 40), (0, 0, 0))
+        self.fp13 = PathObject((-3, -51, 75), (0, 120, 0))
 
         # Savannah Track Points
         self.svp1 = PathObject((28, -51, 40), (0, 90, 0))
@@ -129,7 +129,7 @@ class AICar(Entity):
         self.sand_path = [self.sap1, self.sap2, self.sap3, self.sap4, self.sap5, self.sap6, self.sap7, self.sap8]
         self.grass_path = [self.gp1, self.gp2, self.gp3, self.gp4, self.gp5, self.gp6, self.gp7, self.gp8, self.gp9, self.gp10, self.gp11]
         self.snow_path = [self.snp1, self.snp2, self.snp3, self.snp4, self.snp5, self.snp6, self.snp7, self.snp8, self.snp9, self.snp10, self.snp11, self.snp12, self.snp13, self.snp14, self.snp15, self.snp16, self.snp17]
-        self.plains_path = [self.plp1, self.plp2, self.plp3, self.plp4, self.plp5, self.plp6, self.plp7, self.plp8, self.plp9, self.plp10, self.plp11, self.plp12, self.plp13]
+        self.forrest_path = [self.fp1, self.fp2, self.fp3, self.fp4, self.fp5, self.fp6, self.fp7, self.fp8, self.fp9, self.fp10, self.fp11, self.fp12, self.fp13]
         self.savannah_path = [self.svp1, self.svp2, self.svp3, self.svp4, self.svp5, self.svp6, self.svp7, self.svp8]
 
         # The next point the ai is going to
@@ -194,7 +194,7 @@ class AICar(Entity):
 
         if self.sand_track.enabled or self.grass_track.enabled:
             self.difficulty = 60
-        elif self.snow_track.enabled or self.plains_track.enabled:
+        elif self.snow_track.enabled or self.forrest_track.enabled:
             self.difficulty = 40
 
         """
@@ -211,7 +211,7 @@ class AICar(Entity):
         movementY = self.velocity_y * time.dt
 
         # Main raycast for collision
-        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.plains_track.finish_line, self.plains_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
+        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.forrest_track.finish_line, self.forrest_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
 
         if y_ray.distance <= 4:
             r = random.randint(0, 1)
@@ -225,8 +225,8 @@ class AICar(Entity):
                     self.particles.texture = "particle_grass_track.png"
                 elif self.snow_track.enabled == True:
                     self.particles.texture = "particle_snow_track.png"
-                elif self.plains_track.enabled == True:
-                    self.particles.texture = "particle_plains_track.png"
+                elif self.forrest_track.enabled == True:
+                    self.particles.texture = "particle_forrest_track.png"
                 else:
                     self.particles.texture = "particle_sand_track.png"
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
@@ -255,13 +255,13 @@ class AICar(Entity):
             for p in self.snow_path:
                 if distance(p, self) < 12 and self.next_path == p:
                     self.next_path = self.snow_path[self.snow_path.index(p) - len(self.snow_path) + 1]
-        elif self.plains_track.enabled:
-            if distance(self.plp10, self) < 12:
+        elif self.forrest_track.enabled:
+            if distance(self.fp10, self) < 12:
                 self.rotation_y = 0
                 self.pivot.rotation_y = self.rotation_y
-            for p in self.plains_path:
+            for p in self.forrest_path:
                 if distance(p, self) < 12 and self.next_path == p:
-                    self.next_path = self.plains_path[self.plains_path.index(p) - len(self.plains_path) + 1]
+                    self.next_path = self.forrest_path[self.forrest_path.index(p) - len(self.forrest_path) + 1]
         elif self.savannah_track.enabled:
             if distance(self.svp4, self) < 10:
                 self.speed -= 10 * time.dt
@@ -335,10 +335,10 @@ class AICar(Entity):
             self.position = (-5 + random.randint(-5, 5), -35 + random.randint(-3, 5), 90 + random.randint(-5, 5))
             self.rotation = (0, 90, 0)
             self.next_path = self.snp1
-        elif self.plains_track.enabled == True:
+        elif self.forrest_track.enabled == True:
             self.position = (12 + random.randint(-5, 5), -40 + random.randint(-3, 5), 73 + random.randint(-5, 5))
             self.rotation = (0, 90, 0)
-            self.next_path = self.plp1
+            self.next_path = self.fp1
         else:
             self.position = (0, 0, 0)
             self.rotation = (0, 0, 0)

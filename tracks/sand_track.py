@@ -23,9 +23,11 @@ class SandTrack(Entity):
 
         self.wall_trigger = Entity(model = "cube", position = (-100, -50, -114), rotation = (0, 0, 0), collider = "box", scale = (5, 20, 30), visible = False)
 
+        self.rocks = Entity(model = "rocks-sand.obj", texture = "rock-sand.png", position = (-80, -50, -75), scale = (18, 18, 18), rotation = (0, 270, 0))
+
         self.track = [
             self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
-            self.wall4, self.wall_trigger
+            self.wall4, self.wall_trigger, self.rocks
         ]
         
         self.disable()

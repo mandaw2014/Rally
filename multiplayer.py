@@ -6,10 +6,12 @@ class Multiplayer(Entity):
     def __init__(self, car):
         self.car = car
 
+        # If the input filed doesn't equal IP and PORT (the defaults) create Client
         if str(self.car.ip.text) != "IP" and str(self.car.port.text) != "PORT":
             self.client = UrsinaNetworkingClient(self.car.ip.text, int(self.car.port.text))
             self.easy = EasyUrsinaNetworkingClient(self.client)
 
+            # Player target values
             self.players = {}
             self.players_target_name = {}
             self.players_target_pos = {}

@@ -32,12 +32,15 @@ class SnowTrack(Entity):
         self.wall_trigger = Entity(model = "cube", position = (29, -40.2, -51), collider = "box", rotation = (0, 0, 0), scale = (3, 20, 35), visible = False)
         self.wall_trigger_end = Entity(model = "cube", position = (-70, -40.2, 100), collider = "box", rotation = (0, 0, 0), scale = (35, 20, 3), visible = False)
 
+        self.trees = Entity(model = "trees-snow.obj", texture = "tree-snow.png", y = -50, rotation_y = 90, scale = 8)
+
         self.disable()
         
         self.track = [
             self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
             self.wall4, self.wall5, self.wall6, self.wall7, self.wall8, self.wall9, 
-            self.wall10, self.wall11, self.wall12, self.wall_trigger, self.wall_trigger_end
+            self.wall10, self.wall11, self.wall12, self.wall_trigger, self.wall_trigger_end,
+            self.trees
         ]
 
         for i in self.track:
