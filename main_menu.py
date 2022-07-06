@@ -336,6 +336,7 @@ class MainMenu(Entity):
 
                 for s in sand_track.track:
                     s.enable()
+                    s.alpha = 255
 
                 if self.car.time_trial == False:
                     self.car.highscore_count = float(self.car.sand_track_hs)
@@ -372,6 +373,7 @@ class MainMenu(Entity):
 
                 for g in grass_track.track:
                     g.enable()
+                    g.alpha = 255
 
                 if self.car.time_trial == False:
                     self.car.highscore_count = float(self.car.grass_track_hs)
@@ -408,6 +410,7 @@ class MainMenu(Entity):
 
                 for s in snow_track.track:
                     s.enable()
+                    s.alpha = 255
 
                 if self.car.time_trial == False:
                     self.car.highscore_count = float(self.car.snow_track_hs)
@@ -442,8 +445,9 @@ class MainMenu(Entity):
                 forest_track.enable()
                 forest_track.played = True
                 
-                for p in forest_track.track:
-                    p.enable()
+                for f in forest_track.track:
+                    f.enable()
+                    f.alpha = 255
 
                 if self.car.time_trial == False:
                     self.car.highscore_count = float(self.car.forest_track_hs)
@@ -480,6 +484,7 @@ class MainMenu(Entity):
 
                 for s in savannah_track.track:
                     s.enable()
+                    s.alpha = 255
 
                 if self.car.time_trial == False:
                     self.car.highscore_count = float(self.car.savannah_track_hs)

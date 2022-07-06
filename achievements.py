@@ -33,7 +33,7 @@ class RallyAchievements():
         
         create_achievement("Get under 40s on Snow Track!", self.fourty_seconds_snow_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 35s on Snow Track!", self.thirtyfive_seconds_snow_track, icon = "confetti.png", ringtone = None)
-        create_achievement("Get under 30s on Snow Track!", self.thirtytwo_seconds_snow_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 32s on Snow Track!", self.thirtytwo_seconds_snow_track, icon = "confetti.png", ringtone = None)
 
         create_achievement("Get under 30s on Forest Track!", self.thirty_seconds_forest_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 28s on Forest Track!", self.twentyeight_seconds_forest_track, icon = "confetti.png", ringtone = None)
