@@ -6,7 +6,7 @@ import os
 Text.default_resolution = 1080 * Text.size
 
 class MainMenu(Entity):
-    def __init__(self, car, ai_list, sand_track, grass_track, snow_track, forest_track, savannah_track):
+    def __init__(self, car, ai_list, sand_track, grass_track, snow_track, forest_track, savannah_track, lake_track):
         super().__init__(
             parent = camera.ui
         )
@@ -41,10 +41,11 @@ class MainMenu(Entity):
         self.snow_track = snow_track
         self.forest_track = forest_track
         self.savannah_track = savannah_track
+        self.lake_track = lake_track
         self.ai_list = ai_list
 
         self.tracks = [
-            self.sand_track, self.grass_track, self.snow_track, self.forest_track, self.savannah_track
+            self.sand_track, self.grass_track, self.snow_track, self.forest_track, self.savannah_track, self.lake_track
         ]
 
         # Animate the menu
@@ -321,7 +322,7 @@ class MainMenu(Entity):
                     for ai in ai_list:
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (-63, -40, -7) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.position = (-63, -40, -7) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 65, 0)
                         ai.set_random_texture()
                         ai.next_path = ai.sap1
@@ -358,7 +359,7 @@ class MainMenu(Entity):
                     for ai in ai_list:
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (-80, -35, 15) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.position = (-80, -35, 15) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_texture()
                         ai.next_path = ai.gp1
@@ -395,7 +396,7 @@ class MainMenu(Entity):
                     for ai in ai_list:
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (-5, -40, 90) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.position = (-5, -40, 90) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_texture()
                         ai.next_path = ai.snp1
@@ -432,7 +433,7 @@ class MainMenu(Entity):
                     for ai in ai_list:
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (12, -40, 73) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.position = (12, -40, 73) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_texture()
                         ai.next_path = ai.fp1
@@ -469,7 +470,7 @@ class MainMenu(Entity):
                     for ai in ai_list:
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (-12, -35, 40) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.position = (-12, -35, 40) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_texture()
                         ai.next_path = ai.svp1
@@ -490,6 +491,43 @@ class MainMenu(Entity):
                     self.car.highscore_count = float(self.car.savannah_track_hs)
                 else:
                     self.car.highscore_count = float(self.car.savannah_track_laps)
+            else:
+                unlocked_text.shake()
+            
+        def lake_track_func():
+            if lake_track.unlocked:
+                self.car.enable()
+                mouse.locked = True
+                self.maps_menu.disable()
+                self.car.position = (-121, -40, 158)
+                self.car.rotation = (0, 90, 0)
+                self.car.reset_count_timer.enable()
+
+                if self.car.multiplayer_update == False and self.car.ai:
+                    for ai in ai_list:
+                        if ai.set_enabled:
+                            ai.enable()
+                        ai.position = (-121, -40, 158) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
+                        ai.rotation = (0, 90, 0)
+                        ai.set_random_texture()
+                        ai.next_path = ai.lp1
+
+                for track in self.tracks:
+                    track.disable()
+                    for i in track.track:
+                        i.disable()
+
+                lake_track.enable()
+                lake_track.played = True
+
+                for l in lake_track.track:
+                    l.enable()
+                    l.alpha = 255
+
+                if self.car.time_trial == False:
+                    self.car.highscore_count = float(self.car.lake_track_hs)
+                else:
+                    self.car.highscore_count = float(self.car.lake_track_laps)
             else:
                 unlocked_text.shake()
 
@@ -523,7 +561,7 @@ class MainMenu(Entity):
                 unlocked_text.enable()
                 unlocked_text.text = "Get Less Than 17 seconds on Sand Track"
                 highscore_text.disable()
-                for track in grass_track.track:
+                for i in grass_track.track:
                     i.alpha = 200
             else:
                 if not self.car.time_trial:
@@ -547,7 +585,7 @@ class MainMenu(Entity):
                 unlocked_text.enable()
                 unlocked_text.text = "Get Less Than 19 seconds on Grass Track"
                 highscore_text.disable()
-                for track in snow_track.track:
+                for i in snow_track.track:
                     i.alpha = 200
             else:
                 if not self.car.time_trial:
@@ -571,7 +609,7 @@ class MainMenu(Entity):
                 unlocked_text.enable()
                 unlocked_text.text = "Get Less Than 33 seconds on Snow Track"
                 highscore_text.disable()
-                for track in forest_track.track:
+                for i in forest_track.track:
                     i.alpha = 200
             else:
                 if not self.car.time_trial:
@@ -595,7 +633,7 @@ class MainMenu(Entity):
                 unlocked_text.enable()
                 unlocked_text.text = "Get Less Than 26 seconds on Forest Track"
                 highscore_text.disable()
-                for track in savannah_track.track:
+                for i in savannah_track.track:
                     i.alpha = 200
             else:
                 if not self.car.time_trial:
@@ -604,12 +642,37 @@ class MainMenu(Entity):
                 unlocked_text.disable()
                 savannah_track.alpha = 255
 
+        def lake_track_hover():
+            for track in self.tracks:
+                track.disable()
+                for i in track.track:
+                    if track != lake_track:
+                        i.disable()
+                    else:
+                        i.enable()
+            lake_track.enable()
+            self.car.position = (140, 200, -350)
+            if lake_track.unlocked == False:
+                lake_track.alpha = 200
+                unlocked_text.enable()
+                unlocked_text.text = "Get Less Than 15 seconds on Savannah Track"
+                highscore_text.disable()
+                for i in lake_track.track:
+                    i.alpha = 200
+            else:
+                if not self.car.time_trial:
+                    highscore_text.enable()
+                    highscore_text.text = "Highscore: " + str(round(self.car.lake_track_hs, 2)) + "\n Mandaw: 47.53"
+                unlocked_text.disable()
+                lake_track.alpha = 255
+
         start_button = Button(text = "Start Game", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.02, parent = self.main_menu)
         sand_track_button = Button(text = "Sand Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = -0.5, parent = self.maps_menu)
         grass_track_button = Button(text = "Grass Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0, parent = self.maps_menu)
         snow_track_button = Button(text = "Snow Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0.5, parent = self.maps_menu)
         forest_track_button = Button(text = "Forest Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = -0.5, parent = self.maps_menu)
         savannah_track_button = Button(text = "Savannah Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = 0, parent = self.maps_menu)
+        lake_track_button = Button(text = "Lake Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = 0.5, parent = self.maps_menu)
         back_button = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
         
         unlocked_text = Text("Get Less Than 16 seconds on Sand Track to Unlock Grass Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = -0.1, parent = self.maps_menu)
@@ -642,6 +705,7 @@ class MainMenu(Entity):
         snow_track_button.on_mouse_enter = Func(snow_track_hover)
         forest_track_button.on_mouse_enter = Func(forest_track_hover)
         savannah_track_button.on_mouse_enter = Func(savannah_track_hover)
+        lake_track_button.on_mouse_enter = Func(lake_track_hover)
 
         start_button.on_click = Func(start)
         sand_track_button.on_click = Func(sand_track_func)
@@ -649,6 +713,7 @@ class MainMenu(Entity):
         snow_track_button.on_click = Func(snow_track_func)
         forest_track_button.on_click = Func(forest_track_func)
         savannah_track_button.on_click = Func(savannah_track_func)
+        lake_track_button.on_click = Func(lake_track_func)
         ai_button.on_click = Func(ai_func)
         back_button.on_click = Func(back)
 
@@ -837,7 +902,7 @@ class MainMenu(Entity):
                         ai.disable()
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (-80, -35, 15) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.position = (-80, -35, 15) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_texture()
                         ai.next_path = ai.gp1
@@ -851,7 +916,7 @@ class MainMenu(Entity):
                         ai.disable()
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (-5, -40, 90) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.position = (-5, -40, 90) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_texture()
                         ai.next_path = ai.snp1
@@ -865,7 +930,7 @@ class MainMenu(Entity):
                         ai.disable()
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (12, -40, 73) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.position = (12, -40, 73) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_texture()
                         ai.next_path = ai.fp1
@@ -879,10 +944,24 @@ class MainMenu(Entity):
                         ai.disable()
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (-12, -35, 40) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
+                        ai.position = (-12, -35, 40) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_texture()
                         ai.next_path = ai.svp1
+                        ai.speed = 0
+                        ai.velocity_y = 0
+            elif self.lake_track.enabled:
+                self.car.position = (-121, -40, 158)
+                self.car.rotation = (0, 90, 0)
+                if self.car.multiplayer_update == False and self.car.ai:
+                    for ai in ai_list:
+                        ai.disable()
+                        if ai.set_enabled:
+                            ai.enable()
+                        ai.position = (-121, -40, 158) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
+                        ai.rotation = (0, 90, 0)
+                        ai.set_random_texture()
+                        ai.next_path = ai.lp1
                         ai.speed = 0
                         ai.velocity_y = 0
             self.car.speed = 0

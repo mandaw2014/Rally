@@ -59,6 +59,7 @@ class Car(Entity):
         self.snow_track = None
         self.forest_track = None
         self.savannah_track = None
+        self.lake_track = None
 
         # Cosmetics
         self.viking_helmet = Entity(model = "viking_helmet.obj", texture = "viking_helmet.png", parent = self)
@@ -132,12 +133,14 @@ class Car(Entity):
         self.snow_track_hs = self.highscores["race"]["snow_track"]
         self.forest_track_hs = self.highscores["race"]["forest_track"]
         self.savannah_track_hs = self.highscores["race"]["savannah_track"]
+        self.lake_track_hs = self.highscores["race"]["lake_track"]
 
         self.sand_track_laps = self.highscores["time_trial"]["sand_track"]
         self.grass_track_laps = self.highscores["time_trial"]["grass_track"]
         self.snow_track_laps = self.highscores["time_trial"]["snow_track"]
         self.forest_track_laps = self.highscores["time_trial"]["forest_track"]
         self.savannah_track_laps = self.highscores["time_trial"]["savannah_track"]
+        self.lake_track_laps = self.highscores["time_trial"]["lake_track"]
 
         self.highscore_count = self.sand_track_hs
         self.highscore_count = float(self.highscore_count)
@@ -160,6 +163,7 @@ class Car(Entity):
         self.beat_mandaw_snow_track = False
         self.beat_mandaw_forest_track = False
         self.beat_mandaw_savannah_track = False
+        self.beat_mandaw_lake_track = False
 
         invoke(self.set_unlocked, delay = 1)
 
@@ -198,6 +202,8 @@ class Car(Entity):
                         self.forest_track_laps = self.laps_hs
                     elif self.savannah_track.enabled:
                         self.savannah_track_laps = self.laps_hs
+                    elif self.lake_track.enabled:
+                        self.lake_track_laps = self.laps_hs
 
                     self.start_time = False
 
@@ -241,7 +247,7 @@ class Car(Entity):
         direction = (0, sign(movementY), 0)
 
         # Main raycast for collision
-        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.forest_track.finish_line, self.forest_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
+        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), ignore = [self, ])
 
         if y_ray.distance <= 5:
             # Driving
@@ -261,6 +267,8 @@ class Car(Entity):
                     self.particles.texture = "particle_forest_track.png"
                 elif self.savannah_track.enabled:
                     self.particles.texture = "particle_savannah_track.png"
+                elif self.lake_track.enabled:
+                    self.particles.texture = "particle_lake_track.png"
                 else:
                     self.particles.texture = "particle_sand_track.png"
                 self.particles.fade_out(duration = 0.2, delay = 0.7, curve = curve.linear)
@@ -399,14 +407,14 @@ class Car(Entity):
         # Collision Detection
         if movementX != 0:
             direction = (sign(movementX), 0, 0)
-            x_ray = raycast(origin = self.world_position, direction = direction, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.forest_track.finish_line, self.forest_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
+            x_ray = raycast(origin = self.world_position, direction = direction, ignore = [self, ])
 
             if x_ray.distance > self.scale_x / 2 + abs(movementX):
                 self.x += movementX
 
         if movementZ != 0:
             direction = (0, 0, sign(movementZ))
-            z_ray = raycast(origin = self.world_position, direction = direction, ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.forest_track.finish_line, self.forest_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
+            z_ray = raycast(origin = self.world_position, direction = direction, ignore = [self, ])
 
             if z_ray.distance > self.scale_z / 2 + abs(movementZ):
                 self.z += movementZ
@@ -429,6 +437,9 @@ class Car(Entity):
             self.rotation = (0, 90, 0)
         elif self.savannah_track.enabled:
             self.position = (-12, -35, 40)
+            self.rotation = (0, 90, 0)
+        elif self.lake_track.enabled:
+            self.position = (-121, -40, 158)
             self.rotation = (0, 90, 0)
         self.speed = 0
         self.velocity_y = 0
@@ -502,6 +513,8 @@ class Car(Entity):
                 self.forest_track_hs = float(self.highscore_count)
             elif self.savannah_track.enabled:
                 self.savannah_track_hs = float(self.highscore_count)
+            elif self.lake_track.enabled:
+                self.lake_track_hs = float(self.highscore_count)
             self.save_highscore()
 
         elif self.time_trial:
@@ -519,7 +532,8 @@ class Car(Entity):
                 "grass_track": self.grass_track_hs,
                 "snow_track": self.snow_track_hs,
                 "forest_track": self.forest_track_hs,
-                "savannah_track": self.savannah_track_hs
+                "savannah_track": self.savannah_track_hs,
+                "lake_track": self.lake_track_hs
             },
             
             "time_trial": {
@@ -527,7 +541,8 @@ class Car(Entity):
                 "grass_track": self.grass_track_laps, 
                 "snow_track": self.snow_track_laps, 
                 "forest_track": self.forest_track_laps,
-                "savannah_track": self.savannah_track_laps
+                "savannah_track": self.savannah_track_laps,
+                "lake_track": self.lake_track_laps
             }
         }
 
@@ -543,12 +558,14 @@ class Car(Entity):
         self.snow_track_hs = 0.0
         self.forest_track_hs = 0.0
         self.savannah_track_hs = 0.0
+        self.lake_track_hs = 0.0
 
         self.sand_track_laps = 0
         self.grass_track_laps = 0
         self.snow_track_laps = 0
         self.forest_track_laps = 0
         self.savannah_track_laps = 0
+        self.lake_track_laps = 0
 
         self.save_highscore()
 
@@ -561,12 +578,14 @@ class Car(Entity):
         self.snow_track.unlocked = self.unlocked["tracks"]["snow_track"]
         self.forest_track.unlocked = self.unlocked["tracks"]["forest_track"]
         self.savannah_track.unlocked = self.unlocked["tracks"]["savannah_track"]
+        self.lake_track.unlocked = self.unlocked["tracks"]["lake_track"]
 
         self.beat_mandaw_sand_track = self.unlocked["beat_mandaw"]["sand_track"]
         self.beat_mandaw_grass_track = self.unlocked["beat_mandaw"]["grass_track"]
         self.beat_mandaw_snow_track = self.unlocked["beat_mandaw"]["snow_track"]
         self.beat_mandaw_forest_track = self.unlocked["beat_mandaw"]["forest_track"]
         self.beat_mandaw_savannah_track = self.unlocked["beat_mandaw"]["savannah_track"]
+        self.beat_mandaw_lake_track = self.unlocked["beat_mandaw"]["lake_track"]
 
         self.red_unlocked = self.unlocked["textures"]["red"]
         self.blue_unlocked = self.unlocked["textures"]["blue"]
@@ -590,7 +609,8 @@ class Car(Entity):
                 "grass_track": self.grass_track.unlocked,
                 "snow_track": self.snow_track.unlocked,
                 "forest_track": self.forest_track.unlocked,
-                "savannah_track": self.savannah_track.unlocked
+                "savannah_track": self.savannah_track.unlocked,
+                "lake_track": self.lake_track.unlocked
             },
             "beat_mandaw": {
                 "sand_track": self.beat_mandaw_sand_track,
@@ -598,6 +618,7 @@ class Car(Entity):
                 "snow_track": self.beat_mandaw_snow_track,
                 "forest_track": self.beat_mandaw_forest_track,
                 "savannah_track": self.beat_mandaw_savannah_track,
+                "lake_track": self.beat_mandaw_lake_track
             },
             "textures": {
                 "red": self.red_unlocked,

@@ -13,7 +13,7 @@ class SnowTrack(Entity):
 
         self.car = car
 
-        self.finish_line = Entity(model = "cube", position = (11, -42, 90), collider = "box", rotation = (0, 0, 0), scale = (3, 8, 30), visible = False)
+        self.finish_line = Entity(model = "cube", position = (11, -42, 90), rotation = (0, 0, 0), scale = (3, 8, 30), visible = False)
         self.boundaries = Entity(model = "snow_track_bounds.obj", collider = "mesh", rotation = (0, 90, 0), position = (0, -50, 0), scale = (8, 8, 8), visible = False)
 
         self.wall1 = Entity(model = "cube", position = (-10, -42, 38), rotation = (0, 0, 0), collider = "box", scale = (5, 30, 50), visible = False)
@@ -29,8 +29,8 @@ class SnowTrack(Entity):
         self.wall11 = Entity(model = "cube", position = (-20, -42, 105), rotation = (0, 90, 0), collider = "box", scale = (5, 30, 30), visible = False)
         self.wall12 = Entity(model = "cube", position = (-20, -42, 76), rotation = (0, 90, 0), collider = "box", scale = (5, 30, 30), visible = False)
 
-        self.wall_trigger = Entity(model = "cube", position = (29, -40.2, -51), collider = "box", rotation = (0, 0, 0), scale = (3, 20, 35), visible = False)
-        self.wall_trigger_end = Entity(model = "cube", position = (-70, -40.2, 100), collider = "box", rotation = (0, 0, 0), scale = (35, 20, 3), visible = False)
+        self.wall_trigger = Entity(model = "cube", position = (29, -40.2, -51), rotation = (0, 0, 0), scale = (3, 20, 35), visible = False)
+        self.wall_trigger_end = Entity(model = "cube", position = (-70, -40.2, 100), rotation = (0, 0, 0), scale = (35, 20, 3), visible = False)
 
         self.trees = Entity(model = "trees-snow.obj", texture = "tree-snow.png", y = -50, rotation_y = 90, scale = 8)
 

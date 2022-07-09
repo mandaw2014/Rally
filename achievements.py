@@ -1,7 +1,7 @@
 from UrsinaAchievements import create_achievement
 
 class RallyAchievements():
-    def __init__(self, car, main_menu, sand_track, grass_track, snow_track, forest_track, savannah_track):
+    def __init__(self, car, main_menu, sand_track, grass_track, snow_track, forest_track, savannah_track, lake_track):
         self.car = car
         self.main_menu = main_menu
         self.sand_track = sand_track
@@ -9,6 +9,7 @@ class RallyAchievements():
         self.snow_track = snow_track
         self.forest_track = forest_track
         self.savannah_track = savannah_track
+        self.lake_track = lake_track
         
         self.time_spent = 0
 
@@ -16,8 +17,9 @@ class RallyAchievements():
         create_achievement("Race on Sand Track for the first time!", self.play_sand_track, icon = "confetti.png", ringtone = None)
         create_achievement("Race on Grass Track for the first time!", self.play_grass_track, icon = "confetti.png", ringtone = None)
         create_achievement("Race on Snow Track for the first time!", self.play_snow_track, icon = "confetti.png", ringtone = None)
-        create_achievement("Race on Plains Track for the first time!", self.play_forest_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Race on Forest Track for the first time!", self.play_forest_track, icon = "confetti.png", ringtone = None)
         create_achievement("Race on Savannah Track for the first time!", self.play_savannah_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Race on Lake Track for the first time!", self.play_lake_track, icon = "confetti.png", ringtone = None)
         create_achievement("Race against AI!", self.race_against_ai, icon = "confetti.png", ringtone = None)
         create_achievement("Play Multiplayer!", self.play_multiplayer, icon = "confetti.png", ringtone = None)
         create_achievement("Go to the Garage!", self.garage, icon = "confetti.png", ringtone = None)
@@ -43,13 +45,18 @@ class RallyAchievements():
         create_achievement("Get under 20s on Savannah Track!", self.twenty_seconds_savannah_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 18s on Savannah Track!", self.eighteen_seconds_savannah_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 17s on Savannah Track!", self.seventeen_seconds_savannah_track, icon = "confetti.png", ringtone = None)
-        create_achievement("Get under 16s on Savannah Track!", self.sixteen_seconds_savannah_track, icon = "confetti.png", ringtone = None)
+
+        create_achievement("Get under 60s on Lake Track!", self.sixty_seconds_lake_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 55s on Lake Track!", self.fiftyfive_seconds_lake_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 50s on Lake Track!", self.fifty_seconds_lake_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 47s on Lake Track!", self.fourtyseven_seconds_lake_track, icon = "confetti.png", ringtone = None)
 
         create_achievement("Beat Mandaw in Sand Track!", self.beat_mandaw_in_sand_track, icon = "confetti.png", ringtone = None)
         create_achievement("Beat Mandaw in Grass Track!", self.beat_mandaw_in_grass_track, icon = "confetti.png", ringtone = None)
         create_achievement("Beat Mandaw in Snow Track!", self.beat_mandaw_in_snow_track, icon = "confetti.png", ringtone = None)
         create_achievement("Beat Mandaw in Forest Track!", self.beat_mandaw_in_forest_track, icon = "confetti.png", ringtone = None)
         create_achievement("Beat Mandaw in Savannah Track!", self.beat_mandaw_in_savannah_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Beat Mandaw in Lake Track!", self.beat_mandaw_in_lake_track, icon = "confetti.png", ringtone = None)
         
         create_achievement("Beat Mandaw in Every Track!", self.beat_mandaw_in_everything, icon = "confetti.png", ringtone = None)
 
@@ -57,6 +64,7 @@ class RallyAchievements():
         create_achievement("Unlock Snow Track!", self.unlock_snow_track, icon = "confetti.png", ringtone = None)
         create_achievement("Unlock Forest Track!", self.unlock_forest_track, icon = "confetti.png", ringtone = None)
         create_achievement("Unlock Savannah Track!", self.unlock_savannah_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Lake Track!", self.unlock_lake_track, icon = "confetti.png", ringtone = None)
     
     # Play the game for more than 3 seconds
     def play_the_game(self):
@@ -76,6 +84,9 @@ class RallyAchievements():
     
     def play_savannah_track(self):
         return self.savannah_track.played
+
+    def play_lake_track(self):
+        return self.lake_track.played
 
     def race_against_ai(self):
         return self.car.ai_list[0].enabled
@@ -132,6 +143,18 @@ class RallyAchievements():
                             self.savannah_track.unlocked = True
                             self.car.save_unlocked()
                         return self.car.last_count <= 26
+
+    def unlock_lake_track(self):
+        for menu in self.main_menu.menus:
+            if menu.enabled == False:
+                if self.car.enabled and self.car.last_count != 0:
+                    if self.savannah_track.enabled and self.savannah_track.unlocked:
+                        if self.car.last_count <= 16:
+                            # Unlock Lake Track + Black texture
+                            self.lake_track.unlocked = True
+                            self.car.black_unlocked = True
+                            self.car.save_unlocked()
+                        return self.car.last_count <= 16
 
     def twenty_seconds_sand_track(self):
         if self.sand_track.enabled:
@@ -267,17 +290,37 @@ class RallyAchievements():
                         if self.car.last_count != 0:
                             return self.car.last_count <= 17
 
-    def sixteen_seconds_savannah_track(self):
-        if self.savannah_track.enabled:
+    def sixty_seconds_lake_track(self):
+        if self.lake_track.enabled:
             if self.car.enabled:
                 for menu in self.main_menu.menus:
                     if menu.enabled == False:
                         if self.car.last_count != 0:
-                            if self.car.last_count <= 16:
-                                # Unlock Black Texture
-                                self.car.black_unlocked = True
-                                self.car.save_unlocked()
-                            return self.car.last_count <= 16
+                            return self.car.last_count <= 60
+
+    def fiftyfive_seconds_lake_track(self):
+        if self.lake_track.enabled:
+            if self.car.enabled:
+                for menu in self.main_menu.menus:
+                    if menu.enabled == False:
+                        if self.car.last_count != 0:
+                            return self.car.last_count <= 55
+
+    def fifty_seconds_lake_track(self):
+        if self.lake_track.enabled:
+            if self.car.enabled:
+                for menu in self.main_menu.menus:
+                    if menu.enabled == False:
+                        if self.car.last_count != 0:
+                            return self.car.last_count <= 50
+
+    def fourtyseven_seconds_lake_track(self):
+        if self.lake_track.enabled:
+            if self.car.enabled:
+                for menu in self.main_menu.menus:
+                    if menu.enabled == False:
+                        if self.car.last_count != 0:
+                            return self.car.last_count <= 47
 
     def beat_mandaw_in_sand_track(self):
         if self.sand_track.enabled:
@@ -331,12 +374,23 @@ class RallyAchievements():
                             self.car.save_unlocked()
                         return self.car.last_count <= 14.13
 
+    def beat_mandaw_in_lake_track(self):
+        if self.lake_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.last_count != 0:
+                        if self.car.last_count <= 47.53:
+                            self.car.beat_mandaw_lake_track = True
+                            self.car.save_unlocked()
+                        return self.car.last_count <= 47.53
+
     def beat_mandaw_in_everything(self):
         if self.car.beat_mandaw_sand_track and self.car.beat_mandaw_grass_track \
             and self.car.beat_mandaw_snow_track and self.car.beat_mandaw_forest_track \
-                and self.car.beat_mandaw_savannah_track:
+                and self.car.beat_mandaw_savannah_track and self.car.beat_mandaw_lake_track:
                 # Unlock Surfin Bird
                 self.car.bird_unlocked = True
                 self.car.save_unlocked()
         return(self.car.beat_mandaw_sand_track and self.car.beat_mandaw_grass_track and \
-            self.car.beat_mandaw_snow_track and self.car.beat_mandaw_forest_track and self.car.beat_mandaw_savannah_track)
+            self.car.beat_mandaw_snow_track and self.car.beat_mandaw_forest_track and self.car.beat_mandaw_savannah_track \
+                and self.car.beat_mandaw_lake_track)

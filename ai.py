@@ -5,7 +5,7 @@ from particles import ParticleSystem
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
 class AICar(Entity):
-    def __init__(self, car, ai_list, sand_track, grass_track, snow_track, forest_track, savannah_track):
+    def __init__(self, car, ai_list, sand_track, grass_track, snow_track, forest_track, savannah_track, lake_track):
         super().__init__(
             model = "car.obj",
             texture = "car-red.png",
@@ -50,6 +50,7 @@ class AICar(Entity):
         self.snow_track = snow_track
         self.forest_track = forest_track
         self.savannah_track = savannah_track
+        self.lake_track = lake_track
 
         self.ai_list = ai_list
         self.set_enabled = True
@@ -59,71 +60,94 @@ class AICar(Entity):
         self.old_pos = round(self.position)
 
         # Sand Track Points
-        self.sap1 = PathObject((-41, -50, -7), (0, 90, 0))
-        self.sap2 = PathObject((-20, -50, -30), (0, 180, 0))
-        self.sap3 = PathObject((-48, -47, -55), (0, 270, 0))
-        self.sap4 = PathObject((-100, -50, -61), (0, 270, 0))
-        self.sap5 = PathObject((-128, -50, -80), (0, 150, 0))
-        self.sap6 = PathObject((-100, -50, -115), (0, 70, 0))
-        self.sap7 = PathObject((-80, -46, -86), (0, -30, 0))
-        self.sap8 = PathObject((-75, -50, -34), (0, 0, 0))
+        self.sap1 = PathObject((-41, -50, -7), 90)
+        self.sap2 = PathObject((-20, -50, -30), 180)
+        self.sap3 = PathObject((-48, -47, -55), 270)
+        self.sap4 = PathObject((-100, -50, -61), 270)
+        self.sap5 = PathObject((-128, -50, -80), 150)
+        self.sap6 = PathObject((-100, -50, -115), 70)
+        self.sap7 = PathObject((-80, -46, -86), -30)
+        self.sap8 = PathObject((-75, -50, -34), 0)
 
         # Grass Track Points
-        self.gp1 = PathObject((-47, -41, 15), (0, 90, 0))
-        self.gp2 = PathObject((12, -42, 14), (0, 90, 0))
-        self.gp3 = PathObject((48, -42, 34), (0, 0, 0))
-        self.gp4 = PathObject((25, -42, 68), (0, -90, 0))
-        self.gp5 = PathObject((0, -42, 50), (0, -210, 0))
-        self.gp6 = PathObject((2, -42, -25), (0, -180, 0))
-        self.gp7 = PathObject((-10, -42, -60), (0, -90, 0))
-        self.gp8 = PathObject((-70, -39, -67), (0, -70, 0))
-        self.gp9 = PathObject((-105, -42, -26), (0, 00, 0))
-        self.gp10 = PathObject((-106, -42, -2), (0, 50, 0))
-        self.gp11 = PathObject((-60, -42, 15), (0, 120, 0))
+        self.gp1 = PathObject((-47, -41, 15), 90)
+        self.gp2 = PathObject((12, -42, 14), 90)
+        self.gp3 = PathObject((48, -42, 34), 0)
+        self.gp4 = PathObject((25, -42, 68), -90)
+        self.gp5 = PathObject((0, -42, 50), -210)
+        self.gp6 = PathObject((2, -42, -25), -180)
+        self.gp7 = PathObject((-10, -42, -60), -90)
+        self.gp8 = PathObject((-70, -39, -67), -70)
+        self.gp9 = PathObject((-105, -42, -26), 00)
+        self.gp10 = PathObject((-106, -42, -2), 50)
+        self.gp11 = PathObject((-60, -42, 15), 120)
 
         # Snow Track Points
-        self.snp1 = PathObject((32, -44, 94), (0, 90, 0))
-        self.snp2 = PathObject((48, -44, 72), (0, 180, 0))
-        self.snp3 = PathObject((39, -44, 42), (0, 280, 0))
-        self.snp4 = PathObject((-37, -44, 42), (0, 270, 0))
-        self.snp5 = PathObject((-73, -43, 25), (0, 180, 0))
-        self.snp6 = PathObject((-40, -44, -8), (0, 65, 0))
-        self.snp7 = PathObject((20, -44, -8), (0, 90, 0))
-        self.snp8 = PathObject((50, -42, -25), (0, 250, 0))
-        self.snp9 = PathObject((30, -43, -55), (0, 290, 0))
-        self.snp10 = PathObject((5, -44, -51), (0, 290, 0))
-        self.snp11 = PathObject((-15, -44, -39), (0, 380, 0))
-        self.snp12 = PathObject((-22, -44, 70), (0, 363, 0))
-        self.snp13 = PathObject((-21, -44, 106), (0, 340, 0))
-        self.snp14 = PathObject((-47, -41, 126), (0, 240, 0))
-        self.snp15 = PathObject((-70, -44, 100), (0, 140, 0))
-        self.snp16 = PathObject((-30, -44, 90), (0, 90, 0))
-        self.snp17 = PathObject((-14, -44, 94), (0, 90, 0))
+        self.snp1 = PathObject((32, -44, 94), 90)
+        self.snp2 = PathObject((48, -44, 72), 180)
+        self.snp3 = PathObject((39, -44, 42), 280)
+        self.snp4 = PathObject((-37, -44, 42), 270)
+        self.snp5 = PathObject((-73, -43, 25), 180)
+        self.snp6 = PathObject((-40, -44, -8), 65)
+        self.snp7 = PathObject((20, -44, -8), 90)
+        self.snp8 = PathObject((50, -42, -25), 250)
+        self.snp9 = PathObject((30, -43, -55), 290)
+        self.snp10 = PathObject((5, -44, -51), 290)
+        self.snp11 = PathObject((-15, -44, -39), 380)
+        self.snp12 = PathObject((-22, -44, 70), 363)
+        self.snp13 = PathObject((-21, -44, 106), 340)
+        self.snp14 = PathObject((-47, -41, 126), 240)
+        self.snp15 = PathObject((-70, -44, 100), 140)
+        self.snp16 = PathObject((-30, -44, 90), 90)
+        self.snp17 = PathObject((-14, -44, 94), 90)
 
         # Forrest Track Points
-        self.fp1 = PathObject((57, -51, 76), (0, 90, 0))
-        self.fp2 = PathObject((82, -51, 63), (0, 180, 0))
-        self.fp3 = PathObject((57, -51, 36), (0, 275, 0))
-        self.fp4 = PathObject((-29, -51, 36), (0, 270, 0))
-        self.fp5 = PathObject((-62, -51, 16), (0, 170, 0))
-        self.fp6 = PathObject((-42, -51, -11), (0, 80, 0))
-        self.fp7 = PathObject((4, -51, -11), (0, 90, 0))
-        self.fp8 = PathObject((41, -51, -40), (0, 180, 0))
-        self.fp9 = PathObject((5, -51, -66), (0, 270, 0))
-        self.fp10 = PathObject((-17, -51, -53), (0, 360, 0))
-        self.fp11 = PathObject((-18, -51, -6), (0, 0, 0))
-        self.fp12 = PathObject((-18, -46, 40), (0, 0, 0))
-        self.fp13 = PathObject((-3, -51, 75), (0, 120, 0))
+        self.fp1 = PathObject((57, -51, 76), 90)
+        self.fp2 = PathObject((82, -51, 63), 180)
+        self.fp3 = PathObject((57, -51, 36), 275)
+        self.fp4 = PathObject((-29, -51, 36), 270)
+        self.fp5 = PathObject((-62, -51, 16), 170)
+        self.fp6 = PathObject((-42, -51, -11), 80)
+        self.fp7 = PathObject((4, -51, -11), 90)
+        self.fp8 = PathObject((41, -51, -40), 180)
+        self.fp9 = PathObject((5, -51, -66), 270)
+        self.fp10 = PathObject((-17, -51, -53), 360)
+        self.fp11 = PathObject((-18, -51, -6), 0)
+        self.fp12 = PathObject((-18, -46, 40), 0)
+        self.fp13 = PathObject((-3, -51, 75), 120)
 
         # Savannah Track Points
-        self.svp1 = PathObject((28, -51, 40), (0, 90, 0))
-        self.svp2 = PathObject((50, -51, 40), (0, 160, 0))
-        self.svp3 = PathObject((61, -51, 18), (0, 260, 0))
-        self.svp4 = PathObject((-30, -51, -77), (0, 230, 0))
-        self.svp5 = PathObject((-64, -51, -50), (0, 390, 0))
-        self.svp6 = PathObject((-64, -45, 0), (0, 360, 0))
-        self.svp7 = PathObject((-50, -51, 40), (0, 500, 0))
-        self.svp8 = PathObject((-24, -51, 41), (0, 450, 0))
+        self.svp1 = PathObject((28, -51, 40), 90)
+        self.svp2 = PathObject((50, -51, 40), 160)
+        self.svp3 = PathObject((61, -51, 18), 260)
+        self.svp4 = PathObject((-30, -51, -77), 230)
+        self.svp5 = PathObject((-64, -51, -50), 390)
+        self.svp6 = PathObject((-64, -45, 0), 360)
+        self.svp7 = PathObject((-50, -51, 40), 500)
+        self.svp8 = PathObject((-24, -51, 41), 450)
+
+        # Lake Track Points
+        self.lp1 = PathObject((-70, -50, 157), 90)
+        self.lp2 = PathObject((-51, -50, 165), 45)
+        self.lp3 = PathObject((-25, -50, 160), 135)
+        self.lp4 = PathObject((-4, -50, 156), 45)
+        self.lp5 = PathObject((30, -50, 165), 121)
+        self.lp6 = PathObject((84, -38, 163), 90)
+        self.lp7 = PathObject((117, -37, 157), 210)
+        self.lp8 = PathObject((121, -50, 114), 180)
+        self.lp9 = PathObject((150, -50, 88), 60)
+        self.lp10 = PathObject((170, -50, 80), 192)
+        self.lp11 = PathObject((150, -50, 30), 280)
+        self.lp12 = PathObject((131, -50, 20), 150)
+        self.lp13 = PathObject((127, -50, -157), 177)
+        self.lp14 = PathObject((131, -46, -190), 100)
+        self.lp15 = PathObject((170, -39, -170), 0)
+        self.lp16 = PathObject((170, -35, -153), -70)
+        self.lp17 = PathObject((100, -46, -147), -90)
+        self.lp18 = PathObject((-109, -50, -145), -90)
+        self.lp19 = PathObject((-146, -50, -122), 60)
+        self.lp20 = PathObject((-144, -44, 115), 0)
+        self.lp21 = PathObject((-127, -50, 155), 120)
 
         # Path points lists
         self.sand_path = [self.sap1, self.sap2, self.sap3, self.sap4, self.sap5, self.sap6, self.sap7, self.sap8]
@@ -131,6 +155,7 @@ class AICar(Entity):
         self.snow_path = [self.snp1, self.snp2, self.snp3, self.snp4, self.snp5, self.snp6, self.snp7, self.snp8, self.snp9, self.snp10, self.snp11, self.snp12, self.snp13, self.snp14, self.snp15, self.snp16, self.snp17]
         self.forest_path = [self.fp1, self.fp2, self.fp3, self.fp4, self.fp5, self.fp6, self.fp7, self.fp8, self.fp9, self.fp10, self.fp11, self.fp12, self.fp13]
         self.savannah_path = [self.svp1, self.svp2, self.svp3, self.svp4, self.svp5, self.svp6, self.svp7, self.svp8]
+        self.lake_path = [self.lp1, self.lp2, self.lp3, self.lp4, self.lp5, self.lp6, self.lp7, self.lp8, self.lp9, self.lp10, self.lp11, self.lp12, self.lp13, self.lp14, self.lp15, self.lp16, self.lp17, self.lp18, self.lp19, self.lp20, self.lp21]
 
         # The next point the ai is going to
         self.next_path = self.gp1
@@ -219,14 +244,16 @@ class AICar(Entity):
                 self.speed += self.acceleration * self.difficulty * time.dt
 
                 self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
-                if self.sand_track.enabled == True:
+                if self.sand_track.enabled:
                     self.particles.texture = "particle_sand_track.png"
-                elif self.grass_track.enabled == True:
+                elif self.grass_track.enabled:
                     self.particles.texture = "particle_grass_track.png"
-                elif self.snow_track.enabled == True:
+                elif self.snow_track.enabled:
                     self.particles.texture = "particle_snow_track.png"
-                elif self.forest_track.enabled == True:
+                elif self.forest_track.enabled:
                     self.particles.texture = "particle_forest_track.png"
+                elif self.lake_track.enabled:
+                    self.particles.texture = "particle_lake_track.png"
                 else:
                     self.particles.texture = "particle_sand_track.png"
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
@@ -271,6 +298,12 @@ class AICar(Entity):
             for p in self.savannah_path:
                 if distance(p, self) < 15 and self.next_path == p:
                     self.next_path = self.savannah_path[self.savannah_path.index(p) - len(self.savannah_path) + 1]
+        elif self.lake_track.enabled:
+            if self.simple_intersects(self.lake_track.lake_bounds):
+                self.reset()
+            for p in self.lake_path:
+                if distance(p, self) < 15 and self.next_path == p:
+                    self.next_path = self.lake_path[self.lake_path.index(p) - len(self.lake_path) + 1]
 
         # Cap the speed
         if self.speed >= self.topspeed:
@@ -323,35 +356,64 @@ class AICar(Entity):
             self.z += movementZ
 
     def reset(self):
-        if self.grass_track.enabled == True:
+        if self.grass_track.enabled:
             self.position = (-80 + random.randint(-5, 5), -30 + random.randint(-3, 5), 15 + random.randint(-5, 5))
             self.rotation = (0, 90, 0)
             self.next_path = self.gp1
-        elif self.sand_track.enabled == True:
+        elif self.sand_track.enabled:
             self.position = (-63 + random.randint(-5, 5), -40 + random.randint(-3, 5), -7 + random.randint(-5, 5))
             self.rotation = (0, 65, 0)
             self.next_path = self.sap1
-        elif self.snow_track.enabled == True:
+        elif self.snow_track.enabled:
             self.position = (-5 + random.randint(-5, 5), -35 + random.randint(-3, 5), 90 + random.randint(-5, 5))
             self.rotation = (0, 90, 0)
             self.next_path = self.snp1
-        elif self.forest_track.enabled == True:
+        elif self.forest_track.enabled:
             self.position = (12 + random.randint(-5, 5), -40 + random.randint(-3, 5), 73 + random.randint(-5, 5))
             self.rotation = (0, 90, 0)
             self.next_path = self.fp1
+        elif self.lake_track.enabled:
+            self.position = (-121, -40, 158)
+            self.rotation = (0, 90, 0)
+            self.next_path = self.lp1
         else:
             self.position = (0, 0, 0)
             self.rotation = (0, 0, 0)
         self.speed = 0
         self.velocity_y = 0
 
+    def simple_intersects(self, entity):
+        """
+        A faster AABB intersects for detecting collision with
+        simple objects, doesn't take rotation into account
+        """
+        minXA = self.x - self.scale_x
+        maxXA = self.x + self.scale_x
+        minYA = self.y - self.scale_y + (self.scale_y / 2)
+        maxYA = self.y + self.scale_y - (self.scale_y / 2)
+        minZA = self.z - self.scale_z
+        maxZA = self.z + self.scale_z
+
+        minXB = entity.x - entity.scale_x + (entity.scale_x / 2)
+        maxXB = entity.x + entity.scale_x - (entity.scale_x / 2)
+        minYB = entity.y - entity.scale_y + (entity.scale_y / 2)
+        maxYB = entity.y + entity.scale_y - (entity.scale_y / 2)
+        minZB = entity.z - entity.scale_z + (entity.scale_z / 2)
+        maxZB = entity.z + entity.scale_z - (entity.scale_z / 2)
+        
+        return (
+            (minXA <= maxXB and maxXA >= minXB) and
+            (minYA <= maxYB and maxYA >= minYB) and
+            (minZA <= maxZB and maxZA >= minZB)
+        )
+
 # Path Point class
 class PathObject(Entity):
-    def __init__(self, position = (0, 0, 0), rotation = (0, 0, 0)):
+    def __init__(self, position = (0, 0, 0), rotation_y = 0):
         super().__init__(
             model = "cube",
             position = position,
-            rotation = rotation,
+            rotation_y = rotation_y,
             texture = "white_cube",
             scale = (1, 20, 20),
             visible = False,

@@ -13,7 +13,7 @@ class ForestTrack(Entity):
 
         self.car = car
 
-        self.finish_line = Entity(model = "cube", position = (31, -48, 72), collider = "box", rotation = (0, 0, 0), scale = (3, 8, 30), visible = False)
+        self.finish_line = Entity(model = "cube", position = (31, -48, 72), rotation = (0, 0, 0), scale = (3, 8, 30), visible = False)
         self.boundaries = Entity(model = "forest_track_bounds.obj", collider = "mesh", position = (0, -50, 0), rotation = (0, 270, 0), scale = (12, 12, 12), visible = False)
 
         self.wall1 = Entity(model = "cube", position = (-16, -48, 50), collider = "box", rotation = (0, 90, 0), scale = (5, 30, 50), visible = False)
@@ -25,7 +25,7 @@ class ForestTrack(Entity):
         self.wall7 = Entity(model = "cube", position = (-4, -48, -15), collider = "box", rotation = (0, 0, 0), scale = (5, 30, 50), visible = False)
         self.wall8 = Entity(model = "cube", position = (-30, -48, -15), collider = "box", rotation = (0, 0, 0), scale = (5, 30, 50), visible = False)
 
-        self.wall_trigger = Entity(model = "cube", position = (11, -45, -70), collider = "box", rotation = (0, 0, 0), scale = (3, 20, 40), visible = False)
+        self.wall_trigger = Entity(model = "cube", position = (11, -45, -70), rotation = (0, 0, 0), scale = (3, 20, 40), visible = False)
 
         trees = Entity(model = "trees-forest.obj", texture = "tree-forest.png", position = (0, -50, 0), scale = 12, rotation_y = 270)
 
