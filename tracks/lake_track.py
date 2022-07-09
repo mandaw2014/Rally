@@ -26,7 +26,9 @@ class LakeTrack(Entity):
         ]
         
         for i in self.track:
-            i.enable()
+            i.disable()
+
+        self.disable()
 
         self.played = False
         self.unlocked = False
