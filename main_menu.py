@@ -24,10 +24,10 @@ class MainMenu(Entity):
         self.gameplay_menu = Entity(parent = self, enabled = False)
         self.controls_menu = Entity(parent = self, enabled = False)
         self.garage_menu = Entity(parent = self, enabled = False)
+        self.cars_menu = Entity(parent = self.garage_menu, enabled = False)
+        self.colours_menu = Entity(parent = self.garage_menu, enabled = False)
+        self.cosmetics_menu = Entity(parent = self.garage_menu, enabled = False)
         self.pause_menu = Entity(parent = self, enabled = False)
-
-        self.garage_page1 = Entity(parent = self.garage_menu)
-        self.garage_page2 = Entity(parent = self.garage_menu)
 
         self.menus = [
             self.start_menu, self.host_menu, self.created_server_menu, self.server_menu,
@@ -222,8 +222,9 @@ class MainMenu(Entity):
                 self.car.camera_follow.offset = self.car.camera_angle
                 self.car.disable()
                 self.car.connected = False
-                for track in self.tracks.track:
-                    track.disable()
+                for track in self.tracks:
+                    for i in track.track:
+                        i.disable()
                 for track in self.grass_track.track:
                     track.enable()
 
@@ -324,6 +325,7 @@ class MainMenu(Entity):
                             ai.enable()
                         ai.position = (-63, -40, -7) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 65, 0)
+                        ai.set_random_car()
                         ai.set_random_texture()
                         ai.next_path = ai.sap1
                         
@@ -361,6 +363,7 @@ class MainMenu(Entity):
                             ai.enable()
                         ai.position = (-80, -35, 15) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_car()
                         ai.set_random_texture()
                         ai.next_path = ai.gp1
 
@@ -398,6 +401,7 @@ class MainMenu(Entity):
                             ai.enable()
                         ai.position = (-5, -40, 90) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_car()
                         ai.set_random_texture()
                         ai.next_path = ai.snp1
                         
@@ -435,6 +439,7 @@ class MainMenu(Entity):
                             ai.enable()
                         ai.position = (12, -40, 73) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_car()
                         ai.set_random_texture()
                         ai.next_path = ai.fp1
 
@@ -472,6 +477,7 @@ class MainMenu(Entity):
                             ai.enable()
                         ai.position = (-12, -35, 40) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_car()
                         ai.set_random_texture()
                         ai.next_path = ai.svp1
 
@@ -509,6 +515,7 @@ class MainMenu(Entity):
                             ai.enable()
                         ai.position = (-121, -40, 158) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_car()
                         ai.set_random_texture()
                         ai.next_path = ai.lp1
 
@@ -559,7 +566,7 @@ class MainMenu(Entity):
             if grass_track.unlocked == False:
                 grass_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 17 seconds on Sand Track"
+                unlocked_text.text = "Get Less Than 19 seconds on Sand Track"
                 highscore_text.disable()
                 for i in grass_track.track:
                     i.alpha = 200
@@ -583,7 +590,7 @@ class MainMenu(Entity):
             if snow_track.unlocked == False:
                 snow_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 19 seconds on Grass Track"
+                unlocked_text.text = "Get Less Than 21 seconds on Grass Track"
                 highscore_text.disable()
                 for i in snow_track.track:
                     i.alpha = 200
@@ -607,7 +614,7 @@ class MainMenu(Entity):
             if forest_track.unlocked == False:
                 forest_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 33 seconds on Snow Track"
+                unlocked_text.text = "Get Less Than 35 seconds on Snow Track"
                 highscore_text.disable()
                 for i in forest_track.track:
                     i.alpha = 200
@@ -631,7 +638,7 @@ class MainMenu(Entity):
             if savannah_track.unlocked == False:
                 savannah_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 26 seconds on Forest Track"
+                unlocked_text.text = "Get Less Than 28 seconds on Forest Track"
                 highscore_text.disable()
                 for i in savannah_track.track:
                     i.alpha = 200
@@ -655,7 +662,7 @@ class MainMenu(Entity):
             if lake_track.unlocked == False:
                 lake_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 15 seconds on Savannah Track"
+                unlocked_text.text = "Get Less Than 17 seconds on Savannah Track"
                 highscore_text.disable()
                 for i in lake_track.track:
                     i.alpha = 200
@@ -675,7 +682,7 @@ class MainMenu(Entity):
         lake_track_button = Button(text = "Lake Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = 0.5, parent = self.maps_menu)
         back_button = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
         
-        unlocked_text = Text("Get Less Than 16 seconds on Sand Track to Unlock Grass Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = -0.1, parent = self.maps_menu)
+        unlocked_text = Text("Get Less Than 19 seconds on Sand Track to Unlock Grass Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = -0.1, parent = self.maps_menu)
         unlocked_text.disable()
 
         highscore_text = Text("", scale = 1.2, color = color.white, line_height = 2, origin = 0, y = -0.07, parent = self.maps_menu)
@@ -863,12 +870,21 @@ class MainMenu(Entity):
             if self.car.controls == "wasd":
                 self.car.controls = "zqsd"
                 controls_settings_button.text = "Controls: ZQSD"
+                drive_controls_text.text = "Drive: Z"
+                steering_controls_text.text = "Steering: Q D"
             elif self.car.controls == "zqsd":
                 self.car.controls = "wasd"
                 controls_settings_button.text = "Controls: WASD"
-
-        controls_settings_button = Button("Controls: WASD", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.06, parent = self.controls_menu)
-        back_button_controls = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.06, parent = self.controls_menu)
+                drive_controls_text.text = "Drive: W"
+                steering_controls_text.text = "Steering: A D"
+        
+        drive_controls_text = Button("Drive: W", color = color.black, scale_y = 0.1, scale_x = 0.3, x = -0.5, y = 0.3, parent = self.controls_menu)
+        steering_controls_text = Button("Steering: A D", color = color.black, scale_y = 0.1, scale_x = 0.3, x = 0, y = 0.3, parent = self.controls_menu)
+        braking_controls_text = Button("Braking: S", color = color.black, scale_y = 0.1, scale_x = 0.3, x = 0.5, y = 0.3, parent = self.controls_menu)
+        handbraking_controls_text = Button("Hand Brake: SPACE", color = color.black, scale_y = 0.1, scale_x = 0.3, x = -0.5, y = 0.1, parent = self.controls_menu)
+        respawn_controls_text = Button("Respawn: G", color = color.black, scale_y = 0.1, scale_x = 0.3, x = 0, y = 0.1, parent = self.controls_menu)
+        controls_settings_button = Button("Controls: WASD", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.2, parent = self.controls_menu)
+        back_button_controls = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.32, parent = self.controls_menu)
 
         back_button_controls.on_click = Func(back_controls)
         controls_settings_button.on_click = Func(controls_settings)
@@ -890,6 +906,7 @@ class MainMenu(Entity):
                             ai.enable()
                         ai.position = (-63, -45, -7) + (random.randint(-5, 5), random.randint(-3, 5), random.randint(-5, 5))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_car()
                         ai.set_random_texture()
                         ai.next_path = ai.sap1
                         ai.speed = 0
@@ -904,6 +921,7 @@ class MainMenu(Entity):
                             ai.enable()
                         ai.position = (-80, -35, 15) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_car()
                         ai.set_random_texture()
                         ai.next_path = ai.gp1
                         ai.speed = 0
@@ -918,6 +936,7 @@ class MainMenu(Entity):
                             ai.enable()
                         ai.position = (-5, -40, 90) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_car()
                         ai.set_random_texture()
                         ai.next_path = ai.snp1
                         ai.speed = 0
@@ -932,6 +951,7 @@ class MainMenu(Entity):
                             ai.enable()
                         ai.position = (12, -40, 73) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
+                        ai.set_random_car()
                         ai.set_random_texture()
                         ai.next_path = ai.fp1
                         ai.speed = 0
@@ -1037,6 +1057,9 @@ class MainMenu(Entity):
         def garage_button_func():
             self.garage_menu.enable()
             self.main_menu.disable()
+            self.cars_menu.enable()
+            self.cosmetics_menu.disable()
+            self.colours_menu.disable()
             self.car.enable()
             self.car.position = (-105, -50, -59)
             grass_track.disable()
@@ -1047,51 +1070,112 @@ class MainMenu(Entity):
             for track in self.sand_track.track:
                 track.enable()
 
-        def left():
-            self.garage_page1.enable()
-            self.garage_page2.disable()
+        def cars_menu():
+            self.cars_menu.enable()
+            self.colours_menu.disable()
+            self.cosmetics_menu.disable()
 
-        def right():
-            self.garage_page1.disable()
-            self.garage_page2.enable()
+        def colours_menu():
+            self.cars_menu.disable()
+            self.colours_menu.enable()
+            self.cosmetics_menu.disable()
+
+        def cosmetics_menu():
+            self.cars_menu.disable()
+            self.colours_menu.disable()
+            self.cosmetics_menu.enable()
+
+        def sports_car():
+            self.car.sports_car()
+            self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+            self.car.viking_helmet.disable()
+            self.car.duck.disable()
+            self.car.banana.disable()
+            self.car.surfinbird.disable()
+
+        def muscle_car():
+            self.car.muscle_car()
+            self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+            self.car.viking_helmet.disable()
+            self.car.duck.disable()
+            self.car.banana.disable()
+            self.car.surfinbird.disable()
+
+        def limo():
+            self.car.limo()
+            self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+            self.car.viking_helmet.disable()
+            self.car.duck.disable()
+            self.car.banana.disable()
+            self.car.surfinbird.disable()
+
+        def lorry():
+            self.car.lorry()
+            self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+            self.car.viking_helmet.disable()
+            self.car.duck.disable()
+            self.car.banana.disable()
+            self.car.surfinbird.disable()
+
+        def sports_hover():
+            self.garage_name_text.enable()
+            self.garage_name_text.text = "Sports Car"
+
+        def muscle_hover():
+            self.garage_name_text.enable()
+            self.garage_name_text.text = "Muscle Car"
+
+        def limo_hover():
+            self.garage_name_text.enable()
+            self.garage_name_text.text = "Limo"
+        
+        def lorry_hover():
+            self.garage_name_text.enable()
+            self.garage_name_text.text = "Lorry"
 
         def change_colour(colour):
             """
             Changes the car color to the selected color after a small animation.
             """
             if colour == "red":
-                car.texture = "car-red.png"
+                car.texture = f"{self.car.car_type}-red.png"
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             if colour == "blue":
-                car.texture = "car-blue.png"
+                car.texture = f"{self.car.car_type}-blue.png"
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             if colour == "green":
                 if car.green_unlocked:
-                    car.texture = "car-green.png"
+                    car.texture = f"{self.car.car_type}-green.png"
                     car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 else:
-                    self.garage_locked_text("Get Less Than 19s on Grass Track")
+                    self.garage_locked_text("Get Less Than 21s on Grass Track")
             if colour == "orange":
                 if car.orange_unlocked:
-                    car.texture = "car-orange.png"
+                    car.texture = f"{self.car.car_type}-orange.png"
                     car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 else:
-                    self.garage_locked_text("Get Less Than 16s on Sand Track")
+                    self.garage_locked_text("Get Less Than 17s on Sand Track")
             if colour == "black":
                 if car.black_unlocked:
-                    car.texture = "car-black.png"
+                    car.texture = f"{self.car.car_type}-black.png"
                     car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 else:
-                    self.garage_locked_text("Get Less Than 16s on Savannah Track")
+                    self.garage_locked_text("Get Less Than 17s on Savannah Track")
             if colour == "white":
                 if car.white_unlocked:
-                    car.texture = "car-white.png"
+                    car.texture = f"{self.car.car_type}-white.png"
                     car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 else:
-                    self.garage_locked_text("Get Less Than 33s on Snow Track")
+                    self.garage_locked_text("Get Less Than 35s on Snow Track")
 
         def viking_helmet():
             if self.car.viking_helmet_unlocked:
+                if self.car.car_type == "lorry":
+                    car.viking_helmet.y = 1.5
+                elif self.car.car_type == "limo":
+                    car.viking_helmet.y = 0.1
+                elif self.car.car_type == "sports" or self.car.car_type == "muscle":
+                    car.viking_helmet.y = 0
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 car.viking_helmet.enabled = not car.viking_helmet.enabled
                 car.duck.disable()
@@ -1102,6 +1186,12 @@ class MainMenu(Entity):
 
         def duck():
             if self.car.duck_unlocked:
+                if self.car.car_type == "lorry":
+                    car.duck.y = 1.5
+                elif self.car.car_type == "limo":
+                    car.duck.y = 0.1
+                elif self.car.car_type == "sports" or self.car.car_type == "muscle":
+                    car.duck.y = 0
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 car.duck.enabled = not car.duck.enabled
                 car.viking_helmet.disable()
@@ -1112,6 +1202,12 @@ class MainMenu(Entity):
 
         def banana():
             if self.car.banana_unlocked:
+                if self.car.car_type == "lorry":
+                    car.banana.y = 1.5
+                elif self.car.car_type == "limo":
+                    car.banana.y = 0.1
+                elif self.car.car_type == "sports" or self.car.car_type == "muscle":
+                    car.banana.y = 0
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 car.banana.enabled = not car.banana.enabled
                 car.duck.disable()
@@ -1122,6 +1218,12 @@ class MainMenu(Entity):
 
         def surfinbird():
             if self.car.surfinbird_unlocked:
+                if self.car.car_type == "lorry":
+                    car.surfinbird.y = 1.5
+                elif self.car.car_type == "limo":
+                    car.surfinbird.y = 0.1
+                elif self.car.car_type == "sports" or self.car.car_type == "muscle":
+                    car.surfinbird.y = 0
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 car.surfinbird.enabled = not car.surfinbird.enabled
                 car.viking_helmet.disable()
@@ -1137,10 +1239,6 @@ class MainMenu(Entity):
         def duck_hover():
             self.garage_name_text.enable()
             self.garage_name_text.text = "Duck"
-        
-        def banana_hover():
-            self.garage_name_text.enable()
-            self.garage_name_text.text = "Banana"
 
         def banana_hover():
             self.garage_name_text.enable()
@@ -1153,23 +1251,29 @@ class MainMenu(Entity):
         self.start_spin = True
 
         garage_button = Button(text = "Garage", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.main_menu)
-        self.garage_page2.disable()
 
         back_button_garage = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.garage_menu)
-        left_arrow = Button(text = "<-", color = color.gray, scale_y = 0.05, scale_x = 0.1, y = -0.3, x = -0.6, parent = self.garage_menu)
-        right_arrow = Button(text = "->", color = color.gray, scale_y = 0.05, scale_x = 0.1, y = -0.3, x = -0.4, parent = self.garage_menu)
+        
+        cars_menu_button = Button(text = "Cars", color = color.black, scale_y = 0.1, scale_x = 0.15, x = -0.7, y = -0.3, parent = self.garage_menu)
+        colours_menu_button = Button(text = "Colours", color = color.black, scale_y = 0.1, scale_x = 0.15, x = -0.5, y = -0.3, parent = self.garage_menu)
+        cosmetics_menu_button = Button(text = "Cosmetics", color = color.black, scale_y = 0.1, scale_x = 0.15, x = -0.3, y = -0.3, parent = self.garage_menu)
 
-        red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.7, parent = self.garage_page1)
-        blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.garage_page1)
-        green_button = Button(color = color.lime, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.3, parent = self.garage_page1)
-        orange_button = Button(color = color.orange, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.7, parent = self.garage_page1)
-        black_button = Button(color = color.black, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.5, parent = self.garage_page1)
-        white_button = Button(color = color.white, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.3, parent = self.garage_page1)
+        sports_car_button = Button(texture = "sports-car-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.7, alpha = 255, parent = self.cars_menu)
+        muscle_car_button = Button(texture = "muscle-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.5, alpha = 255, parent = self.cars_menu)
+        limo_button = Button(texture = "limo-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.3, alpha = 255, parent = self.cars_menu)
+        lorry_button = Button(texture = "lorry-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.1, x = -0.7, alpha = 255, parent = self.cars_menu)
 
-        viking_helmet_button = Button(texture = "viking_helmet-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.7, alpha = 255, parent = self.garage_page2)
-        duck_button = Button(texture = "duck-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.5, alpha = 255, parent = self.garage_page2)
-        banana_button = Button(texture = "banana-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.3, alpha = 255, parent = self.garage_page2)
-        surfinbird_button = Button(texture = "surfinbird-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.1, x = -0.7, alpha = 255, parent = self.garage_page2)
+        red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.7, parent = self.colours_menu)
+        blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.colours_menu)
+        green_button = Button(color = color.lime, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.3, parent = self.colours_menu)
+        orange_button = Button(color = color.orange, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.7, parent = self.colours_menu)
+        black_button = Button(color = color.black, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.5, parent = self.colours_menu)
+        white_button = Button(color = color.white, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.3, parent = self.colours_menu)
+
+        viking_helmet_button = Button(texture = "viking_helmet-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.7, alpha = 255, parent = self.cosmetics_menu)
+        duck_button = Button(texture = "duck-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.5, alpha = 255, parent = self.cosmetics_menu)
+        banana_button = Button(texture = "banana-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.3, alpha = 255, parent = self.cosmetics_menu)
+        surfinbird_button = Button(texture = "surfinbird-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.1, x = -0.7, alpha = 255, parent = self.cosmetics_menu)
 
         self.garage_name_text = Text("Surfin Bird", scale = 1.5, color = color.white, line_height = 2, origin = 0, x = -0.5, y = -0.4, parent = self.garage_menu)
         self.garage_name_text.disable()
@@ -1178,9 +1282,26 @@ class MainMenu(Entity):
         self.garage_unlocked_text.disable()
 
         garage_button.on_click = Func(garage_button_func)
+        cars_menu_button.on_click = Func(cars_menu)
+        colours_menu_button.on_click = Func(colours_menu)
+        cosmetics_menu_button.on_click = Func(cosmetics_menu)
+
         back_button_garage.on_click = Func(back_garage)
-        left_arrow.on_click = Func(left)
-        right_arrow.on_click = Func(right)
+        
+        sports_car_button.on_click = Func(sports_car)
+        muscle_car_button.on_click = Func(muscle_car)
+        limo_button.on_click = Func(limo)
+        lorry_button.on_click = Func(lorry)
+
+        sports_car_button.on_mouse_enter = Func(sports_hover)
+        sports_car_button.on_mouse_exit = Func(self.garage_name_text.disable)
+        muscle_car_button.on_mouse_enter = Func(muscle_hover)
+        muscle_car_button.on_mouse_exit = Func(self.garage_name_text.disable)
+        limo_button.on_mouse_enter = Func(limo_hover)
+        limo_button.on_mouse_exit = Func(self.garage_name_text.disable)
+        lorry_button.on_mouse_enter = Func(lorry_hover)
+        lorry_button.on_mouse_exit = Func(self.garage_name_text.disable)
+
         red_button.on_click = Func(change_colour, "red")
         blue_button.on_click = Func(change_colour, "blue")
         green_button.on_click = Func(change_colour, "green")

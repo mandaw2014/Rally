@@ -105,56 +105,56 @@ class RallyAchievements():
             if menu.enabled == False:
                 if self.car.enabled and self.car.last_count != 0:
                     if self.sand_track.enabled and self.sand_track.unlocked:
-                        if self.car.last_count <= 17:
+                        if self.car.last_count <= 19:
                             self.grass_track.unlocked = True
                             self.car.save_unlocked()
-                        return self.car.last_count <= 17
+                        return self.car.last_count <= 19
     
     def unlock_snow_track(self):
         for menu in self.main_menu.menus:
             if menu.enabled == False:
                 if self.car.enabled and self.car.last_count != 0:
                     if self.grass_track.enabled and self.grass_track.unlocked:
-                        if self.car.last_count <= 19:
+                        if self.car.last_count <= 21:
                             # Unlock Snow Track and Green Texture
                             self.snow_track.unlocked = True
                             self.car.green_unlocked = True
                             self.car.save_unlocked()
-                        return self.car.last_count <= 19
+                        return self.car.last_count <= 21
 
     def unlock_forest_track(self):
         for menu in self.main_menu.menus:
             if menu.enabled == False:
                 if self.car.enabled and self.car.last_count != 0:
                     if self.snow_track.enabled and self.snow_track.unlocked:
-                        if self.car.last_count <= 33:
+                        if self.car.last_count <= 35:
                             # Unlock Plains Track and White Texture
                             self.forest_track.unlocked = True
                             self.car.white_unlocked = True
                             self.car.save_unlocked()
-                        return self.car.last_count <= 33
+                        return self.car.last_count <= 35
 
     def unlock_savannah_track(self):
         for menu in self.main_menu.menus:
             if menu.enabled == False:
                 if self.car.enabled and self.car.last_count != 0:
                     if self.forest_track.enabled and self.forest_track.unlocked:
-                        if self.car.last_count <= 26:
+                        if self.car.last_count <= 28:
                             self.savannah_track.unlocked = True
                             self.car.save_unlocked()
-                        return self.car.last_count <= 26
+                        return self.car.last_count <= 28
 
     def unlock_lake_track(self):
         for menu in self.main_menu.menus:
             if menu.enabled == False:
                 if self.car.enabled and self.car.last_count != 0:
                     if self.savannah_track.enabled and self.savannah_track.unlocked:
-                        if self.car.last_count <= 16:
+                        if self.car.last_count <= 17:
                             # Unlock Lake Track + Black texture
                             self.lake_track.unlocked = True
                             self.car.black_unlocked = True
                             self.car.save_unlocked()
-                        return self.car.last_count <= 16
+                        return self.car.last_count <= 17
 
     def twenty_seconds_sand_track(self):
         if self.sand_track.enabled:
@@ -168,7 +168,7 @@ class RallyAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.last_count != 0:
-                        if self.car.last_count <= 16:
+                        if self.car.last_count <= 17:
                             # Unlock Orange Texture
                             self.car.orange_unlocked = True
                             self.car.save_unlocked()

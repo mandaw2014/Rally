@@ -18,7 +18,7 @@ class Server:
             def onClientConnected(client):
                 self.easy.create_replicated_variable(
                     f"player_{client.id}",
-                    { "type" : "player", "id" : client.id, "username": "Guest", "position": (0, 0, 0), "rotation" : (0, 0, 0), "texture" : "car-red.png", "highscore": 0.0}
+                    { "type" : "player", "id" : client.id, "username": "Guest", "position": (0, 0, 0), "rotation" : (0, 0, 0), "model" : "sports-car.obj", "texture" : "sports-red.png", "highscore": 0.0}
                 )
                 print(f"{client} connected!")
                 client.send_message("GetId", client.id)
@@ -34,6 +34,10 @@ class Server:
             @self.server.event
             def MyRotation(client, newrot):
                 self.easy.update_replicated_variable_by_name(f"player_{client.id}", "rotation", newrot)
+
+            @self.server.event
+            def MyModel(client, newmodel):
+                self.easy.update_replicated_variable_by_name(f"player_{client.id}", "model", newmodel)
 
             @self.server.event
             def MyTexture(client, newtex):

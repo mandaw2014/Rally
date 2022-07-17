@@ -44,8 +44,10 @@ else:
 
 def load_assets():
     models_to_load = [
+        # Cars
+        "sports-car.obj", "muscle-car.obj", "limousine.obj", "lorry.obj",
         # Tracks
-        "car.obj", "sand_track.obj", "grass_track.obj", "snow_track.obj",
+        "sand_track.obj", "grass_track.obj", "snow_track.obj",
         "forest_track.obj", "savannah_track.obj", "lake_track.obj", "particles.obj",
         # Track Bounds
         "sand_track_bounds.obj", "grass_track_bounds.obj", "snow_track_bounds.obj", 
@@ -59,8 +61,16 @@ def load_assets():
 
     textures_to_load = [
         # Car Textures
-        "car-red.png", "car-orange.png", "car-green.png", "car-white.png", "car-black.png",
-        "car-blue.png", 
+        # Sports Car
+        "sports-red.png", "sports-orange.png", "sports-green.png", "sports-white.png", "sports-black.png", "sports-blue.png", 
+        # Muscle Car
+        "muscle-red.png", "muscle-orange.png", "muscle-green.png", "muscle-white.png", "muscle-black.png", "muscle-blue.png", 
+        # Limo
+        "limo-red.png", "limo-orange.png", "limo-green.png", "limo-white.png", "limo-black.png", "limo-blue.png", 
+        # Lorry
+        "lorry-red.png", "lorry-orange.png", "lorry-green.png", "lorry-white.png", "lorry-black.png", "lorry-blue.png", 
+        # Limo
+        "limo-red.png", "limo-orange.png", "limo-green.png", "limo-white.png", "limo-black.png", "limo-blue.png", 
         # Track Textures
         "sand_track.png", "grass_track.png", "snow_track.png", "forest_track.png",
         "savannah_track.png", "lake_track.png",
@@ -88,6 +98,7 @@ except Exception as e:
 
 # Car
 car = Car()
+car.sports_car()
 
 # Tracks
 sand_track = SandTrack(car)
@@ -124,10 +135,9 @@ main_menu = MainMenu(car, ai_list, sand_track, grass_track, snow_track, forest_t
 achievements = RallyAchievements(car, main_menu, sand_track, grass_track, snow_track, forest_track, savannah_track, lake_track)
 
 # Lighting + shadows
+render.setShaderAuto()
 sun = SunLight(direction = (-0.7, -0.9, 0.5), resolution = 2048, car = car)
 ambient = AmbientLight(color = Vec4(0.5, 0.55, 0.66, 0) * 0.75)
-
-render.setShaderAuto()
 
 # Sky
 Sky(texture = "sky")
@@ -172,6 +182,7 @@ def input(key):
     if car.multiplayer_update:
         multiplayer.client.send_message("MyPosition", tuple(car.position))
         multiplayer.client.send_message("MyRotation", tuple(car.rotation))
+        multiplayer.client.send_message("MyModel", str(car.model_path))
         multiplayer.client.send_message("MyTexture", str(car.texture))
         multiplayer.client.send_message("MyUsername", str(car.username_text))
         multiplayer.client.send_message("MyHighscore", str(round(car.highscore_count, 2)))

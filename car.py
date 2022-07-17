@@ -7,10 +7,10 @@ sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 Text.default_resolution = 1080 * Text.size
 
 class Car(Entity):
-    def __init__(self, position = (0, 0, 4), rotation = (0, 0, 0), topspeed = 30, acceleration = 0.35, braking_strength = 15, friction = 0.6, camera_speed = 8, drift_speed = 35):
+    def __init__(self, position = (0, 0, 4), rotation = (0, 0, 0), topspeed = 30, acceleration = 0.35, braking_strength = 20, friction = 0.6, camera_speed = 8, drift_speed = 35):
         super().__init__(
-            model = "car.obj",
-            texture = "car-red.png",
+            model = "sports-car.obj",
+            texture = "sports-red.png",
             collider = "box",
             position = position,
             rotation = rotation,
@@ -31,24 +31,35 @@ class Car(Entity):
         self.velocity_y = 0
         self.rotation_speed = 0
         self.max_rotation_speed = 2.6
+        self.steering_amount = 8
         self.topspeed = topspeed
         self.braking_strenth = braking_strength
         self.camera_speed = camera_speed
         self.acceleration = acceleration
         self.friction = friction
         self.drift_speed = drift_speed
+        self.drift_amount = 4.5
+        self.max_drift_speed = 40
+        self.min_drift_speed = 20
         self.pivot_rotation_distance = 1
+
+        # Smoothfollow
+        self.camera_angle = (20, 40, -50)
+        self.camera_follow = SmoothFollow(target = self, offset = self.camera_angle, speed = self.camera_speed)
+        camera.add_script(self.camera_follow)
 
         # Pivot for drifting
         self.pivot = Entity()
         self.pivot.position = self.position
         self.pivot.rotation = self.rotation
 
+        # Car Type
+        self.car_type = "sports"
+
         # Particles
         self.number_of_particles = 0.05
-        self.particle_pivot = Entity()
-        self.particle_pivot.parent = self
-        self.particle_pivot.position = self.position - (0, 1, 5)
+        self.particle_pivot = Entity(parent = self)
+        self.particle_pivot.position = (0, -1, -2)
 
         self.copy_normals = False
         self.hitting_wall = False
@@ -105,11 +116,6 @@ class Car(Entity):
         # Shows whether you are connected to a server or not
         self.connected_text = True
         self.disconnected_text = True
-        
-        # Smoothfollow
-        self.camera_angle = (20, 40, -50)
-        self.camera_follow = SmoothFollow(target = self, offset = self.camera_angle, speed = self.camera_speed)
-        camera.add_script(self.camera_follow)
 
         # Camera shake
         self.shake_amount = 0.1
@@ -165,7 +171,61 @@ class Car(Entity):
         self.beat_mandaw_savannah_track = False
         self.beat_mandaw_lake_track = False
 
+        self.model_path = str(self.model).replace("render/scene/car/", "")
+
         invoke(self.set_unlocked, delay = 1)
+        invoke(self.update_model_path, delay = 3)
+
+    def sports_car(self):
+        self.car_type = "sports"
+        self.model = "sports-car.obj"
+        self.texture = "sports-red.png"
+        self.topspeed = 30
+        self.acceleration = 0.35
+        self.drift_amount = 4.5
+        self.min_drift_speed = 20
+        self.max_drift_speed = 40
+        self.max_rotation_speed = 2.6
+        self.particle_pivot.position = (0, -1, -1.5)
+
+    def muscle_car(self):
+        self.car_type = "muscle"
+        self.model = "muscle-car.obj"
+        self.texture = "muscle-orange.png"
+        self.topspeed = 35
+        self.acceleration = 0.3
+        self.drift_amount = 4
+        self.min_drift_speed = 25
+        self.max_drift_speed = 45
+        self.max_rotation_speed = 1.5
+        self.steering_amount = 8
+        self.particle_pivot.position = (0, -1, -1.8)
+
+    def limo(self):
+        self.car_type = "limo"
+        self.model = "limousine.obj"
+        self.texture = "limo-black.png"
+        self.topspeed = 28
+        self.acceleration = 0.2
+        self.drift_amount = 8
+        self.min_drift_speed = 20
+        self.max_drift_speed = 40
+        self.max_rotation_speed = 1.5
+        self.steering_amount = 7
+        self.particle_pivot.position = (0, -1, -3.5)
+
+    def lorry(self):
+        self.car_type = "lorry"
+        self.model = "lorry.obj"
+        self.texture = "lorry-white.png"
+        self.topspeed = 28
+        self.acceleration = 0.15
+        self.drift_amount = 10
+        self.min_drift_speed = 20
+        self.max_drift_speed = 40
+        self.max_rotation_speed = 1.5
+        self.steering_amount = 7
+        self.particle_pivot.position = (0, -1, -3.5)
 
     def update(self):
         # Stopwatch/Timer
@@ -229,11 +289,11 @@ class Car(Entity):
         if self.pivot.rotation_y != self.rotation_y:
             if self.pivot.rotation_y > self.rotation_y:
                 self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
-                self.speed += self.pivot_rotation_distance / 4.5 * time.dt
+                self.speed += self.pivot_rotation_distance / self.drift_amount * time.dt
                 self.rotation_speed -= 1 * time.dt
             if self.pivot.rotation_y < self.rotation_y:
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
-                self.speed -= self.pivot_rotation_distance / 4.5 * time.dt
+                self.speed -= self.pivot_rotation_distance / self.drift_amount * time.dt
                 self.rotation_speed += 1 * time.dt
 
         # Change number of particles depending on the rotation of the car
@@ -279,6 +339,11 @@ class Car(Entity):
             # Braking
             if held_keys[self.controls[2] or held_keys["down arrow"]]:
                 self.speed -= self.braking_strenth * time.dt
+                if self.rotation_speed < 0:
+                    self.rotation_speed -= 2 * time.dt
+                elif self.rotation_speed > 0:
+                    self.rotation_speed += 2 * time.dt
+                self.drift_speed -= 10 * time.dt
 
             # Hand Braking
             if held_keys["space"]:
@@ -288,7 +353,7 @@ class Car(Entity):
                     self.rotation_speed += 3 * time.dt
                 self.drift_speed -= 20 * time.dt
                 self.speed -= 20 * time.dt
-                self.max_rotation_speed = 3
+                self.max_rotation_speed = 3.0
             else:
                 self.max_rotation_speed = 2.6
 
@@ -302,10 +367,10 @@ class Car(Entity):
 
         if self.speed != 0:
             if held_keys[self.controls[1]] or held_keys["left arrow"]:
-                self.rotation_speed -= 8 * time.dt
+                self.rotation_speed -= self.steering_amount * time.dt
                 self.drift_speed -= 10 * time.dt
             elif held_keys[self.controls[3]] or held_keys["right arrow"]:
-                self.rotation_speed += 8 * time.dt
+                self.rotation_speed += self.steering_amount * time.dt
                 self.drift_speed -= 10 * time.dt
             else:
                 self.drift_speed += 0.01 * time.dt
@@ -322,10 +387,10 @@ class Car(Entity):
             self.pivot.rotation = self.rotation
 
         # Cap the drifting
-        if self.drift_speed <= 20:
-            self.drift_speed = 20
-        if self.drift_speed >= 40:
-            self.drift_speed = 40
+        if self.drift_speed <= self.min_drift_speed:
+            self.drift_speed = self.min_drift_speed
+        if self.drift_speed >= self.max_drift_speed:
+            self.drift_speed = self.max_drift_speed
 
         # Cap the steering
         if self.rotation_speed >= self.max_rotation_speed:
@@ -665,12 +730,20 @@ class Car(Entity):
         camera.y += random.randint(-1, 1) * self.shake_amount
         camera.z += random.randint(-1, 1) * self.shake_amount
 
+    def update_model_path(self):
+        """
+        Updates the model's file path for multiplayer
+        """
+
+        self.model_path = str(self.model).replace("render/scene/car/", "")
+        invoke(self.update_model_path, delay = 3)
+
 # Class for copying the car's position, rotation for multiplayer
 class CarRepresentation(Entity):
     def __init__(self, car, position = (0, 0, 0), rotation = (0, 65, 0)):
         super().__init__(
             parent = scene,
-            model = "car.obj",
+            model = "sports-car.obj",
             texture = "car-red.png",
             position = position,
             rotation = rotation,
@@ -688,7 +761,8 @@ class CarUsername(Text):
             text = "Guest",
             y = 3,
             scale = 30,
-            color = color.white
+            color = color.white,
+            billboard = True
         )
     
         self.username_text = "Guest"
