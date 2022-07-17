@@ -1094,28 +1094,37 @@ class MainMenu(Entity):
             self.car.surfinbird.disable()
 
         def muscle_car():
-            self.car.muscle_car()
-            self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
-            self.car.viking_helmet.disable()
-            self.car.duck.disable()
-            self.car.banana.disable()
-            self.car.surfinbird.disable()
+            if self.car.muscle_unlocked:
+                self.car.muscle_car()
+                self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                self.car.viking_helmet.disable()
+                self.car.duck.disable()
+                self.car.banana.disable()
+                self.car.surfinbird.disable()
+            else:
+                self.garage_locked_text("Get Less Than 58s on Lake Track")
 
         def limo():
-            self.car.limo()
-            self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
-            self.car.viking_helmet.disable()
-            self.car.duck.disable()
-            self.car.banana.disable()
-            self.car.surfinbird.disable()
+            if self.car.limo_unlocked:
+                self.car.limo()
+                self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                self.car.viking_helmet.disable()
+                self.car.duck.disable()
+                self.car.banana.disable()
+                self.car.surfinbird.disable()
+            else:
+                self.garage_locked_text("Get Less Than 19s on Grass Track")
 
         def lorry():
-            self.car.lorry()
-            self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
-            self.car.viking_helmet.disable()
-            self.car.duck.disable()
-            self.car.banana.disable()
-            self.car.surfinbird.disable()
+            if self.car.lorry_unlocked:
+                self.car.lorry()
+                self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                self.car.viking_helmet.disable()
+                self.car.duck.disable()
+                self.car.banana.disable()
+                self.car.surfinbird.disable()
+            else:
+                self.garage_locked_text("Get Less Than 27s on Forest Track")
 
         def sports_hover():
             self.garage_name_text.enable()
@@ -1138,35 +1147,99 @@ class MainMenu(Entity):
             Changes the car color to the selected color after a small animation.
             """
             if colour == "red":
+                if self.car.car_type == "muscle":
+                    if not self.car.muscle_red_unlocked:
+                        self.garage_locked_text("Get Less Than 17s on Savannah Track with the Muscle Car")
+                        return
+                elif self.car.car_type == "limo":
+                    if not self.car.limo_red_unlocked:
+                        self.garage_locked_text("Get Less Than 18s on Sand Track with the Limo")
+                        return
+                elif self.car.car_type == "lorry":
+                    if not self.car.lorry_red_unlocked:
+                        self.garage_locked_text("Get Less Than 20s on Sand Track with the Lorry")
+                        return
                 car.texture = f"{self.car.car_type}-red.png"
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             if colour == "blue":
+                if self.car.car_type == "muscle":
+                    if not self.car.muscle_blue_unlocked:
+                        self.garage_locked_text("Get Less Than 52s on Lake Track with the Muscle Car")
+                        return
+                elif self.car.car_type == "limo":
+                    if not self.car.limo_blue_unlocked:
+                        self.garage_locked_text("Get Less Than 60s on Lake Track with the Limo")
+                        return
+                elif self.car.car_type == "lorry":
+                    if not self.car.lorry_blue_unlocked:
+                        self.garage_locked_text("Get Less Than 70s on Lake Track with the Lorry")
+                        return
                 car.texture = f"{self.car.car_type}-blue.png"
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             if colour == "green":
-                if car.green_unlocked:
-                    car.texture = f"{self.car.car_type}-green.png"
-                    car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
-                else:
-                    self.garage_locked_text("Get Less Than 21s on Grass Track")
+                if self.car.car_type == "sports":
+                    if not self.car.sports_green_unlocked:
+                        self.garage_locked_text("Get Less Than 22s on Grass Track with the Sports Car")
+                        return
+                elif self.car.car_type == "muscle":
+                    if not self.car.muscle_green_unlocked:
+                        self.garage_locked_text("Get Less Than 20s on Grass Track with the Muscle Car")
+                        return
+                elif self.car.car_type == "limo":
+                    if not self.car.limo_green_unlocked:
+                        self.garage_locked_text("Get Less Than 27s on Forest Track with the Limo")
+                        return
+                elif self.car.car_type == "lorry":
+                    if not self.car.lorry_green_unlocked:
+                        self.garage_locked_text("Get Less Than 20s on Grass Track with the Lorry")
+                        return
+                car.texture = f"{self.car.car_type}-green.png"
+                car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             if colour == "orange":
-                if car.orange_unlocked:
-                    car.texture = f"{self.car.car_type}-orange.png"
-                    car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
-                else:
-                    self.garage_locked_text("Get Less Than 17s on Sand Track")
+                if self.car.car_type == "sports":
+                    if not self.car.sports_orange_unlocked:
+                        self.garage_locked_text("Get Less Than 18s on Savannah Track with the Sports Car")
+                        return
+                elif self.car.car_type == "limo":
+                    if not self.car.limo_orange_unlocked:
+                        self.garage_locked_text("Get Less Than 18s on Savannah Track with the Limo")
+                        return
+                elif self.car.car_type == "lorry":
+                    if not self.car.lorry_orange_unlocked:
+                        self.garage_locked_text("Get Less Than 19s on Savannah Track with the Lorry")
+                        return
+                car.texture = f"{self.car.car_type}-orange.png"
+                car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             if colour == "black":
-                if car.black_unlocked:
-                    car.texture = f"{self.car.car_type}-black.png"
-                    car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
-                else:
-                    self.garage_locked_text("Get Less Than 17s on Savannah Track")
+                if self.car.car_type == "sports":
+                    if not self.car.sports_black_unlocked:
+                        self.garage_locked_text("Get Less Than 27s on Forest Track with the Sports Car")
+                        return
+                elif self.car.car_type == "muscle":
+                    if not self.car.muscle_black_unlocked:
+                        self.garage_locked_text("Get Less Than 26s on Forest Track with the Muscle Car")
+                        return
+                elif self.car.car_type == "lorry":
+                    if not self.car.lorry_black_unlocked:
+                        self.garage_locked_text("Get Less Than 38s on Snow Track with the Lorry")
+                        return
+                car.texture = f"{self.car.car_type}-black.png"
+                car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             if colour == "white":
-                if car.white_unlocked:
-                    car.texture = f"{self.car.car_type}-white.png"
-                    car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
-                else:
-                    self.garage_locked_text("Get Less Than 35s on Snow Track")
+                if self.car.car_type == "sports":
+                    if not self.car.sports_white_unlocked:
+                        self.garage_locked_text("Get Less Than 37s on Snow Track with the Sports Car")
+                        return
+                elif self.car.car_type == "muscle":
+                    if not self.car.muscle_white_unlocked:
+                        self.garage_locked_text("Get Less Than 27s on Forest Track with the Muscle Car")
+                        return
+                elif self.car.car_type == "limo":
+                    if not self.car.limo_white_unlocked:
+                        self.garage_locked_text("Get Less Than 36s on Snow Track with the Limo")
+                        return
+                car.texture = f"{self.car.car_type}-white.png"
+                car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
 
         def viking_helmet():
             if self.car.viking_helmet_unlocked:

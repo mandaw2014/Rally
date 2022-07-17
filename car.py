@@ -652,12 +652,38 @@ class Car(Entity):
         self.beat_mandaw_savannah_track = self.unlocked["beat_mandaw"]["savannah_track"]
         self.beat_mandaw_lake_track = self.unlocked["beat_mandaw"]["lake_track"]
 
-        self.red_unlocked = self.unlocked["textures"]["red"]
-        self.blue_unlocked = self.unlocked["textures"]["blue"]
-        self.green_unlocked = self.unlocked["textures"]["green"]
-        self.orange_unlocked = self.unlocked["textures"]["orange"]
-        self.black_unlocked = self.unlocked["textures"]["black"]
-        self.white_unlocked = self.unlocked["textures"]["white"]
+        self.sports_unlocked = self.unlocked["cars"]["sports_car"]
+        self.muscle_unlocked = self.unlocked["cars"]["muscle_car"]
+        self.limo_unlocked = self.unlocked["cars"]["limo"]
+        self.lorry_unlocked = self.unlocked["cars"]["lorry"]
+
+        self.sports_red_unlocked = self.unlocked["textures"]["sports_car"]["red"]
+        self.sports_blue_unlocked = self.unlocked["textures"]["sports_car"]["blue"]
+        self.sports_green_unlocked = self.unlocked["textures"]["sports_car"]["green"]
+        self.sports_orange_unlocked = self.unlocked["textures"]["sports_car"]["orange"]
+        self.sports_black_unlocked = self.unlocked["textures"]["sports_car"]["black"]
+        self.sports_white_unlocked = self.unlocked["textures"]["sports_car"]["white"]
+
+        self.muscle_red_unlocked = self.unlocked["textures"]["muscle_car"]["red"]
+        self.muscle_blue_unlocked = self.unlocked["textures"]["muscle_car"]["blue"]
+        self.muscle_green_unlocked = self.unlocked["textures"]["muscle_car"]["green"]
+        self.muscle_orange_unlocked = self.unlocked["textures"]["muscle_car"]["orange"]
+        self.muscle_black_unlocked = self.unlocked["textures"]["muscle_car"]["black"]
+        self.muscle_white_unlocked = self.unlocked["textures"]["muscle_car"]["white"]
+
+        self.limo_red_unlocked = self.unlocked["textures"]["limo"]["red"]
+        self.limo_blue_unlocked = self.unlocked["textures"]["limo"]["blue"]
+        self.limo_green_unlocked = self.unlocked["textures"]["limo"]["green"]
+        self.limo_orange_unlocked = self.unlocked["textures"]["limo"]["orange"]
+        self.limo_black_unlocked = self.unlocked["textures"]["limo"]["black"]
+        self.limo_white_unlocked = self.unlocked["textures"]["limo"]["white"]
+
+        self.lorry_red_unlocked = self.unlocked["textures"]["lorry"]["red"]
+        self.lorry_blue_unlocked = self.unlocked["textures"]["lorry"]["blue"]
+        self.lorry_green_unlocked = self.unlocked["textures"]["lorry"]["green"]
+        self.lorry_orange_unlocked = self.unlocked["textures"]["lorry"]["orange"]
+        self.lorry_black_unlocked = self.unlocked["textures"]["lorry"]["black"]
+        self.lorry_white_unlocked = self.unlocked["textures"]["lorry"]["white"]
 
         self.viking_helmet_unlocked = self.unlocked["cosmetics"]["viking_helmet"]
         self.duck_unlocked = self.unlocked["cosmetics"]["duck"]
@@ -685,13 +711,45 @@ class Car(Entity):
                 "savannah_track": self.beat_mandaw_savannah_track,
                 "lake_track": self.beat_mandaw_lake_track
             },
+            "cars": {
+                "sports_car": self.sports_unlocked,
+                "muscle_car": self.muscle_unlocked,
+                "limo": self.limo_unlocked,
+                "lorry": self.lorry_unlocked,
+            },
             "textures": {
-                "red": self.red_unlocked,
-                "blue": self.blue_unlocked,
-                "green": self.green_unlocked,
-                "orange": self.orange_unlocked,
-                "black": self.black_unlocked,
-                "white": self.white_unlocked
+                "sports_car": {
+                    "red": self.sports_red_unlocked,
+                    "blue": self.sports_blue_unlocked,
+                    "green": self.sports_green_unlocked,
+                    "orange": self.sports_orange_unlocked,
+                    "black": self.sports_black_unlocked,
+                    "white": self.sports_white_unlocked
+                },
+                "muscle_car": {
+                    "red": self.muscle_red_unlocked,
+                    "blue": self.muscle_blue_unlocked,
+                    "green": self.muscle_green_unlocked,
+                    "orange": self.muscle_orange_unlocked,
+                    "black": self.muscle_black_unlocked,
+                    "white": self.muscle_white_unlocked
+                },
+                "limo": {
+                    "red": self.limo_red_unlocked,
+                    "blue": self.limo_blue_unlocked,
+                    "green": self.limo_green_unlocked,
+                    "orange": self.limo_orange_unlocked,
+                    "black": self.limo_black_unlocked,
+                    "white": self.limo_white_unlocked
+                },
+                "lorry": {
+                    "red": self.lorry_red_unlocked,
+                    "blue": self.lorry_blue_unlocked,
+                    "green": self.lorry_green_unlocked,
+                    "orange": self.lorry_orange_unlocked,
+                    "black": self.lorry_black_unlocked,
+                    "white": self.lorry_white_unlocked
+                }
             },
             "cosmetics": {
                 "viking_helmet": self.viking_helmet_unlocked,

@@ -15,13 +15,45 @@
         "savannah_track": false,
         "lake_track": false
     },
+    "cars": {
+        "sports_car": true,
+        "muscle_car": false,
+        "limo": false,
+        "lorry": false
+    },
     "textures": {
-        "red": true,
-        "blue": true,
-        "green": false,
-        "orange": false,
-        "black": false,
-        "white": false
+        "sports_car": {
+            "red": true,
+            "blue": true,
+            "green": false,
+            "orange": false,
+            "black": false,
+            "white": false
+        },
+        "muscle_car": {
+            "red": false,
+            "blue": false,
+            "green": false,
+            "orange": true,
+            "black": false,
+            "white": false
+        },
+        "limo": {
+            "red": false,
+            "blue": false,
+            "green": false,
+            "orange": false,
+            "black": true,
+            "white": false
+        },
+        "lorry": {
+            "red": false,
+            "blue": false,
+            "green": false,
+            "orange": false,
+            "black": false,
+            "white": true
+        }
     },
     "cosmetics": {
         "viking_helmet": false,
