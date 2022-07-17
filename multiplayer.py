@@ -16,6 +16,7 @@ class Multiplayer(Entity):
             self.players_target_name = {}
             self.players_target_pos = {}
             self.players_target_rot = {}
+            self.players_target_model = {}
             self.players_target_tex = {}
             self.players_target_score = {}
 
@@ -34,7 +35,8 @@ class Multiplayer(Entity):
                 if variable_type == "player":
                     self.players_target_pos[variable_name] = Vec3(-80, -30, 15)
                     self.players_target_rot[variable_name] = Vec3(0, 90, 0)
-                    self.players_target_tex[variable_name] = "./assets/garage/car-red.png"
+                    self.players_target_model[variable_name] = "./assets/cars/sports-car.obj"
+                    self.players_target_tex[variable_name] = "./assets/cars/garage/sports-car/sports-red.png"
                     self.players_target_name[variable_name] = "Guest"
                     self.players_target_score[variable_name] = 0.0
                     self.players[variable_name] = CarRepresentation(self.car, (-80, -30, 15), (0, 90, 0))
@@ -48,6 +50,7 @@ class Multiplayer(Entity):
             def onReplicatedVariableUpdated(variable):
                 self.players_target_pos[variable.name] = variable.content["position"]
                 self.players_target_rot[variable.name] = variable.content["rotation"]
+                self.players_target_model[variable.name] = variable.content["model"]
                 self.players_target_tex[variable.name] = variable.content["texture"]
                 self.players_target_name[variable.name] = variable.content["username"]
                 self.players_target_score[variable.name] = variable.content["highscore"]
@@ -65,6 +68,7 @@ class Multiplayer(Entity):
         for p in self.players:
             self.players[p].position += (Vec3(self.players_target_pos[p]) - self.players[p].position) / 25
             self.players[p].rotation += (Vec3(self.players_target_rot[p]) - self.players[p].rotation) / 25
+            self.players[p].model = f"{self.players_target_model[p]}"
             self.players[p].texture = f"{self.players_target_tex[p]}"
             self.players[p].text_object.text = f"{self.players_target_name[p]}"
             self.players[p].highscore = f"{self.players_target_score[p]}"

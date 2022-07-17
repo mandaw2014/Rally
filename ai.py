@@ -7,8 +7,8 @@ sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 class AICar(Entity):
     def __init__(self, car, ai_list, sand_track, grass_track, snow_track, forest_track, savannah_track, lake_track):
         super().__init__(
-            model = "car.obj",
-            texture = "car-red.png",
+            model = "sports-car.obj",
+            texture = "sports-red.png",
             collider = "box",
             position = (0, 0, 0),
             rotation = (0, 0, 0),
@@ -18,8 +18,10 @@ class AICar(Entity):
         self.rotation_parent = Entity()
 
         self.car = car
+        self.car_type = "sports"
 
-        # Sets the texture of the car randomly
+        # Sets the car and texture of the car randomly
+        self.set_random_car()
         self.set_random_texture()
 
         # Values
@@ -167,23 +169,57 @@ class AICar(Entity):
 
         self.disable()
 
+    def sports_car(self):
+        self.model = "sports-car.obj"
+        self.texture = "sports-red.png"
+        self.car_type = "sports"
+    
+    def muscle_car(self):
+        self.model = "muscle-car.obj"
+        self.texture = "muscle-orange.png"
+        self.car_type = "muscle"
+
+    def limo(self):
+        self.model = "limousine.obj"
+        self.texture = "limo-black.png"
+        self.car_type = "limo"
+
+    def lorry(self):
+        self.model = "lorry.obj"
+        self.texture = "lorry-white.png"
+        self.car_type = "lorry"
+
+    def set_random_car(self):
+        """
+        Sets a random car
+        """
+        i = random.randint(0, 3)
+        if i == 0:
+            self.sports_car()
+        elif i == 1:
+            self.muscle_car()
+        elif i == 2:
+            self.limo()
+        elif i == 3:
+            self.lorry()
+
     def set_random_texture(self):
         """
         Sets a random car colour
         """
         i = random.randint(0, 5)
         if i == 0:
-            self.texture = "car-red.png"
+            self.texture = f"{self.car_type}-red.png"
         elif i == 1:
-            self.texture = "car-blue.png"
+            self.texture = f"{self.car_type}-blue.png"
         elif i == 2:
-            self.texture = "car-orange.png"
+            self.texture = f"{self.car_type}-orange.png"
         elif i == 3:
-            self.texture = "car-green.png"
+            self.texture = f"{self.car_type}-green.png"
         elif i == 4:
-            self.texture = "car-white.png"
+            self.texture = f"{self.car_type}-white.png"
         elif i == 5:
-            self.texture = "car-black.png"
+            self.texture = f"{self.car_type}-black.png"
 
     def same_pos(self):
         """
@@ -217,7 +253,7 @@ class AICar(Entity):
         else:
             self.number_of_particles -= 2 * time.dt
 
-        if self.sand_track.enabled or self.grass_track.enabled:
+        if self.sand_track.enabled or self.grass_track.enabled or self.savannah_track.enabled or self.lake_track.enabled:
             self.difficulty = 60
         elif self.snow_track.enabled or self.forest_track.enabled:
             self.difficulty = 40
@@ -236,7 +272,7 @@ class AICar(Entity):
         movementY = self.velocity_y * time.dt
 
         # Main raycast for collision
-        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), ignore = [self, self.sand_track.finish_line, self.sand_track.wall_trigger, self.grass_track.finish_line, self.grass_track.wall_trigger, self.grass_track.wall_trigger_ramp, self.snow_track.finish_line, self.snow_track.wall_trigger, self.snow_track.wall_trigger_end, self.forest_track.finish_line, self.forest_track.wall_trigger, self.savannah_track.finish_line, self.savannah_track.wall_trigger, ])
+        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), ignore = [self, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, ])
 
         if y_ray.distance <= 4:
             r = random.randint(0, 1)
