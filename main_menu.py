@@ -68,8 +68,7 @@ class MainMenu(Entity):
         # Start Menu
 
         self.car.position = (-80, -42, 18.8)
-        self.car.rotation = (0, 90, 0)
-        self.car.enable()
+        self.car.visible = True
         self.grass_track.enable()
 
         def singleplayer():
@@ -78,9 +77,7 @@ class MainMenu(Entity):
             self.main_menu.enable()
             grass_track.enable()
             self.car.position = (0, 0, 4)
-            camera.rotation = (35, -20, 0)
-            self.car.camera_follow.offset = self.car.camera_angle
-            self.car.disable()
+            self.car.visible = False
             for track in self.tracks:
                 for i in track.track:
                     i.disable()
@@ -90,7 +87,7 @@ class MainMenu(Entity):
         def multiplayer():
             self.start_menu.disable()
             self.host_menu.enable()
-            self.car.enable()
+            self.car.visible = True
             self.car.position = (-3, -44.5, 92)
             grass_track.disable()
             snow_track.enable()
@@ -126,7 +123,7 @@ class MainMenu(Entity):
                 self.car.server.start_server = True
                 self.host_menu.disable()
                 self.created_server_menu.enable()
-                self.car.enable()
+                self.car.visible = True
                 self.car.position = (-63, -40, -7)
                 self.car.rotation = (0, 90, 0)
                 snow_track.disable()
@@ -141,7 +138,7 @@ class MainMenu(Entity):
         def join_server_func():
             self.host_menu.disable()
             self.server_menu.enable()
-            self.car.enable()
+            self.car.visible = True
             self.car.position = (-105, -50, -59)
             snow_track.disable()
             sand_track.enable()
@@ -156,7 +153,7 @@ class MainMenu(Entity):
             self.start_menu.enable()
             self.car.position = (-80, -42, 18.8)
             self.car.rotation = (0, 90, 0)
-            self.car.enable()
+            self.car.visible = True
             self.grass_track.enable()
             self.snow_track.disable()
             for track in self.tracks:
@@ -185,9 +182,9 @@ class MainMenu(Entity):
             self.created_server_menu.disable()
             self.main_menu.enable()
             self.car.position = (0, 0, 4)
+            self.car.camera_offset = (20, 40, -50)
             camera.rotation = (35, -20, 0)
-            self.car.camera_follow.offset = self.car.camera_angle
-            self.car.disable()
+            self.car.visible = False
             self.sand_track.disable()
             self.grass_track.enable()
             for track in self.tracks:
@@ -218,9 +215,9 @@ class MainMenu(Entity):
                 grass_track.enable()
                 sand_track.disable()
                 self.car.position = (0, 0, 4)
+                self.car.camera_offset = (20, 40, -50)
                 camera.rotation = (35, -20, 0)
-                self.car.camera_follow.offset = self.car.camera_angle
-                self.car.disable()
+                self.car.visible = False
                 self.car.connected = False
                 for track in self.tracks:
                     for i in track.track:
@@ -231,7 +228,7 @@ class MainMenu(Entity):
         def back_server():
             self.host_menu.enable()
             self.server_menu.disable()
-            self.car.enable()
+            self.car.visible = True
             self.car.position = (-3, -44.5, 92)
             sand_track.disable()
             snow_track.enable()
@@ -255,7 +252,7 @@ class MainMenu(Entity):
         def back_singleplayer():
             self.car.position = (-80, -42, 18.8)
             self.car.rotation = (0, 90, 0)
-            self.car.enable()
+            self.car.visible = True
             self.grass_track.enable()
             self.start_menu.enable()
             self.main_menu.disable()
@@ -312,7 +309,7 @@ class MainMenu(Entity):
 
         def sand_track_func():
             if sand_track.unlocked:
-                self.car.enable()
+                self.car.visible = True
                 mouse.locked = True
                 self.maps_menu.disable()
                 self.car.position = (-63, -30, -7)
@@ -350,7 +347,7 @@ class MainMenu(Entity):
 
         def grass_track_func():
             if grass_track.unlocked:
-                self.car.enable()
+                self.car.visible = True
                 mouse.locked = True
                 self.maps_menu.disable()
                 self.car.position = (-80, -30, 15)
@@ -388,7 +385,7 @@ class MainMenu(Entity):
 
         def snow_track_func():
             if snow_track.unlocked:
-                self.car.enable()
+                self.car.visible = True
                 mouse.locked = True
                 self.maps_menu.disable()
                 self.car.position = (-5, -35, 90)
@@ -426,7 +423,7 @@ class MainMenu(Entity):
 
         def forest_track_func():
             if forest_track.unlocked:
-                self.car.enable()
+                self.car.visible = True
                 mouse.locked = True
                 self.maps_menu.disable()
                 self.car.position = (12, -35, 73)
@@ -464,7 +461,7 @@ class MainMenu(Entity):
 
         def savannah_track_func():
             if savannah_track.unlocked:
-                self.car.enable()
+                self.car.visible = True
                 mouse.locked = True
                 self.maps_menu.disable()
                 self.car.position = (-12, -35, 40)
@@ -502,7 +499,7 @@ class MainMenu(Entity):
             
         def lake_track_func():
             if lake_track.unlocked:
-                self.car.enable()
+                self.car.visible = True
                 mouse.locked = True
                 self.maps_menu.disable()
                 self.car.position = (-121, -40, 158)
@@ -794,6 +791,20 @@ class MainMenu(Entity):
 
         # Gameplay Menu
 
+        def camera_angle():
+            if self.car.camera_angle == "side":
+                self.car.camera_angle = "top"
+                camera_angle_button.text = "Camera Angle: Top"
+            elif self.car.camera_angle == "top":
+                self.car.camera_angle = "behind"
+                camera_angle_button.text = "Camera Angle: Behind"
+            elif self.car.camera_angle == "behind":
+                self.car.camera_angle = "first-person"
+                camera_angle_button.text = "Camera Angle: First-Person"
+            elif self.car.camera_angle == "first-person":
+                self.car.camera_angle = "side"
+                camera_angle_button.text = "Camera Angle: Side"
+
         def camera_shake():
             self.car.camera_shake_option = not self.car.camera_shake_option
             if self.car.camera_shake_option:
@@ -805,10 +816,12 @@ class MainMenu(Entity):
             self.gameplay_menu.disable()
             self.settings_menu.enable()
 
-        camera_shake_button = Button("Camera Shake: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.gameplay_menu)
-        reset_highsore_button = Button(text = "Reset Highscore", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.gameplay_menu)
-        back_button_gameplay = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.gameplay_menu)
+        camera_angle_button = Button("Camera Angle: Side", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.gameplay_menu)
+        camera_shake_button = Button("Camera Shake: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.gameplay_menu)
+        reset_highsore_button = Button(text = "Reset Highscore", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.gameplay_menu)
+        back_button_gameplay = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.24, parent = self.gameplay_menu)
 
+        camera_angle_button.on_click = Func(camera_angle)
         camera_shake_button.on_click = Func(camera_shake)
         reset_highsore_button.on_click = Func(self.car.reset_highscore)
         back_button_gameplay.on_click = Func(back_gameplay)
@@ -1000,7 +1013,7 @@ class MainMenu(Entity):
 
         def main_menu():
             self.car.position = (0, 0, 4)
-            self.car.disable()
+            self.car.visible = False
             self.car.rotation = (0, 65, 0)
             self.car.speed = 0
             self.car.velocity_y = 0
@@ -1041,9 +1054,9 @@ class MainMenu(Entity):
             self.garage_menu.disable()
             self.main_menu.enable()
             self.car.position = (0, 0, 4)
+            self.car.camera_offset = (20, 40, -50)
             camera.rotation = (35, -20, 0)
-            self.car.camera_follow.offset = self.car.camera_angle
-            self.car.disable()
+            self.car.visible = False
             grass_track.enable()
             sand_track.disable()
             for track in self.tracks:
@@ -1060,7 +1073,7 @@ class MainMenu(Entity):
             self.cars_menu.enable()
             self.cosmetics_menu.disable()
             self.colours_menu.disable()
-            self.car.enable()
+            self.car.visible = True
             self.car.position = (-105, -50, -59)
             grass_track.disable()
             sand_track.enable()
@@ -1409,6 +1422,11 @@ class MainMenu(Entity):
         invoke(self.garage_unlocked_text.disable, delay = 1)
 
     def update(self):
+        if not self.start_menu.enabled and not self.main_menu.enabled and not self.settings_menu.enabled and not self.race_menu.enabled and not self.maps_menu.enabled and not self.settings_menu.enabled and not self.garage_menu.enabled and not self.controls_menu.enabled and not self.host_menu.enabled and not self.server_menu.enabled and not self.created_server_menu.enabled and not self.video_menu.enabled and not self.gameplay_menu.enabled:
+            self.car.camera_follow = True
+        else:
+            self.car.camera_follow = False
+
         # AI Slider
         if self.car.multiplayer_update == False:
             if self.ai_slider.value == 0: 
@@ -1435,15 +1453,21 @@ class MainMenu(Entity):
             else:
                 self.car.rotation_y = mouse.x * 200
 
+            camera.position = lerp(camera.position, self.car.position + self.car.camera_offset, time.dt * self.car.camera_speed)
+
             if self.start_menu.enabled:
-                self.car.camera_follow.offset = (-25, 4, 0)
+                self.car.camera_offset = (-25, 4, 0)
                 camera.rotation = (5, 90, 0)
             elif self.host_menu.enabled:
-                self.car.camera_follow.offset = (-25, 8, 0)
+                self.car.camera_offset = (-25, 8, 0)
                 camera.rotation = (14, 90, 0)
             else:
-                self.car.camera_follow.offset = (-25, 6, 5)
+                self.car.camera_offset = (-25, 6, 5)
                 camera.rotation = (10, 90, 0)
+        else:
+            if not self.car.camera_follow:
+                camera.rotation = (35, -20, 0)
+                camera.position = lerp(camera.position, self.car.position + (20, 40, -50), time.dt * self.car.camera_speed)
 
         # If the host menu or server menu is enabled, save username
         if self.host_menu.enabled or self.server_menu.enabled or self.created_server_menu.enabled:
@@ -1489,7 +1513,6 @@ class MainMenu(Entity):
                 self.car.timer.disable()
              
             self.car.highscore.enable()
-        
         else:
             self.car.timer.disable()
             self.car.reset_count_timer.disable()

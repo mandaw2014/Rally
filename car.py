@@ -15,10 +15,6 @@ class Car(Entity):
             position = position,
             rotation = rotation,
         )
-        
-        # Camera's position
-        camera.position = self.position + (20, 40, -50)
-        camera.rotation = (35, -20, 0)
 
         # Rotation parent
         self.rotation_parent = Entity()
@@ -43,10 +39,12 @@ class Car(Entity):
         self.min_drift_speed = 20
         self.pivot_rotation_distance = 1
 
-        # Smoothfollow
-        self.camera_angle = (20, 40, -50)
-        self.camera_follow = SmoothFollow(target = self, offset = self.camera_angle, speed = self.camera_speed)
-        camera.add_script(self.camera_follow)
+        # Camera Follow
+        self.camera_angle = "side"
+        self.camera_offset = (0, 60, -70)
+        self.camera_follow = False
+        self.c_pivot = Entity()
+        self.camera_pivot = Entity(parent = self.c_pivot, position = self.camera_offset)
 
         # Pivot for drifting
         self.pivot = Entity()
@@ -278,9 +276,27 @@ class Car(Entity):
             self.username_text = username.read()
 
         self.pivot.position = self.position
+        self.c_pivot.position = self.position
+        self.c_pivot.rotation_y = self.rotation_y
+        self.camera_pivot.position = self.camera_offset
 
-        camera.rotation = (35, -20, 0)
-        self.camera_follow.offset = self.camera_angle
+        if self.camera_follow:
+            if self.camera_angle == "side":
+                camera.rotation = (35, -20, 0)
+                camera.world_position = lerp(camera.world_position, self.world_position + (20, 40, -50), time.dt * self.camera_speed)
+            elif self.camera_angle == "top":
+                self.camera_offset = (0, 60, -70)
+                camera.rotation_x = 35
+                camera.world_position = lerp(camera.world_position, self.camera_pivot.world_position, time.dt * 4)
+                camera.world_rotation_y = lerp(camera.world_rotation_y, self.world_rotation_y, time.dt * 4)
+            elif self.camera_angle == "behind":
+                self.camera_offset = (0, 10, -30)
+                camera.rotation_x = 12
+                camera.world_position = lerp(camera.world_position, self.camera_pivot.world_position, time.dt * self.camera_speed)
+                camera.world_rotation_y = lerp(camera.world_rotation_y, self.world_rotation_y, time.dt * self.camera_speed)
+            elif self.camera_angle == "first-person":
+                camera.world_position = lerp(camera.world_position, self.world_position + (0.5, 0, 0), time.dt * 30)
+                camera.world_rotation = lerp(camera.world_rotation, self.world_rotation, time.dt * 30)
 
         # The y rotation distance between the car and the pivot
         self.pivot_rotation_distance = (self.rotation_y - self.pivot.rotation_y)
@@ -427,7 +443,7 @@ class Car(Entity):
             self.shake_amount = 0.03
 
         # If the camera can shake and camera shake is on, then shake the camera
-        if self.can_shake and self.camera_shake_option:
+        if self.can_shake and self.camera_shake_option and self.camera_angle != "first-person":
             self.shake_camera()
 
         # Rotation
@@ -438,32 +454,33 @@ class Car(Entity):
         self.rotation_z = lerp(self.rotation_z, self.rotation_parent.rotation_z, 20 * time.dt)
 
         # Check if car is hitting the ground
-        if y_ray.distance <= self.scale_y * 1.7 + abs(movementY):
-            self.velocity_y = 0
-            # Check if hitting a wall or steep slope
-            if y_ray.world_normal.y > 0.7 and y_ray.world_point.y - self.world_y < 0.5:
-                # Set the y value to the ground's y value
-                self.y = y_ray.world_point.y + 1.4
-                self.hitting_wall = False
-            else:
-                # Car is hitting a wall
-                self.hitting_wall = True
+        if self.visible:
+            if y_ray.distance <= self.scale_y * 1.7 + abs(movementY):
+                self.velocity_y = 0
+                # Check if hitting a wall or steep slope
+                if y_ray.world_normal.y > 0.7 and y_ray.world_point.y - self.world_y < 0.5:
+                    # Set the y value to the ground's y value
+                    self.y = y_ray.world_point.y + 1.4
+                    self.hitting_wall = False
+                else:
+                    # Car is hitting a wall
+                    self.hitting_wall = True
 
-            if self.copy_normals:
-                self.ground_normal = self.position + y_ray.world_normal
-            else:
-                self.ground_normal = self.position + (0, 180, 0)
+                if self.copy_normals:
+                    self.ground_normal = self.position + y_ray.world_normal
+                else:
+                    self.ground_normal = self.position + (0, 180, 0)
 
-            # Rotates the car according to the grounds normals
-            if not self.hitting_wall:
-                self.rotation_parent.look_at(self.ground_normal, axis = "up")
-                self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
+                # Rotates the car according to the grounds normals
+                if not self.hitting_wall:
+                    self.rotation_parent.look_at(self.ground_normal, axis = "up")
+                    self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
+                else:
+                    self.rotation_parent.rotation = self.rotation
             else:
+                self.y += movementY * 50 * time.dt
+                self.velocity_y -= 50 * time.dt
                 self.rotation_parent.rotation = self.rotation
-        else:
-            self.y += movementY * 50 * time.dt
-            self.velocity_y -= 50 * time.dt
-            self.rotation_parent.rotation = self.rotation
 
         # Movement
         movementX = self.pivot.forward[0] * self.speed * time.dt

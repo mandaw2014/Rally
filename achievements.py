@@ -145,7 +145,7 @@ class RallyAchievements():
                 if self.car.enabled and self.car.last_count != 0:
                     if self.snow_track.enabled and self.snow_track.unlocked:
                         if self.car.last_count <= 35:
-                            # Unlock Plains Track
+                            # Unlock Forest Track
                             self.forest_track.unlocked = True
                             self.car.save_unlocked()
                         return self.car.last_count <= 35

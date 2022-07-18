@@ -135,9 +135,10 @@ main_menu = MainMenu(car, ai_list, sand_track, grass_track, snow_track, forest_t
 achievements = RallyAchievements(car, main_menu, sand_track, grass_track, snow_track, forest_track, savannah_track, lake_track)
 
 # Lighting + shadows
-render.setShaderAuto()
 sun = SunLight(direction = (-0.7, -0.9, 0.5), resolution = 2048, car = car)
 ambient = AmbientLight(color = Vec4(0.5, 0.55, 0.66, 0) * 0.75)
+
+render.setShaderAuto()
 
 # Sky
 Sky(texture = "sky")
