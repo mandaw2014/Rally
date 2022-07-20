@@ -121,7 +121,7 @@ class Car(Entity):
         self.camera_shake_option = True
 
         # Get highscore from json file
-        path = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.dirname(sys.argv[0])
         self.highscore_path = os.path.join(path, "./highscore/highscore.json")
         
         try:

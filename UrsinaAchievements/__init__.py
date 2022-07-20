@@ -8,14 +8,15 @@ import json
 import os
 from direct.stdpy import thread
 
-_path = os.path.dirname(os.path.abspath(__file__))
+_path = os.path.dirname(sys.argv[0])
+achievements_json = os.path.join(_path, "./UrsinaAchievements/achievements.json")
 
 _achievements_list = []
 try:
-	with open(f"{_path}/achievements.json", "r", encoding="utf-8") as save_file:
+	with open(achievements_json, "r") as save_file:
 		_achievements_got = json.load(save_file)["achievements_got_names"].copy()
 except FileNotFoundError:
-	with open(f"{_path}/achievements.json", "w", encoding="utf-8") as save_file:
+	with open(achievements_json, "w") as save_file:
 		_achievements_got = []
 		json.dump({"achievements_got_names": []}, save_file, indent=4)
 
@@ -37,7 +38,7 @@ def create_achievement(name:str, unlock_condition, icon:str=None, ringtone:str="
 
 
 def _save_achievements():
-	with open(f"{_path}/achievements.json", "w", encoding="utf-8") as save_file:
+	with open(achievements_json, "w") as save_file:
 		json.dump({"achievements_got_names": _achievements_got.copy()}, save_file, indent=2)
 
 
