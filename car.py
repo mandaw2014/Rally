@@ -71,6 +71,7 @@ class Car(Entity):
         self.lake_track = None
 
         # Cosmetics
+        self.current_cosmetic = "none"
         self.viking_helmet = Entity(model = "viking_helmet.obj", texture = "viking_helmet.png", parent = self)
         self.duck = Entity(model = "duck.obj", parent = self)
         self.banana = Entity(model = "banana.obj", parent = self)
@@ -819,14 +820,42 @@ class CarRepresentation(Entity):
         super().__init__(
             parent = scene,
             model = "sports-car.obj",
-            texture = "car-red.png",
+            texture = "sports-red.png",
             position = position,
             rotation = rotation,
             scale = (1, 1, 1)
         )
 
+        self.model_path = str(self.model).replace("render/scene/car_representation/", "")
+        
+        self.viking_helmet = Entity(model = "viking_helmet.obj", texture = "viking_helmet.png", parent = self)
+        self.duck = Entity(model = "duck.obj", parent = self)
+        self.banana = Entity(model = "banana.obj", parent = self)
+        self.surfinbird = Entity(model = "surfinbird.obj", texture = "surfinbird.png", parent = self)
+        self.surfboard = Entity(model = "surfboard.obj", texture = "surfboard.png", parent = self.surfinbird)
+        self.viking_helmet.disable()
+        self.duck.disable()
+        self.banana.disable()
+        self.surfinbird.disable()
+
+        self.cosmetics = [self.viking_helmet, self.duck, self.banana, self.surfinbird]
+
         self.text_object = None
         self.highscore = 0.0
+
+        invoke(self.update_representation, delay = 5)
+
+    def update_representation(self):
+        for cosmetic in self.cosmetics:
+            if cosmetic.enabled:
+                if self.model_path == "lorry.obj":
+                    cosmetic.y = 1.5
+                elif self.model_path == "limo.obj":
+                    cosmetic.y = 0.1
+                elif self.model_path == "sports-car.obj" or self.model_path == "muscle-car.obj":
+                    cosmetic.y = 0
+
+        invoke(self.update_representation, delay = 5)
 
 # Username shown above the car
 class CarUsername(Text):

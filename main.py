@@ -183,9 +183,10 @@ def input(key):
     if car.multiplayer_update:
         multiplayer.client.send_message("MyPosition", tuple(car.position))
         multiplayer.client.send_message("MyRotation", tuple(car.rotation))
-        multiplayer.client.send_message("MyModel", str(car.model_path))
         multiplayer.client.send_message("MyTexture", str(car.texture))
         multiplayer.client.send_message("MyUsername", str(car.username_text))
         multiplayer.client.send_message("MyHighscore", str(round(car.highscore_count, 2)))
+        multiplayer.client.send_message("MyCosmetic", str(car.current_cosmetic))
+        multiplayer.client.send_message("MyModel", str(car.model_path))
 
 app.run()

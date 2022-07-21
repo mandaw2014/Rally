@@ -34,7 +34,7 @@ class RallyAchievements():
         create_achievement("Play Time Trial!", self.time_trial, icon = "confetti.png", ringtone = None)
 
         create_achievement("Get under 20s on Sand Track!", sand_achievements.twenty_seconds_sand_track, icon = "confetti.png", ringtone = None)
-        create_achievement("Get under 17s on Sand Track!", sand_achievements.sixteen_seconds_sand_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 16s on Sand Track!", sand_achievements.sixteen_seconds_sand_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 15s on Sand Track!", sand_achievements.fifteen_seconds_sand_track, icon = "confetti.png", ringtone = None)
 
         create_achievement("Get under 22s on Grass Track!", grass_achievements.twentytwo_seconds_grass_track, icon = "confetti.png", ringtone = None)

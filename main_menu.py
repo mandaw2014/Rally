@@ -1256,6 +1256,7 @@ class MainMenu(Entity):
 
         def viking_helmet():
             if self.car.viking_helmet_unlocked:
+                self.car.current_cosmetic = "viking"
                 if self.car.car_type == "lorry":
                     car.viking_helmet.y = 1.5
                 elif self.car.car_type == "limo":
@@ -1272,6 +1273,7 @@ class MainMenu(Entity):
 
         def duck():
             if self.car.duck_unlocked:
+                self.car.current_cosmetic = "duck"
                 if self.car.car_type == "lorry":
                     car.duck.y = 1.5
                 elif self.car.car_type == "limo":
@@ -1288,6 +1290,7 @@ class MainMenu(Entity):
 
         def banana():
             if self.car.banana_unlocked:
+                self.car.current_cosmetic = "banana"
                 if self.car.car_type == "lorry":
                     car.banana.y = 1.5
                 elif self.car.car_type == "limo":
@@ -1304,6 +1307,7 @@ class MainMenu(Entity):
 
         def surfinbird():
             if self.car.surfinbird_unlocked:
+                self.car.current_cosmetic = "surfinbird"
                 if self.car.car_type == "lorry":
                     car.surfinbird.y = 1.5
                 elif self.car.car_type == "limo":

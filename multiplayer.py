@@ -19,6 +19,7 @@ class Multiplayer(Entity):
             self.players_target_model = {}
             self.players_target_tex = {}
             self.players_target_score = {}
+            self.players_target_cos = {}
 
             self.selfId = -1
 
@@ -39,6 +40,7 @@ class Multiplayer(Entity):
                     self.players_target_tex[variable_name] = "./assets/cars/garage/sports-car/sports-red.png"
                     self.players_target_name[variable_name] = "Guest"
                     self.players_target_score[variable_name] = 0.0
+                    self.players_target_cos[variable_name] = "none"
                     self.players[variable_name] = CarRepresentation(self.car, (-80, -30, 15), (0, 90, 0))
                     self.players[variable_name].text_object = CarUsername(self.players[variable_name])
 
@@ -54,6 +56,7 @@ class Multiplayer(Entity):
                 self.players_target_tex[variable.name] = variable.content["texture"]
                 self.players_target_name[variable.name] = variable.content["username"]
                 self.players_target_score[variable.name] = variable.content["highscore"]
+                self.players_target_cos[variable.name] = variable.content["cosmetic"]
 
             @self.easy.event
             def onReplicatedVariableRemoved(variable):
@@ -72,6 +75,23 @@ class Multiplayer(Entity):
             self.players[p].texture = f"{self.players_target_tex[p]}"
             self.players[p].text_object.text = f"{self.players_target_name[p]}"
             self.players[p].highscore = f"{self.players_target_score[p]}"
+
+            if self.players_target_cos[p] == "viking":
+                for cosmetic in self.players[p].cosmetics:
+                    cosmetic.disable()
+                self.players[p].viking_helmet.enable()
+            elif self.players_target_cos[p] == "duck":
+                for cosmetic in self.players[p].cosmetics:
+                    cosmetic.disable()
+                self.players[p].duck.enable()
+            elif self.players_target_cos[p] == "banana":
+                for cosmetic in self.players[p].cosmetics:
+                    cosmetic.disable()
+                self.players[p].banana.enable()
+            elif self.players_target_cos[p] == "surfinbird":
+                for cosmetic in self.players[p].cosmetics:
+                    cosmetic.disable()
+                self.players[p].surfinbird.enable()
 
             if self.car.enabled == False:
                 self.players[p].disable()

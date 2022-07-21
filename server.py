@@ -18,7 +18,7 @@ class Server:
             def onClientConnected(client):
                 self.easy.create_replicated_variable(
                     f"player_{client.id}",
-                    { "type" : "player", "id" : client.id, "username": "Guest", "position": (0, 0, 0), "rotation" : (0, 0, 0), "model" : "sports-car.obj", "texture" : "sports-red.png", "highscore": 0.0}
+                    { "type" : "player", "id" : client.id, "username": "Guest", "position": (0, 0, 0), "rotation" : (0, 0, 0), "model" : "sports-car.obj", "texture" : "sports-red.png", "highscore": 0.0, "cosmetic": "none"}
                 )
                 print(f"{client} connected!")
                 client.send_message("GetId", client.id)
@@ -50,6 +50,10 @@ class Server:
             @self.server.event
             def MyHighscore(client, newscore):
                 self.easy.update_replicated_variable_by_name(f"player_{client.id}", "highscore", newscore)
+
+            @self.server.event
+            def MyCosmetic(client, newcos):
+                self.easy.update_replicated_variable_by_name(f"player_{client.id}", "cosmetic", newcos)
 
             self.server_update = True
             self.start_server = False
