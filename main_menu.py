@@ -28,11 +28,12 @@ class MainMenu(Entity):
         self.colours_menu = Entity(parent = self.garage_menu, enabled = False)
         self.cosmetics_menu = Entity(parent = self.garage_menu, enabled = False)
         self.pause_menu = Entity(parent = self, enabled = False)
+        self.quit_menu = Entity(parent = self, enabled = False)
 
         self.menus = [
             self.start_menu, self.host_menu, self.created_server_menu, self.server_menu,
             self.main_menu, self.race_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu,
-            self.controls_menu, self.garage_menu, self.pause_menu
+            self.controls_menu, self.garage_menu, self.pause_menu, self.quit_menu
         ]
         
         self.car = car
@@ -49,7 +50,7 @@ class MainMenu(Entity):
         ]
 
         # Animate the menu
-        for menu in (self.start_menu, self.main_menu, self.race_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu, self.controls_menu, self.pause_menu, self.garage_menu):
+        for menu in (self.start_menu, self.main_menu, self.race_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu, self.controls_menu, self.pause_menu, self.quit_menu, self.garage_menu):
             def animate_in_menu(menu = menu):
                 for i, e in enumerate(menu.children):
                     e.original_scale = e.scale
@@ -102,17 +103,29 @@ class MainMenu(Entity):
             os._exit(0)
 
         start_title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.start_menu, y = 0.3)
-        quit_button_start = Button(text = "X", color = color.hex("FF1414"), highlight_color = color.hex("FF4747"), scale_y = 0.058, scale_x = 0.06, y = 0.43, x = 0.85, parent = self.start_menu)
-
-        if window.exit_button.enabled:
-            quit_button_start.disable()
 
         singleplayer_button = Button(text = "Singleplayer", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = 0.05, parent = self.start_menu)
         multiplayer_button = Button(text = "Multiplayer", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.08, parent = self.start_menu)
         
         singleplayer_button.on_click = Func(singleplayer)
         multiplayer_button.on_click = Func(multiplayer)
-        quit_button_start.on_click = Func(quit)
+
+        # Quit Menu
+
+        def quit():
+            application.quit()
+            os._exit(0)
+
+        def dont_quit():
+            self.quit_menu.disable()
+            self.start_menu.enable()
+
+        quit_text = Text("Are you sure you want to quit?", scale = 1.5, line_height = 2, x = 0, origin = 0, y = 0.2, parent = self.quit_menu)
+        quit_yes = Button(text = "Yes", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.05, parent = self.quit_menu)
+        quit_no = Button(text = "No", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.07, parent = self.quit_menu)
+
+        quit_yes.on_click = Func(quit)
+        quit_no.on_click = Func(dont_quit)
 
         # Host Server Menu
 
@@ -1245,7 +1258,7 @@ class MainMenu(Entity):
                         return
                 elif self.car.car_type == "muscle":
                     if not self.car.muscle_white_unlocked:
-                        self.garage_locked_text("Get Less Than 27s on Forest Track with the Muscle Car")
+                        self.garage_locked_text("Get Less Than 36s on Snow Track with the Muscle Car")
                         return
                 elif self.car.car_type == "limo":
                     if not self.car.limo_white_unlocked:
@@ -1426,7 +1439,7 @@ class MainMenu(Entity):
         invoke(self.garage_unlocked_text.disable, delay = 1)
 
     def update(self):
-        if not self.start_menu.enabled and not self.main_menu.enabled and not self.settings_menu.enabled and not self.race_menu.enabled and not self.maps_menu.enabled and not self.settings_menu.enabled and not self.garage_menu.enabled and not self.controls_menu.enabled and not self.host_menu.enabled and not self.server_menu.enabled and not self.created_server_menu.enabled and not self.video_menu.enabled and not self.gameplay_menu.enabled:
+        if not self.start_menu.enabled and not self.main_menu.enabled and not self.settings_menu.enabled and not self.race_menu.enabled and not self.maps_menu.enabled and not self.settings_menu.enabled and not self.garage_menu.enabled and not self.controls_menu.enabled and not self.host_menu.enabled and not self.server_menu.enabled and not self.created_server_menu.enabled and not self.video_menu.enabled and not self.gameplay_menu.enabled and not self.quit_menu.enabled:
             self.car.camera_follow = True
         else:
             self.car.camera_follow = False
@@ -1450,7 +1463,7 @@ class MainMenu(Entity):
                 self.ai_list[2].set_enabled = True
 
         # Set the camera's position and make the car rotate
-        if self.start_menu.enabled or self.host_menu.enabled or self.garage_menu.enabled or self.server_menu.enabled:
+        if self.start_menu.enabled or self.host_menu.enabled or self.garage_menu.enabled or self.server_menu.enabled or self.quit_menu.enabled:
             if not held_keys["right mouse"]:
                 if self.start_spin:
                     self.car.rotation_y += 15 * time.dt
@@ -1459,7 +1472,7 @@ class MainMenu(Entity):
 
             camera.position = lerp(camera.position, self.car.position + self.car.camera_offset, time.dt * self.car.camera_speed)
 
-            if self.start_menu.enabled:
+            if self.start_menu.enabled or self.quit_menu.enabled:
                 self.car.camera_offset = (-25, 4, 0)
                 camera.rotation = (5, 90, 0)
             elif self.host_menu.enabled:
@@ -1506,7 +1519,7 @@ class MainMenu(Entity):
     
     def input(self, key):
         # Pause menu
-        if not self.start_menu.enabled and not self.main_menu.enabled and not self.server_menu.enabled and not self.settings_menu.enabled and not self.race_menu.enabled and not self.maps_menu.enabled and not self.settings_menu.enabled and not self.garage_menu.enabled and not self.controls_menu.enabled and not self.host_menu.enabled and not self.created_server_menu.enabled and not self.video_menu.enabled and not self.gameplay_menu.enabled:
+        if not self.start_menu.enabled and not self.main_menu.enabled and not self.server_menu.enabled and not self.settings_menu.enabled and not self.race_menu.enabled and not self.maps_menu.enabled and not self.settings_menu.enabled and not self.garage_menu.enabled and not self.controls_menu.enabled and not self.host_menu.enabled and not self.created_server_menu.enabled and not self.video_menu.enabled and not self.gameplay_menu.enabled and not self.quit_menu.enabled:
             if key == "escape":
                 self.pause_menu.enabled = not self.pause_menu.enabled
                 mouse.locked = not mouse.locked
@@ -1522,6 +1535,27 @@ class MainMenu(Entity):
             self.car.reset_count_timer.disable()
             self.car.highscore.disable()
             self.car.laps_text.disable()
+
+        # Quit Menu
+        if self.start_menu.enabled or self.quit_menu.enabled:
+            if key == "escape":
+                self.quit_menu.enabled = not self.quit_menu.enabled
+                self.start_menu.enabled = not self.start_menu.enabled
+
+        # Settings Menu
+        if key == "escape":
+            if self.settings_menu.enabled:
+                self.settings_menu.disable()
+                self.main_menu.enable()
+            elif self.video_menu.enabled:
+                self.video_menu.disable()
+                self.settings_menu.enable()
+            elif self.controls_menu.enabled:
+                self.controls_menu.disable()
+                self.settings_menu.enable()
+            elif self.gameplay_menu.enabled:
+                self.gameplay_menu.disable()
+                self.settings_menu.enable()
 
         if self.start_spin:
             self.car.copy_normals = False

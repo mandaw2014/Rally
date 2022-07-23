@@ -810,7 +810,6 @@ class Car(Entity):
         """
         Updates the model's file path for multiplayer
         """
-
         self.model_path = str(self.model).replace("render/scene/car/", "")
         invoke(self.update_model_path, delay = 3)
 
