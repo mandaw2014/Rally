@@ -77,6 +77,7 @@ class Car(Entity):
         self.banana = Entity(model = "banana.obj", parent = self)
         self.surfinbird = Entity(model = "surfinbird.obj", texture = "surfinbird.png", parent = self)
         self.surfboard = Entity(model = "surfboard.obj", texture = "surfboard.png", parent = self.surfinbird)
+        self.cosmetics = [self.viking_helmet, self.duck, self.banana, self.surfinbird]
         self.viking_helmet.disable()
         self.duck.disable()
         self.banana.disable()
@@ -186,6 +187,8 @@ class Car(Entity):
         self.max_drift_speed = 40
         self.max_rotation_speed = 3
         self.particle_pivot.position = (0, -1, -1.5)
+        for cosmetic in self.cosmetics:
+                cosmetic.y = 0
 
     def muscle_car(self):
         self.car_type = "muscle"
@@ -199,6 +202,8 @@ class Car(Entity):
         self.max_rotation_speed = 3
         self.steering_amount = 8
         self.particle_pivot.position = (0, -1, -1.8)
+        for cosmetic in self.cosmetics:
+            cosmetic.y = 0
 
     def limo(self):
         self.car_type = "limo"
@@ -212,6 +217,8 @@ class Car(Entity):
         self.max_rotation_speed = 3
         self.steering_amount = 7
         self.particle_pivot.position = (0, -1, -3.5)
+        for cosmetic in self.cosmetics:
+            cosmetic.y = 0.1
 
     def lorry(self):
         self.car_type = "lorry"
@@ -225,6 +232,8 @@ class Car(Entity):
         self.max_rotation_speed = 3
         self.steering_amount = 7
         self.particle_pivot.position = (0, -1, -3.5)
+        for cosmetic in self.cosmetics:
+                cosmetic.y = 1.5
 
     def hatchback(self):
         self.car_type = "hatchback"
@@ -237,6 +246,8 @@ class Car(Entity):
         self.max_drift_speed = 50
         self.max_rotation_speed = 3
         self.particle_pivot.position = (0, -1, -1.5)
+        for cosmetic in self.cosmetics:
+            cosmetic.y = 0.4
 
     def rally_car(self):
         self.car_type = "rally"
@@ -249,6 +260,8 @@ class Car(Entity):
         self.max_drift_speed = 38
         self.max_rotation_speed = 3
         self.particle_pivot.position = (0, -1, -1.5)
+        for cosmetic in self.cosmetics:
+            cosmetic.y = 0.3
 
     def update(self):
         # Stopwatch/Timer
@@ -354,7 +367,7 @@ class Car(Entity):
             # Driving
             if held_keys[self.controls[0]] or held_keys["up arrow"]:
                 self.speed += self.acceleration * 50 * time.dt
-                self.speed += -self.velocity_y * 2 * time.dt
+                self.speed += -self.velocity_y * 4 * time.dt
 
                 # Particles + set particle colour depending on the track
                 self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)

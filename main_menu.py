@@ -1340,12 +1340,6 @@ class MainMenu(Entity):
         def viking_helmet():
             if self.car.viking_helmet_unlocked:
                 self.car.current_cosmetic = "viking"
-                if self.car.car_type == "lorry":
-                    car.viking_helmet.y = 1.5
-                elif self.car.car_type == "limo":
-                    car.viking_helmet.y = 0.1
-                elif self.car.car_type == "sports" or self.car.car_type == "muscle":
-                    car.viking_helmet.y = 0
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 car.viking_helmet.enabled = not car.viking_helmet.enabled
                 car.duck.disable()
@@ -1357,12 +1351,6 @@ class MainMenu(Entity):
         def duck():
             if self.car.duck_unlocked:
                 self.car.current_cosmetic = "duck"
-                if self.car.car_type == "lorry":
-                    car.duck.y = 1.5
-                elif self.car.car_type == "limo":
-                    car.duck.y = 0.1
-                elif self.car.car_type == "sports" or self.car.car_type == "muscle":
-                    car.duck.y = 0
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 car.duck.enabled = not car.duck.enabled
                 car.viking_helmet.disable()
@@ -1374,12 +1362,6 @@ class MainMenu(Entity):
         def banana():
             if self.car.banana_unlocked:
                 self.car.current_cosmetic = "banana"
-                if self.car.car_type == "lorry":
-                    car.banana.y = 1.5
-                elif self.car.car_type == "limo":
-                    car.banana.y = 0.1
-                elif self.car.car_type == "sports" or self.car.car_type == "muscle":
-                    car.banana.y = 0
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 car.banana.enabled = not car.banana.enabled
                 car.duck.disable()
@@ -1391,12 +1373,6 @@ class MainMenu(Entity):
         def surfinbird():
             if self.car.surfinbird_unlocked:
                 self.car.current_cosmetic = "surfinbird"
-                if self.car.car_type == "lorry":
-                    car.surfinbird.y = 1.5
-                elif self.car.car_type == "limo":
-                    car.surfinbird.y = 0.1
-                elif self.car.car_type == "sports" or self.car.car_type == "muscle":
-                    car.surfinbird.y = 0
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
                 car.surfinbird.enabled = not car.surfinbird.enabled
                 car.viking_helmet.disable()
