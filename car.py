@@ -184,7 +184,7 @@ class Car(Entity):
         self.drift_amount = 4.5
         self.min_drift_speed = 20
         self.max_drift_speed = 40
-        self.max_rotation_speed = 2.6
+        self.max_rotation_speed = 3
         self.particle_pivot.position = (0, -1, -1.5)
 
     def muscle_car(self):
@@ -196,7 +196,7 @@ class Car(Entity):
         self.drift_amount = 4
         self.min_drift_speed = 25
         self.max_drift_speed = 45
-        self.max_rotation_speed = 1.5
+        self.max_rotation_speed = 3
         self.steering_amount = 8
         self.particle_pivot.position = (0, -1, -1.8)
 
@@ -209,7 +209,7 @@ class Car(Entity):
         self.drift_amount = 8
         self.min_drift_speed = 20
         self.max_drift_speed = 40
-        self.max_rotation_speed = 1.5
+        self.max_rotation_speed = 3
         self.steering_amount = 7
         self.particle_pivot.position = (0, -1, -3.5)
 
@@ -222,9 +222,33 @@ class Car(Entity):
         self.drift_amount = 10
         self.min_drift_speed = 20
         self.max_drift_speed = 40
-        self.max_rotation_speed = 1.5
+        self.max_rotation_speed = 3
         self.steering_amount = 7
         self.particle_pivot.position = (0, -1, -3.5)
+
+    def hatchback(self):
+        self.car_type = "hatchback"
+        self.model = "hatchback.obj"
+        self.texture = "hatchback-green.png"
+        self.topspeed = 28
+        self.acceleration = 0.6
+        self.drift_amount = 4
+        self.min_drift_speed = 30
+        self.max_drift_speed = 50
+        self.max_rotation_speed = 3
+        self.particle_pivot.position = (0, -1, -1.5)
+
+    def rally_car(self):
+        self.car_type = "rally"
+        self.model = "rally-car.obj"
+        self.texture = "rally-red.png"
+        self.topspeed = 33
+        self.acceleration = 0.45
+        self.drift_amount = 4.3
+        self.min_drift_speed = 18
+        self.max_drift_speed = 38
+        self.max_rotation_speed = 3
+        self.particle_pivot.position = (0, -1, -1.5)
 
     def update(self):
         # Stopwatch/Timer
@@ -360,7 +384,7 @@ class Car(Entity):
                     self.rotation_speed -= 2 * time.dt
                 elif self.rotation_speed > 0:
                     self.rotation_speed += 2 * time.dt
-                self.drift_speed -= 10 * time.dt
+                self.drift_speed -= 15 * time.dt
 
             # Hand Braking
             if held_keys["space"]:
@@ -371,8 +395,6 @@ class Car(Entity):
                 self.drift_speed -= 20 * time.dt
                 self.speed -= 20 * time.dt
                 self.max_rotation_speed = 3.0
-            else:
-                self.max_rotation_speed = 2.6
 
         # Steering
         self.rotation_y += self.rotation_speed * 50 * time.dt
@@ -674,6 +696,8 @@ class Car(Entity):
         self.muscle_unlocked = self.unlocked["cars"]["muscle_car"]
         self.limo_unlocked = self.unlocked["cars"]["limo"]
         self.lorry_unlocked = self.unlocked["cars"]["lorry"]
+        self.hatchback_unlocked = self.unlocked["cars"]["hatchback"]
+        self.rally_unlocked = self.unlocked["cars"]["rally_car"]
 
         self.sports_red_unlocked = self.unlocked["textures"]["sports_car"]["red"]
         self.sports_blue_unlocked = self.unlocked["textures"]["sports_car"]["blue"]
@@ -702,6 +726,20 @@ class Car(Entity):
         self.lorry_orange_unlocked = self.unlocked["textures"]["lorry"]["orange"]
         self.lorry_black_unlocked = self.unlocked["textures"]["lorry"]["black"]
         self.lorry_white_unlocked = self.unlocked["textures"]["lorry"]["white"]
+
+        self.hatchback_red_unlocked = self.unlocked["textures"]["hatchback"]["red"]
+        self.hatchback_blue_unlocked = self.unlocked["textures"]["hatchback"]["blue"]
+        self.hatchback_green_unlocked = self.unlocked["textures"]["hatchback"]["green"]
+        self.hatchback_orange_unlocked = self.unlocked["textures"]["hatchback"]["orange"]
+        self.hatchback_black_unlocked = self.unlocked["textures"]["hatchback"]["black"]
+        self.hatchback_white_unlocked = self.unlocked["textures"]["hatchback"]["white"]
+
+        self.rally_red_unlocked = self.unlocked["textures"]["rally_car"]["red"]
+        self.rally_blue_unlocked = self.unlocked["textures"]["rally_car"]["blue"]
+        self.rally_green_unlocked = self.unlocked["textures"]["rally_car"]["green"]
+        self.rally_orange_unlocked = self.unlocked["textures"]["rally_car"]["orange"]
+        self.rally_black_unlocked = self.unlocked["textures"]["rally_car"]["black"]
+        self.rally_white_unlocked = self.unlocked["textures"]["rally_car"]["white"]
 
         self.viking_helmet_unlocked = self.unlocked["cosmetics"]["viking_helmet"]
         self.duck_unlocked = self.unlocked["cosmetics"]["duck"]
@@ -734,6 +772,8 @@ class Car(Entity):
                 "muscle_car": self.muscle_unlocked,
                 "limo": self.limo_unlocked,
                 "lorry": self.lorry_unlocked,
+                "hatchback": self.hatchback_unlocked,
+                "rally_car": self.rally_unlocked
             },
             "textures": {
                 "sports_car": {
@@ -767,6 +807,22 @@ class Car(Entity):
                     "orange": self.lorry_orange_unlocked,
                     "black": self.lorry_black_unlocked,
                     "white": self.lorry_white_unlocked
+                },
+                "hatchback": {
+                    "red": self.hatchback_red_unlocked,
+                    "blue": self.hatchback_blue_unlocked,
+                    "green": self.hatchback_green_unlocked,
+                    "orange": self.hatchback_orange_unlocked,
+                    "black": self.hatchback_black_unlocked,
+                    "white": self.hatchback_white_unlocked
+                },
+                "rally_car": {
+                    "red": self.rally_red_unlocked,
+                    "blue": self.rally_blue_unlocked,
+                    "green": self.rally_green_unlocked,
+                    "orange": self.rally_orange_unlocked,
+                    "black": self.rally_black_unlocked,
+                    "white": self.rally_white_unlocked
                 }
             },
             "cosmetics": {

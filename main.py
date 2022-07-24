@@ -45,7 +45,7 @@ else:
 def load_assets():
     models_to_load = [
         # Cars
-        "sports-car.obj", "muscle-car.obj", "limousine.obj", "lorry.obj",
+        "sports-car.obj", "muscle-car.obj", "limousine.obj", "lorry.obj", "hatchback.obj", "rally-car.obj",
         # Tracks
         "sand_track.obj", "grass_track.obj", "snow_track.obj",
         "forest_track.obj", "savannah_track.obj", "lake_track.obj", "particles.obj",
@@ -71,6 +71,10 @@ def load_assets():
         "lorry-red.png", "lorry-orange.png", "lorry-green.png", "lorry-white.png", "lorry-black.png", "lorry-blue.png", 
         # Limo
         "limo-red.png", "limo-orange.png", "limo-green.png", "limo-white.png", "limo-black.png", "limo-blue.png", 
+        # Hatchback
+        "hatchback-red.png", "hatchback-orange.png", "hatchback-green.png", "hatchback-white.png", "hatchback-black.png", "hatchback-blue.png",
+        # Rally Car
+        "rally-red.png", "rally-orange.png", "rally-green.png", "rally-white.png", "rally-black.png", "rally-blue.png",
         # Track Textures
         "sand_track.png", "grass_track.png", "snow_track.png", "forest_track.png",
         "savannah_track.png", "lake_track.png",

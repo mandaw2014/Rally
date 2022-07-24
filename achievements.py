@@ -60,8 +60,10 @@ class RallyAchievements():
         create_achievement("Get under 47s on Lake Track!", lake_achievements.fourtyseven_seconds_lake_track, icon = "confetti.png", ringtone = None)
 
         create_achievement("Unlock Muscle Car!", car_achievements.unlock_muscle_car, icon = "confetti.png", ringtone = None)
-        create_achievement("Unlock Limo Car!", car_achievements.unlock_limo, icon = "confetti.png", ringtone = None)
-        create_achievement("Unlock Lorry Car!", car_achievements.unlock_lorry, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Limo!", car_achievements.unlock_limo, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Lorry!", car_achievements.unlock_lorry, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Hatchback!", car_achievements.unlock_hatchback, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Rally Car!", car_achievements.unlock_rally, icon = "confetti.png", ringtone = None)
 
         create_achievement("Unlock Sports Car Green!", car_achievements.sports_green, icon = "confetti.png", ringtone = None)
         create_achievement("Unlock Sports Car Orange!", car_achievements.sports_orange, icon = "confetti.png", ringtone = None)
@@ -85,6 +87,18 @@ class RallyAchievements():
         create_achievement("Unlock Lorry Green!", car_achievements.lorry_green, icon = "confetti.png", ringtone = None)
         create_achievement("Unlock Lorry Orange!", car_achievements.lorry_orange, icon = "confetti.png", ringtone = None)
         create_achievement("Unlock Lorry Black!", car_achievements.lorry_black, icon = "confetti.png", ringtone = None)
+
+        create_achievement("Unlock Hatchback Red!", car_achievements.hatchback_red, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Hatchback Blue!", car_achievements.hatchback_blue, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Hatchback White!", car_achievements.hatchback_white, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Hatchback Orange!", car_achievements.hatchback_orange, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Hatchback Black!", car_achievements.hatchback_black, icon = "confetti.png", ringtone = None)
+
+        create_achievement("Unlock Rally Car White!", car_achievements.rally_white, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Rally Car Blue!", car_achievements.rally_blue, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Rally Car Green!", car_achievements.rally_green, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Rally Car Orange!", car_achievements.rally_orange, icon = "confetti.png", ringtone = None)
+        create_achievement("Unlock Rally Car Black!", car_achievements.rally_black, icon = "confetti.png", ringtone = None)
 
         create_achievement("Beat Mandaw in Sand Track!", self.beat_mandaw_in_sand_track, icon = "confetti.png", ringtone = None)
         create_achievement("Beat Mandaw in Grass Track!", self.beat_mandaw_in_grass_track, icon = "confetti.png", ringtone = None)
@@ -492,12 +506,12 @@ class CarAchievements():
         self.lake_track = lake_track
 
     def unlock_muscle_car(self):
-        if self.lake_track.enabled:
+        if self.savannah_track.enabled:
             if self.car.enabled:
                 for menu in self.main_menu.menus:
                     if not menu.enabled:
                         if self.car.last_count != 0:
-                            if self.car.last_count <= 58:
+                            if self.car.last_count <= 17:
                                 self.car.muscle_unlocked = True
                                 self.car.save_unlocked()
                                 return True
@@ -511,7 +525,7 @@ class CarAchievements():
                             if self.car.last_count <= 19:
                                 self.car.limo_unlocked = True
                                 self.car.save_unlocked()
-                            return self.car.last_count <= 19
+                                return True
 
     def unlock_lorry(self):
         if self.forest_track.enabled:
@@ -522,7 +536,29 @@ class CarAchievements():
                             if self.car.last_count <= 27:
                                 self.car.lorry_unlocked = True
                                 self.car.save_unlocked()
-                            return self.car.last_count <= 27
+                                return True
+
+    def unlock_hatchback(self):
+        if self.sand_track.enabled:
+            if self.car.enabled:
+                for menu in self.main_menu.menus:
+                    if not menu.enabled:
+                        if self.car.last_count != 0:
+                            if self.car.last_count <= 19:
+                                self.car.hatchback_unlocked = True
+                                self.car.save_unlocked()
+                                return True
+
+    def unlock_rally(self):
+        if self.lake_track.enabled:
+            if self.car.enabled:
+                for menu in self.main_menu.menus:
+                    if not menu.enabled:
+                        if self.car.last_count != 0:
+                            if self.car.last_count <= 58:
+                                self.car.rally_unlocked = True
+                                self.car.save_unlocked()
+                                return True
 
     """
     Sports Car Textures
@@ -742,5 +778,121 @@ class CarAchievements():
                         if self.car.last_count <= 19 and self.car.last_count != 0:
                             # Unlock Lorry Orange Colour
                             self.car.lorry_orange_unlocked = True
+                            self.car.save_unlocked()
+                            return True
+
+    """
+    Hatchback Textures
+    """
+    def hatchback_red(self):
+        if self.sand_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.car_type == "hatchback":
+                        if self.car.last_count <= 18 and self.car.last_count != 0:
+                            # Unlock Hatchback Red Colour
+                            self.car.hatchback_red_unlocked = True
+                            self.car.save_unlocked()
+                            return True
+
+    def hatchback_blue(self):
+        if self.lake_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.car_type == "hatchback":
+                        if self.car.last_count <= 65 and self.car.last_count != 0:
+                            # Unlock Hatchback Blue Colour
+                            self.car.hatchback_blue_unlocked = True
+                            self.car.save_unlocked()
+                            return True
+
+    def hatchback_white(self):
+        if self.grass_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.car_type == "hatchback":
+                        if self.car.last_count <= 19 and self.car.last_count != 0:
+                            # Unlock Hatchback White Colour
+                            self.car.hatchback_white_unlocked = True
+                            self.car.save_unlocked()
+                            return True
+
+    def hatchback_black(self):
+        if self.snow_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.car_type == "hatchback":
+                        if self.car.last_count <= 37 and self.car.last_count != 0:
+                            # Unlock Hatchback Black Colour
+                            self.car.hatchback_black_unlocked = True
+                            self.car.save_unlocked()
+                            return True
+
+    def hatchback_orange(self):
+        if self.savannah_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.car_type == "hatchback":
+                        if self.car.last_count <= 17 and self.car.last_count != 0:
+                            # Unlock Hatchback Orange Colour
+                            self.car.hatchback_orange_unlocked = True
+                            self.car.save_unlocked()
+                            return True
+
+    """
+    Rally Car Textures
+    """
+    def rally_white(self):
+        if self.sand_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.car_type == "rally":
+                        if self.car.last_count <= 17 and self.car.last_count != 0:
+                            # Unlock Rally Car White Colour
+                            self.car.rally_white_unlocked = True
+                            self.car.save_unlocked()
+                            return True
+
+    def rally_blue(self):
+        if self.lake_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.car_type == "rally":
+                        if self.car.last_count <= 52 and self.car.last_count != 0:
+                            # Unlock Rally Car Blue Colour
+                            self.car.rally_blue_unlocked = True
+                            self.car.save_unlocked()
+                            return True
+
+    def rally_green(self):
+        if self.grass_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.car_type == "rally":
+                        if self.car.last_count <= 19 and self.car.last_count != 0:
+                            # Unlock Rally Car Green Colour
+                            self.car.rally_green_unlocked = True
+                            self.car.save_unlocked()
+                            return True
+
+    def rally_black(self):
+        if self.snow_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.car_type == "rally":
+                        if self.car.last_count <= 35 and self.car.last_count != 0:
+                            # Unlock Rally Car Black Colour
+                            self.car.rally_black_unlocked = True
+                            self.car.save_unlocked()
+                            return True
+
+    def rally_orange(self):
+        if self.savannah_track.enabled:
+            for menu in self.main_menu.menus:
+                if menu.enabled == False:
+                    if self.car.car_type == "rally":
+                        if self.car.last_count <= 16 and self.car.last_count != 0:
+                            # Unlock Rally Car Orange Colour
+                            self.car.rally_orange_unlocked = True
                             self.car.save_unlocked()
                             return True

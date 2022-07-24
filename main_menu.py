@@ -1128,7 +1128,7 @@ class MainMenu(Entity):
                 self.car.banana.disable()
                 self.car.surfinbird.disable()
             else:
-                self.garage_locked_text("Get Less Than 58s on Lake Track")
+                self.garage_locked_text("Get Less Than 17s on Savannah Track")
 
         def limo():
             if self.car.limo_unlocked:
@@ -1152,6 +1152,28 @@ class MainMenu(Entity):
             else:
                 self.garage_locked_text("Get Less Than 27s on Forest Track")
 
+        def hatchback():
+            if self.car.hatchback_unlocked:
+                self.car.hatchback()
+                self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                self.car.viking_helmet.disable()
+                self.car.duck.disable()
+                self.car.banana.disable()
+                self.car.surfinbird.disable()
+            else:
+                self.garage_locked_text("Get Less Than 19s on Sand Track")
+
+        def rally():
+            if self.car.rally_unlocked:
+                self.car.rally_car()
+                self.car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
+                self.car.viking_helmet.disable()
+                self.car.duck.disable()
+                self.car.banana.disable()
+                self.car.surfinbird.disable()
+            else:
+                self.garage_locked_text("Get Less Than 58s on Lake Track")
+
         def sports_hover():
             self.garage_name_text.enable()
             self.garage_name_text.text = "Sports Car"
@@ -1167,6 +1189,14 @@ class MainMenu(Entity):
         def lorry_hover():
             self.garage_name_text.enable()
             self.garage_name_text.text = "Lorry"
+
+        def hatchback_hover():
+            self.garage_name_text.enable()
+            self.garage_name_text.text = "Hatchback"
+
+        def rally_hover():
+            self.garage_name_text.enable()
+            self.garage_name_text.text = "Rally Car"
 
         def change_colour(colour):
             """
@@ -1185,6 +1215,10 @@ class MainMenu(Entity):
                     if not self.car.lorry_red_unlocked:
                         self.garage_locked_text("Get Less Than 20s on Sand Track with the Lorry")
                         return
+                elif self.car.car_type == "hatchback":
+                    if not self.car.hatchback_red_unlocked:
+                        self.garage_locked_text("Get Less Than 18s on Sand Track with the Hatchback")
+                        return
                 car.texture = f"{self.car.car_type}-red.png"
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             if colour == "blue":
@@ -1199,6 +1233,14 @@ class MainMenu(Entity):
                 elif self.car.car_type == "lorry":
                     if not self.car.lorry_blue_unlocked:
                         self.garage_locked_text("Get Less Than 70s on Lake Track with the Lorry")
+                        return
+                elif self.car.car_type == "hatchback":
+                    if not self.car.hatchback_blue_unlocked:
+                        self.garage_locked_text("Get Less Than 65s on Lake Track with the Hatchback")
+                        return
+                elif self.car.car_type == "rally":
+                    if not self.car.rally_blue_unlocked:
+                        self.garage_locked_text("Get Less Than 52s on Lake Track with the Rally Car")
                         return
                 car.texture = f"{self.car.car_type}-blue.png"
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
@@ -1219,6 +1261,10 @@ class MainMenu(Entity):
                     if not self.car.lorry_green_unlocked:
                         self.garage_locked_text("Get Less Than 20s on Grass Track with the Lorry")
                         return
+                elif self.car.car_type == "rally":
+                    if not self.car.rally_green_unlocked:
+                        self.garage_locked_text("Get Less Than 19s on Grass Track with the Rally Car")
+                        return
                 car.texture = f"{self.car.car_type}-green.png"
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             if colour == "orange":
@@ -1233,6 +1279,14 @@ class MainMenu(Entity):
                 elif self.car.car_type == "lorry":
                     if not self.car.lorry_orange_unlocked:
                         self.garage_locked_text("Get Less Than 19s on Savannah Track with the Lorry")
+                        return
+                elif self.car.car_type == "hatchback":
+                    if not self.car.hatchback_orange_unlocked:
+                        self.garage_locked_text("Get Less Than 17s on Savannah Track with the Hatchback")
+                        return
+                elif self.car.car_type == "rally":
+                    if not self.car.rally_orange_unlocked:
+                        self.garage_locked_text("Get Less Than 16s on Savannah Track with the Rally Car")
                         return
                 car.texture = f"{self.car.car_type}-orange.png"
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
@@ -1249,6 +1303,14 @@ class MainMenu(Entity):
                     if not self.car.lorry_black_unlocked:
                         self.garage_locked_text("Get Less Than 38s on Snow Track with the Lorry")
                         return
+                elif self.car.car_type == "hatchback":
+                    if not self.car.hatchback_black_unlocked:
+                        self.garage_locked_text("Get Less Than 37s on Snow Track with the Hatchback")
+                        return
+                elif self.car.car_type == "rally":
+                    if not self.car.rally_black_unlocked:
+                        self.garage_locked_text("Get Less Than 35s on Snow Track with the Rally Car")
+                        return
                 car.texture = f"{self.car.car_type}-black.png"
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
             if colour == "white":
@@ -1263,6 +1325,14 @@ class MainMenu(Entity):
                 elif self.car.car_type == "limo":
                     if not self.car.limo_white_unlocked:
                         self.garage_locked_text("Get Less Than 36s on Snow Track with the Limo")
+                        return
+                elif self.car.car_type == "hatchback":
+                    if not self.car.hatchback_white_unlocked:
+                        self.garage_locked_text("Get Less Than 19s on Grass Track with the Hatchback")
+                        return
+                elif self.car.car_type == "rally":
+                    if not self.car.rally_white_unlocked:
+                        self.garage_locked_text("Get Less Than 17s on Sand Track with the Rally Car")
                         return
                 car.texture = f"{self.car.car_type}-white.png"
                 car.animate_rotation_y(car.rotation_y + 360, duration = 0.4, curve = curve.in_out_quad)
@@ -1365,6 +1435,8 @@ class MainMenu(Entity):
         muscle_car_button = Button(texture = "muscle-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.5, alpha = 255, parent = self.cars_menu)
         limo_button = Button(texture = "limo-icon.png", color = color.white, scale = (0.16, 0.1), y = 0.1, x = -0.3, alpha = 255, parent = self.cars_menu)
         lorry_button = Button(texture = "lorry-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.1, x = -0.7, alpha = 255, parent = self.cars_menu)
+        hatchback_button = Button(texture = "hatchback-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.1, x = -0.5, alpha = 255, parent = self.cars_menu)
+        rally_car_button = Button(texture = "rally-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.1, x = -0.3, alpha = 255, parent = self.cars_menu)
 
         red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.7, parent = self.colours_menu)
         blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.colours_menu)
@@ -1395,6 +1467,8 @@ class MainMenu(Entity):
         muscle_car_button.on_click = Func(muscle_car)
         limo_button.on_click = Func(limo)
         lorry_button.on_click = Func(lorry)
+        hatchback_button.on_click = Func(hatchback)
+        rally_car_button.on_click = Func(rally)
 
         sports_car_button.on_mouse_enter = Func(sports_hover)
         sports_car_button.on_mouse_exit = Func(self.garage_name_text.disable)
@@ -1404,6 +1478,10 @@ class MainMenu(Entity):
         limo_button.on_mouse_exit = Func(self.garage_name_text.disable)
         lorry_button.on_mouse_enter = Func(lorry_hover)
         lorry_button.on_mouse_exit = Func(self.garage_name_text.disable)
+        hatchback_button.on_mouse_enter = Func(hatchback_hover)
+        hatchback_button.on_mouse_exit = Func(self.garage_name_text.disable)
+        rally_car_button.on_mouse_enter = Func(rally_hover)
+        rally_car_button.on_mouse_exit = Func(self.garage_name_text.disable)
 
         red_button.on_click = Func(change_colour, "red")
         blue_button.on_click = Func(change_colour, "blue")

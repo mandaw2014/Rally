@@ -189,11 +189,21 @@ class AICar(Entity):
         self.texture = "lorry-white.png"
         self.car_type = "lorry"
 
+    def hatchback(self):
+        self.model = "hatchback.obj"
+        self.texture = "hatchback-green.png"
+        self.car_type = "hatchback"
+
+    def rally_car(self):
+        self.model = "rally-car.obj"
+        self.texture = "rally-red.png"
+        self.car_type = "rally"
+
     def set_random_car(self):
         """
         Sets a random car
         """
-        i = random.randint(0, 3)
+        i = random.randint(0, 5)
         if i == 0:
             self.sports_car()
         elif i == 1:
@@ -202,6 +212,10 @@ class AICar(Entity):
             self.limo()
         elif i == 3:
             self.lorry()
+        elif i == 4:
+            self.hatchback()
+        elif i == 5:
+            self.rally_car()
 
     def set_random_texture(self):
         """
