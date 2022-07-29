@@ -817,6 +817,7 @@ class MainMenu(Entity):
             elif self.car.camera_angle == "first-person":
                 self.car.camera_angle = "side"
                 camera_angle_button.text = "Camera Angle: Side"
+            self.car.change_camera = True
 
         def camera_shake():
             self.car.camera_shake_option = not self.car.camera_shake_option
@@ -829,7 +830,7 @@ class MainMenu(Entity):
             self.gameplay_menu.disable()
             self.settings_menu.enable()
 
-        camera_angle_button = Button("Camera Angle: Side", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.gameplay_menu)
+        camera_angle_button = Button("Camera Angle: Top", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.gameplay_menu)
         camera_shake_button = Button("Camera Shake: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.gameplay_menu)
         reset_highsore_button = Button(text = "Reset Highscore", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.gameplay_menu)
         back_button_gameplay = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.24, parent = self.gameplay_menu)
@@ -1589,6 +1590,7 @@ class MainMenu(Entity):
             self.car.reset_count_timer.disable()
             self.car.highscore.disable()
             self.car.laps_text.disable()
+            self.car.camera_speed = 8
 
         # Quit Menu
         if self.start_menu.enabled or self.quit_menu.enabled:

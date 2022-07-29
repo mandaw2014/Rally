@@ -40,9 +40,11 @@ class Car(Entity):
         self.pivot_rotation_distance = 1
 
         # Camera Follow
-        self.camera_angle = "side"
+        self.camera_angle = "top"
         self.camera_offset = (0, 60, -70)
+        self.camera_rotation = 40
         self.camera_follow = False
+        self.change_camera = False
         self.c_pivot = Entity()
         self.camera_pivot = Entity(parent = self.c_pivot, position = self.camera_offset)
 
@@ -321,18 +323,26 @@ class Car(Entity):
         if self.camera_follow:
             if self.camera_angle == "side":
                 camera.rotation = (35, -20, 0)
+                self.change_camera = False
                 camera.world_position = lerp(camera.world_position, self.world_position + (20, 40, -50), time.dt * self.camera_speed)
             elif self.camera_angle == "top":
+                if self.change_camera:
+                    camera.rotation_x = 35
+                    self.camera_rotation = 40
                 self.camera_offset = (0, 60, -70)
-                camera.rotation_x = 35
-                camera.world_position = lerp(camera.world_position, self.camera_pivot.world_position, time.dt * 4)
-                camera.world_rotation_y = lerp(camera.world_rotation_y, self.world_rotation_y, time.dt * 4)
+                self.camera_speed = 4
+                self.change_camera = False
+                camera.rotation_x = lerp(camera.rotation_x, self.camera_rotation, 2 * time.dt)
+                camera.world_position = lerp(camera.world_position, self.camera_pivot.world_position, time.dt * self.camera_speed / 2)
+                camera.world_rotation_y = lerp(camera.world_rotation_y, self.world_rotation_y, time.dt * self.camera_speed / 2)
             elif self.camera_angle == "behind":
                 self.camera_offset = (0, 10, -30)
+                self.change_camera = False
                 camera.rotation_x = 12
                 camera.world_position = lerp(camera.world_position, self.camera_pivot.world_position, time.dt * self.camera_speed)
                 camera.world_rotation_y = lerp(camera.world_rotation_y, self.world_rotation_y, time.dt * self.camera_speed)
             elif self.camera_angle == "first-person":
+                self.change_camera = False
                 camera.world_position = lerp(camera.world_position, self.world_position + (0.5, 0, 0), time.dt * 30)
                 camera.world_rotation = lerp(camera.world_rotation, self.world_rotation, time.dt * 30)
 
@@ -344,10 +354,12 @@ class Car(Entity):
             if self.pivot.rotation_y > self.rotation_y:
                 self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
                 self.speed += self.pivot_rotation_distance / self.drift_amount * time.dt
+                self.camera_rotation -= self.pivot_rotation_distance * time.dt
                 self.rotation_speed -= 1 * time.dt
             if self.pivot.rotation_y < self.rotation_y:
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
                 self.speed -= self.pivot_rotation_distance / self.drift_amount * time.dt
+                self.camera_rotation += self.pivot_rotation_distance * time.dt
                 self.rotation_speed += 1 * time.dt
 
         # Change number of particles depending on the rotation of the car
@@ -369,6 +381,8 @@ class Car(Entity):
                 self.speed += self.acceleration * 50 * time.dt
                 self.speed += -self.velocity_y * 4 * time.dt
 
+                self.camera_rotation -= self.acceleration * 30 * time.dt
+
                 # Particles + set particle colour depending on the track
                 self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
                 if self.sand_track.enabled:
@@ -389,6 +403,7 @@ class Car(Entity):
                 invoke(self.particles.destroy, delay = 1)
             else:
                 self.speed -= self.friction * 5 * time.dt
+                self.camera_rotation += self.friction * 20 * time.dt
 
             # Braking
             if held_keys[self.controls[2] or held_keys["down arrow"]]:
@@ -461,6 +476,11 @@ class Car(Entity):
         # Reset the car's position if y value is greater than 300
         if self.y >= 300:
             self.reset_car()
+
+        if self.camera_rotation >= 40:
+            self.camera_rotation = 40
+        elif self.camera_rotation <= 30:
+            self.camera_rotation = 30
 
         # Camera Shake
         if self.speed >= 1 and held_keys[self.controls[0]] or held_keys["up arrow"]:
