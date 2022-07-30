@@ -363,7 +363,7 @@ class MainMenu(Entity):
                 self.car.visible = True
                 mouse.locked = True
                 self.maps_menu.disable()
-                self.car.position = (-80, -30, 15)
+                self.car.position = (-80, -30, 18.5)
                 self.car.rotation = (0, 90, 0)
                 self.car.reset_count_timer.enable()
 
@@ -371,7 +371,7 @@ class MainMenu(Entity):
                     for ai in ai_list:
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (-80, -35, 15) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
+                        ai.position = (-80, -30, 18.5) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_car()
                         ai.set_random_texture()
@@ -939,14 +939,14 @@ class MainMenu(Entity):
                         ai.speed = 0
                         ai.velocity_y = 0
             elif grass_track.enabled:
-                self.car.position = (-80, -30, 15)
+                self.car.position = (-80, -30, 18.5)
                 self.car.rotation = (0, 90, 0)
                 if self.car.multiplayer_update == False and self.car.ai:
                     for ai in ai_list:
                         ai.disable()
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (-80, -35, 15) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
+                        ai.position = (-80, -30, 18.5) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_car()
                         ai.set_random_texture()
@@ -1024,6 +1024,9 @@ class MainMenu(Entity):
                 self.laps = 0
                 self.timer_running = False
                 self.start_time = False
+            if len(self.car.trails) == 2:
+                for trail in self.car.trails:
+                    destroy(trail)
 
         def main_menu():
             self.car.position = (0, 0, 4)
@@ -1048,12 +1051,14 @@ class MainMenu(Entity):
                 for i in track.track:
                     i.disable()
             grass_track.enable()
-
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
                     ai.disable()
                     ai.speed = 0
                     ai.velocity_y = 0
+            if len(self.car.trails) == 2:
+                for trail in self.car.trails:
+                    destroy(trail)
                 
         p_resume_button = Button(text = "Resume", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
         p_respawn_button = Button(text = "Respawn", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)

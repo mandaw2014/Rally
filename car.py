@@ -1,6 +1,6 @@
 from ursina import *
 from ursina import curve
-from particles import ParticleSystem
+from particles import ParticleSystem, TrailRenderer
 import json
 
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
@@ -62,6 +62,11 @@ class Car(Entity):
         self.particle_pivot = Entity(parent = self)
         self.particle_pivot.position = (0, -1, -2)
 
+        # TrailRenderer
+        self.trails = []
+        self.start_trail = True
+
+        # Collision
         self.copy_normals = False
         self.hitting_wall = False
 
@@ -400,8 +405,9 @@ class Car(Entity):
 
                 self.camera_rotation -= self.acceleration * 30 * time.dt
 
-                # Particles + set particle colour depending on the track
+                # Particles
                 self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
+                # Set Particle Texture based on Track
                 if self.sand_track.enabled:
                     self.particles.texture = "particle_sand_track.png"
                 elif self.grass_track.enabled:
@@ -417,7 +423,20 @@ class Car(Entity):
                 else:
                     self.particles.texture = "particle_sand_track.png"
                 self.particles.fade_out(duration = 0.2, delay = 0.7, curve = curve.linear)
-                invoke(self.particles.destroy, delay = 1)
+                destroy(self.particles, 1)
+                
+                # TrailRenderer / Skid Marks
+                if self.drift_speed <= self.min_drift_speed + 1 and self.start_trail:   
+                    self.trail_renderer1 = TrailRenderer(parent = self.particle_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 100)
+                    self.trail_renderer2 = TrailRenderer(parent = self.particle_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 100)
+                    self.trails = [self.trail_renderer1, self.trail_renderer2]
+                    self.start_trail = False
+                elif self.drift_speed > self.min_drift_speed + 1 and not self.start_trail:
+                    for trail in self.trails:
+                        trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
+                        destroy(trail.renderer, 10)
+                        destroy(trail)
+                    self.start_trail = True
             else:
                 self.speed -= self.friction * 5 * time.dt
                 self.camera_rotation += self.friction * 20 * time.dt
@@ -436,6 +455,12 @@ class Car(Entity):
                 self.drift_speed -= 40 * time.dt
                 self.speed -= 20 * time.dt
                 self.max_rotation_speed = 3.0
+
+        # If Car is hitting the ground, stop TrailRenderer
+        if len(self.trails) == 2:
+            if y_ray.distance > 1.5:
+                for trail in self.trails:
+                    destroy(trail)
 
         # Steering
         self.rotation_y += self.rotation_speed * 50 * time.dt
@@ -580,7 +605,7 @@ class Car(Entity):
             self.position = (-63, -40, -7)
             self.rotation = (0, 90, 0)
         elif self.grass_track.enabled:
-            self.position = (-80, -30, 15)
+            self.position = (-80, -30, 18.5)
             self.rotation = (0, 90, 0)
         elif self.snow_track.enabled:
             self.position = (-5, -35, 90)
@@ -606,6 +631,9 @@ class Car(Entity):
             self.reset_count = 100.0
             self.laps = 0
             self.start_time = False
+        if len(self.trails) == 2:
+            for trail in self.trails:
+                destroy(trail)
 
     def simple_intersects(self, entity):
         """
