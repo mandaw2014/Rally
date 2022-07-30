@@ -805,18 +805,18 @@ class MainMenu(Entity):
         # Gameplay Menu
 
         def camera_angle():
-            if self.car.camera_angle == "side":
-                self.car.camera_angle = "top"
-                camera_angle_button.text = "Camera Angle: Top"
-            elif self.car.camera_angle == "top":
+            if self.car.camera_angle == "top":
+                self.car.camera_angle = "side"
+                camera_angle_button.text = "Camera Angle: Side"
+            elif self.car.camera_angle == "side":
                 self.car.camera_angle = "behind"
                 camera_angle_button.text = "Camera Angle: Behind"
             elif self.car.camera_angle == "behind":
                 self.car.camera_angle = "first-person"
                 camera_angle_button.text = "Camera Angle: First-Person"
             elif self.car.camera_angle == "first-person":
-                self.car.camera_angle = "side"
-                camera_angle_button.text = "Camera Angle: Side"
+                self.car.camera_angle = "top"
+                camera_angle_button.text = "Camera Angle: Top"
             self.car.change_camera = True
 
         def camera_shake():

@@ -7,7 +7,7 @@ sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 Text.default_resolution = 1080 * Text.size
 
 class Car(Entity):
-    def __init__(self, position = (0, 0, 4), rotation = (0, 0, 0), topspeed = 30, acceleration = 0.35, braking_strength = 20, friction = 0.6, camera_speed = 8, drift_speed = 35):
+    def __init__(self, position = (0, 0, 4), rotation = (0, 0, 0), topspeed = 30, acceleration = 0.35, braking_strength = 30, friction = 0.6, camera_speed = 8, drift_speed = 35):
         super().__init__(
             model = "sports-car.obj",
             texture = "sports-red.png",
@@ -35,6 +35,7 @@ class Car(Entity):
         self.friction = friction
         self.drift_speed = drift_speed
         self.drift_amount = 4.5
+        self.turning_speed = 5
         self.max_drift_speed = 40
         self.min_drift_speed = 20
         self.pivot_rotation_distance = 1
@@ -183,26 +184,28 @@ class Car(Entity):
         self.model = "sports-car.obj"
         self.texture = "sports-red.png"
         self.topspeed = 30
-        self.acceleration = 0.35
-        self.drift_amount = 4.5
-        self.min_drift_speed = 20
-        self.max_drift_speed = 40
+        self.acceleration = 0.355
+        self.drift_amount = 5
+        self.turning_speed = 5
+        self.min_drift_speed = 18
+        self.max_drift_speed = 38
         self.max_rotation_speed = 3
         self.particle_pivot.position = (0, -1, -1.5)
         for cosmetic in self.cosmetics:
-                cosmetic.y = 0
+            cosmetic.y = 0
 
     def muscle_car(self):
         self.car_type = "muscle"
         self.model = "muscle-car.obj"
         self.texture = "muscle-orange.png"
         self.topspeed = 35
-        self.acceleration = 0.3
-        self.drift_amount = 4
-        self.min_drift_speed = 25
-        self.max_drift_speed = 45
+        self.acceleration = 0.32
+        self.drift_amount = 5
+        self.turning_speed = 10
+        self.min_drift_speed = 22
+        self.max_drift_speed = 40
         self.max_rotation_speed = 3
-        self.steering_amount = 8
+        self.steering_amount = 7.5
         self.particle_pivot.position = (0, -1, -1.8)
         for cosmetic in self.cosmetics:
             cosmetic.y = 0
@@ -211,13 +214,14 @@ class Car(Entity):
         self.car_type = "limo"
         self.model = "limousine.obj"
         self.texture = "limo-black.png"
-        self.topspeed = 28
-        self.acceleration = 0.2
-        self.drift_amount = 8
+        self.topspeed = 30
+        self.acceleration = 0.33
+        self.drift_amount = 5.5
+        self.turning_speed = 8
         self.min_drift_speed = 20
         self.max_drift_speed = 40
         self.max_rotation_speed = 3
-        self.steering_amount = 7
+        self.steering_amount = 8
         self.particle_pivot.position = (0, -1, -3.5)
         for cosmetic in self.cosmetics:
             cosmetic.y = 0.1
@@ -226,27 +230,30 @@ class Car(Entity):
         self.car_type = "lorry"
         self.model = "lorry.obj"
         self.texture = "lorry-white.png"
-        self.topspeed = 28
-        self.acceleration = 0.15
-        self.drift_amount = 10
+        self.topspeed = 30
+        self.acceleration = 0.3
+        self.drift_amount = 7
+        self.turning_speed = 7
         self.min_drift_speed = 20
         self.max_drift_speed = 40
         self.max_rotation_speed = 3
         self.steering_amount = 7
         self.particle_pivot.position = (0, -1, -3.5)
         for cosmetic in self.cosmetics:
-                cosmetic.y = 1.5
+            cosmetic.y = 1.5
 
     def hatchback(self):
         self.car_type = "hatchback"
         self.model = "hatchback.obj"
         self.texture = "hatchback-green.png"
         self.topspeed = 28
-        self.acceleration = 0.6
-        self.drift_amount = 4
-        self.min_drift_speed = 30
-        self.max_drift_speed = 50
+        self.acceleration = 0.43
+        self.drift_amount = 6
+        self.turning_speed = 15
+        self.min_drift_speed = 20
+        self.max_drift_speed = 40
         self.max_rotation_speed = 3
+        self.steering_amount = 8
         self.particle_pivot.position = (0, -1, -1.5)
         for cosmetic in self.cosmetics:
             cosmetic.y = 0.4
@@ -255,12 +262,14 @@ class Car(Entity):
         self.car_type = "rally"
         self.model = "rally-car.obj"
         self.texture = "rally-red.png"
-        self.topspeed = 33
-        self.acceleration = 0.45
-        self.drift_amount = 4.3
-        self.min_drift_speed = 18
-        self.max_drift_speed = 38
+        self.topspeed = 34
+        self.acceleration = 0.46
+        self.drift_amount = 4
+        self.turning_speed = 7
+        self.min_drift_speed = 22
+        self.max_drift_speed = 40
         self.max_rotation_speed = 3
+        self.steering_amount = 9
         self.particle_pivot.position = (0, -1, -1.5)
         for cosmetic in self.cosmetics:
             cosmetic.y = 0.3
@@ -354,13 +363,21 @@ class Car(Entity):
             if self.pivot.rotation_y > self.rotation_y:
                 self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
                 self.speed += self.pivot_rotation_distance / self.drift_amount * time.dt
-                self.camera_rotation -= self.pivot_rotation_distance * time.dt
+                self.camera_rotation -= self.pivot_rotation_distance / 3 * time.dt
                 self.rotation_speed -= 1 * time.dt
+                if self.pivot_rotation_distance >= 50 or self.pivot_rotation_distance <= -50:
+                    self.drift_speed += self.pivot_rotation_distance / 5 * time.dt
+                else:
+                    self.drift_speed -= self.pivot_rotation_distance / 5 * time.dt
             if self.pivot.rotation_y < self.rotation_y:
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
                 self.speed -= self.pivot_rotation_distance / self.drift_amount * time.dt
-                self.camera_rotation += self.pivot_rotation_distance * time.dt
+                self.camera_rotation += self.pivot_rotation_distance / 3 * time.dt
                 self.rotation_speed += 1 * time.dt
+                if self.pivot_rotation_distance >= 50 or self.pivot_rotation_distance <= -50:
+                    self.drift_speed -= self.pivot_rotation_distance / 5 * time.dt
+                else:
+                    self.drift_speed += self.pivot_rotation_distance / 5 * time.dt
 
         # Change number of particles depending on the rotation of the car
         if self.pivot_rotation_distance > 20 or self.pivot_rotation_distance < -20:
@@ -408,11 +425,7 @@ class Car(Entity):
             # Braking
             if held_keys[self.controls[2] or held_keys["down arrow"]]:
                 self.speed -= self.braking_strenth * time.dt
-                if self.rotation_speed < 0:
-                    self.rotation_speed -= 2 * time.dt
-                elif self.rotation_speed > 0:
-                    self.rotation_speed += 2 * time.dt
-                self.drift_speed -= 15 * time.dt
+                self.drift_speed -= 20 * time.dt
 
             # Hand Braking
             if held_keys["space"]:
@@ -420,7 +433,7 @@ class Car(Entity):
                     self.rotation_speed -= 3 * time.dt
                 elif self.rotation_speed > 0:
                     self.rotation_speed += 3 * time.dt
-                self.drift_speed -= 20 * time.dt
+                self.drift_speed -= 40 * time.dt
                 self.speed -= 20 * time.dt
                 self.max_rotation_speed = 3.0
 
@@ -435,12 +448,14 @@ class Car(Entity):
         if self.speed != 0:
             if held_keys[self.controls[1]] or held_keys["left arrow"]:
                 self.rotation_speed -= self.steering_amount * time.dt
-                self.drift_speed -= 10 * time.dt
+                self.drift_speed -= 5 * time.dt
+                self.speed -= self.turning_speed * time.dt
             elif held_keys[self.controls[3]] or held_keys["right arrow"]:
                 self.rotation_speed += self.steering_amount * time.dt
-                self.drift_speed -= 10 * time.dt
+                self.drift_speed -= 5 * time.dt
+                self.speed -= self.turning_speed * time.dt
             else:
-                self.drift_speed += 0.01 * time.dt
+                self.drift_speed += 15 * time.dt
                 if self.rotation_speed > 0:
                     self.rotation_speed -= 5 * time.dt
                 elif self.rotation_speed < 0:
