@@ -63,6 +63,7 @@ class Car(Entity):
         self.particle_pivot.position = (0, -1, -2)
 
         # TrailRenderer
+        self.trail_pivot = Entity(parent = self, position = (0, -1, 2))
         self.trails = []
         self.start_trail = True
 
@@ -196,6 +197,7 @@ class Car(Entity):
         self.max_drift_speed = 38
         self.max_rotation_speed = 3
         self.particle_pivot.position = (0, -1, -1.5)
+        self.trail_pivot.position = (0, -1, 1.5)
         for cosmetic in self.cosmetics:
             cosmetic.y = 0
 
@@ -212,6 +214,7 @@ class Car(Entity):
         self.max_rotation_speed = 3
         self.steering_amount = 7.5
         self.particle_pivot.position = (0, -1, -1.8)
+        self.trail_pivot.position = (0, -1, 1.8)
         for cosmetic in self.cosmetics:
             cosmetic.y = 0
 
@@ -228,6 +231,7 @@ class Car(Entity):
         self.max_rotation_speed = 3
         self.steering_amount = 8
         self.particle_pivot.position = (0, -1, -3.5)
+        self.trail_pivot.position = (0, -1, 3.5)
         for cosmetic in self.cosmetics:
             cosmetic.y = 0.1
 
@@ -244,6 +248,7 @@ class Car(Entity):
         self.max_rotation_speed = 3
         self.steering_amount = 7
         self.particle_pivot.position = (0, -1, -3.5)
+        self.trail_pivot.position = (0, -1, 3.5)
         for cosmetic in self.cosmetics:
             cosmetic.y = 1.5
 
@@ -260,6 +265,7 @@ class Car(Entity):
         self.max_rotation_speed = 3
         self.steering_amount = 8
         self.particle_pivot.position = (0, -1, -1.5)
+        self.trail_pivot.position = (0, -1, 1.5)
         for cosmetic in self.cosmetics:
             cosmetic.y = 0.4
 
@@ -276,6 +282,7 @@ class Car(Entity):
         self.max_rotation_speed = 3
         self.steering_amount = 9
         self.particle_pivot.position = (0, -1, -1.5)
+        self.trail_pivot.position = (0, -1, 1.5)
         for cosmetic in self.cosmetics:
             cosmetic.y = 0.3
 
@@ -426,17 +433,19 @@ class Car(Entity):
                 destroy(self.particles, 1)
                 
                 # TrailRenderer / Skid Marks
-                if self.drift_speed <= self.min_drift_speed + 1 and self.start_trail:   
-                    self.trail_renderer1 = TrailRenderer(parent = self.particle_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 100)
-                    self.trail_renderer2 = TrailRenderer(parent = self.particle_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 100)
-                    self.trails = [self.trail_renderer1, self.trail_renderer2]
-                    self.start_trail = False
-                elif self.drift_speed > self.min_drift_speed + 1 and not self.start_trail:
-                    for trail in self.trails:
-                        trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
-                        destroy(trail.renderer, 10)
-                        destroy(trail)
-                    self.start_trail = True
+                if self.drift_speed <= self.min_drift_speed + 2 and self.start_trail:   
+                    if self.pivot_rotation_distance > 60 or self.pivot_rotation_distance < -60:
+                        trail_renderer1 = TrailRenderer(parent = self.particle_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 100)
+                        trail_renderer2 = TrailRenderer(parent = self.particle_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 100)
+                        self.trails = [trail_renderer1, trail_renderer2]
+                        self.start_trail = False
+                elif self.drift_speed > self.min_drift_speed + 2 and not self.start_trail:
+                    if self.pivot_rotation_distance < 60 or self.pivot_rotation_distance > -60:
+                        for trail in self.trails:
+                            trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
+                            destroy(trail.renderer, 10)
+                            destroy(trail)
+                        self.start_trail = True
             else:
                 self.speed -= self.friction * 5 * time.dt
                 self.camera_rotation += self.friction * 20 * time.dt
@@ -458,8 +467,10 @@ class Car(Entity):
 
         # If Car is hitting the ground, stop TrailRenderer
         if len(self.trails) == 2:
-            if y_ray.distance > 1.5:
+            if y_ray.distance > 2:
                 for trail in self.trails:
+                    trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
+                    destroy(trail.renderer, 10)
                     destroy(trail)
 
         # Steering
@@ -470,7 +481,7 @@ class Car(Entity):
         elif self.rotation_speed < 0:
             self.rotation_speed += self.speed / 6 * time.dt
 
-        if self.speed != 0:
+        if self.speed > 1:
             if held_keys[self.controls[1]] or held_keys["left arrow"]:
                 self.rotation_speed -= self.steering_amount * time.dt
                 self.drift_speed -= 5 * time.dt
@@ -485,6 +496,8 @@ class Car(Entity):
                     self.rotation_speed -= 5 * time.dt
                 elif self.rotation_speed < 0:
                     self.rotation_speed += 5 * time.dt
+        else:
+            self.rotation_speed = 0
 
         # Cap the speed
         if self.speed >= self.topspeed:
@@ -633,6 +646,8 @@ class Car(Entity):
             self.start_time = False
         if len(self.trails) == 2:
             for trail in self.trails:
+                trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
+                destroy(trail.renderer, 10)
                 destroy(trail)
 
     def simple_intersects(self, entity):

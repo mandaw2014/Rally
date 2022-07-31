@@ -1026,6 +1026,8 @@ class MainMenu(Entity):
                 self.start_time = False
             if len(self.car.trails) == 2:
                 for trail in self.car.trails:
+                    trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
+                    destroy(trail.renderer, 10)
                     destroy(trail)
 
         def main_menu():

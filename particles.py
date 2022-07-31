@@ -35,7 +35,7 @@ class TrailRenderer(Entity):
             mode = "line",
             thickness = thickness,
             static = False
-        ), color = color.rgba(10, 10, 10, 150))
+        ), color = color.rgba(10, 10, 10, 100))
 
         self._t = 0
         self.update_step = 0.025
