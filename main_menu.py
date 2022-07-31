@@ -401,7 +401,7 @@ class MainMenu(Entity):
                 self.car.visible = True
                 mouse.locked = True
                 self.maps_menu.disable()
-                self.car.position = (-5, -35, 90)
+                self.car.position = (-5, -35, 93)
                 self.car.rotation = (0, 90, 0)
                 self.car.reset_count_timer.enable()
 
@@ -439,7 +439,7 @@ class MainMenu(Entity):
                 self.car.visible = True
                 mouse.locked = True
                 self.maps_menu.disable()
-                self.car.position = (12, -35, 73)
+                self.car.position = (12, -35, 76)
                 self.car.rotation = (0, 90, 0)
                 self.car.reset_count_timer.enable()
 
@@ -447,7 +447,7 @@ class MainMenu(Entity):
                     for ai in ai_list:
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (12, -40, 73) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
+                        ai.position = (12, -35, 76) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_car()
                         ai.set_random_texture()
@@ -477,7 +477,7 @@ class MainMenu(Entity):
                 self.car.visible = True
                 mouse.locked = True
                 self.maps_menu.disable()
-                self.car.position = (-12, -35, 40)
+                self.car.position = (-14, -35, 42)
                 self.car.rotation = (0, 90, 0)
                 self.car.reset_count_timer.enable()
 
@@ -485,7 +485,7 @@ class MainMenu(Entity):
                     for ai in ai_list:
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (-12, -35, 40) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
+                        ai.position = (-14, -35, 42) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_car()
                         ai.set_random_texture()
@@ -954,7 +954,7 @@ class MainMenu(Entity):
                         ai.speed = 0
                         ai.velocity_y = 0
             elif snow_track.enabled:
-                self.car.position = (-5, -35, 90)
+                self.car.position = (-5, -35, 93)
                 self.car.rotation = (0, 90, 0)
                 if self.car.multiplayer_update == False and self.car.ai:
                     for ai in ai_list:
@@ -969,7 +969,7 @@ class MainMenu(Entity):
                         ai.speed = 0
                         ai.velocity_y = 0
             elif forest_track.enabled:
-                self.car.position = (12, -35, 73)
+                self.car.position = (12, -35, 76)
                 self.car.rotation = (0, 90, 0)
                 if self.car.multiplayer_update == False and self.car.ai:
                     for ai in ai_list:
@@ -984,14 +984,14 @@ class MainMenu(Entity):
                         ai.speed = 0
                         ai.velocity_y = 0
             elif savannah_track.enabled:
-                self.car.position = (-12, -35, 40)
+                self.car.position = (-14, -35, 42)
                 self.car.rotation = (0, 90, 0)
                 if self.car.multiplayer_update == False and self.car.ai:
                     for ai in ai_list:
                         ai.disable()
                         if ai.set_enabled:
                             ai.enable()
-                        ai.position = (-12, -35, 40) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
+                        ai.position = (-14, -35, 42) + (random.randint(-2, 2), random.randint(-2, 2), random.randint(-2, 2))
                         ai.rotation = (0, 90, 0)
                         ai.set_random_texture()
                         ai.next_path = ai.svp1

@@ -190,7 +190,7 @@ class Car(Entity):
         self.model = "sports-car.obj"
         self.texture = "sports-red.png"
         self.topspeed = 30
-        self.acceleration = 0.355
+        self.acceleration = 0.37
         self.drift_amount = 5
         self.turning_speed = 5
         self.min_drift_speed = 18
@@ -621,13 +621,13 @@ class Car(Entity):
             self.position = (-80, -30, 18.5)
             self.rotation = (0, 90, 0)
         elif self.snow_track.enabled:
-            self.position = (-5, -35, 90)
+            self.position = (-5, -35, 93)
             self.rotation = (0, 90, 0)
         elif self.forest_track.enabled:
-            self.position = (12, -40, 73)
+            self.position = (12, -35, 76)
             self.rotation = (0, 90, 0)
         elif self.savannah_track.enabled:
-            self.position = (-12, -35, 40)
+            self.position = (-14, -35, 42)
             self.rotation = (0, 90, 0)
         elif self.lake_track.enabled:
             self.position = (-121, -40, 158)
