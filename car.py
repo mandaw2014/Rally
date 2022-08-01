@@ -190,7 +190,7 @@ class Car(Entity):
         self.model = "sports-car.obj"
         self.texture = "sports-red.png"
         self.topspeed = 30
-        self.acceleration = 0.37
+        self.acceleration = 0.38
         self.drift_amount = 5
         self.turning_speed = 5
         self.min_drift_speed = 18
