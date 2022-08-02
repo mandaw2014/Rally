@@ -19,7 +19,9 @@
         "sports_car": true,
         "muscle_car": false,
         "limo": false,
-        "lorry": false
+        "lorry": false,
+        "hatchback": false,
+        "rally_car": false
     },
     "textures": {
         "sports_car": {
@@ -53,6 +55,22 @@
             "orange": false,
             "black": false,
             "white": true
+        },
+        "hatchback": {
+            "red": false,
+            "blue": false,
+            "green": true,
+            "orange": false,
+            "black": false,
+            "white": false
+        },
+        "rally_car": {
+            "red": true,
+            "blue": false,
+            "green": false,
+            "orange": false,
+            "black": false,
+            "white": false
         }
     },
     "cosmetics": {
