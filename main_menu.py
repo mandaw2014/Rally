@@ -576,7 +576,7 @@ class MainMenu(Entity):
             if grass_track.unlocked == False:
                 grass_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 19 seconds on Sand Track"
+                unlocked_text.text = "Get Less Than 20 seconds on Sand Track"
                 highscore_text.disable()
                 for i in grass_track.track:
                     i.alpha = 200
@@ -600,7 +600,7 @@ class MainMenu(Entity):
             if snow_track.unlocked == False:
                 snow_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 21 seconds on Grass Track"
+                unlocked_text.text = "Get Less Than 22 seconds on Grass Track"
                 highscore_text.disable()
                 for i in snow_track.track:
                     i.alpha = 200
@@ -624,7 +624,7 @@ class MainMenu(Entity):
             if forest_track.unlocked == False:
                 forest_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 35 seconds on Snow Track"
+                unlocked_text.text = "Get Less Than 38 seconds on Snow Track"
                 highscore_text.disable()
                 for i in forest_track.track:
                     i.alpha = 200
@@ -648,7 +648,7 @@ class MainMenu(Entity):
             if savannah_track.unlocked == False:
                 savannah_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 28 seconds on Forest Track"
+                unlocked_text.text = "Get Less Than 30 seconds on Forest Track"
                 highscore_text.disable()
                 for i in savannah_track.track:
                     i.alpha = 200
@@ -672,7 +672,7 @@ class MainMenu(Entity):
             if lake_track.unlocked == False:
                 lake_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 17 seconds on Savannah Track"
+                unlocked_text.text = "Get Less Than 18 seconds on Savannah Track"
                 highscore_text.disable()
                 for i in lake_track.track:
                     i.alpha = 200
@@ -692,7 +692,7 @@ class MainMenu(Entity):
         lake_track_button = Button(text = "Lake Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = 0.5, parent = self.maps_menu)
         back_button = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
         
-        unlocked_text = Text("Get Less Than 19 seconds on Sand Track to Unlock Grass Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = -0.1, parent = self.maps_menu)
+        unlocked_text = Text("Get Less Than 20 seconds on Sand Track to Unlock Grass Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = -0.1, parent = self.maps_menu)
         unlocked_text.disable()
 
         highscore_text = Text("", scale = 1.2, color = color.white, line_height = 2, origin = 0, y = -0.07, parent = self.maps_menu)
