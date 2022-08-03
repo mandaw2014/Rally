@@ -1024,7 +1024,7 @@ class MainMenu(Entity):
                 self.laps = 0
                 self.timer_running = False
                 self.start_time = False
-            if len(self.car.trails) == 2:
+            if len(self.car.trails) >= 1:
                 for trail in self.car.trails:
                     trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
                     destroy(trail.renderer, 10)
@@ -1058,7 +1058,7 @@ class MainMenu(Entity):
                     ai.disable()
                     ai.speed = 0
                     ai.velocity_y = 0
-            if len(self.car.trails) == 2:
+            if len(self.car.trails) >= 1:
                 for trail in self.car.trails:
                     destroy(trail)
                 

@@ -435,9 +435,11 @@ class Car(Entity):
                 # TrailRenderer / Skid Marks
                 if self.drift_speed <= self.min_drift_speed + 2 and self.start_trail:   
                     if self.pivot_rotation_distance > 60 or self.pivot_rotation_distance < -60:
-                        trail_renderer1 = TrailRenderer(parent = self.particle_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 100)
-                        trail_renderer2 = TrailRenderer(parent = self.particle_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 100)
-                        self.trails = [trail_renderer1, trail_renderer2]
+                        trail_renderer1 = TrailRenderer(parent = self.particle_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+                        trail_renderer2 = TrailRenderer(parent = self.particle_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+                        trail_renderer3 = TrailRenderer(parent = self.trail_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+                        trail_renderer4 = TrailRenderer(parent = self.trail_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+                        self.trails = [trail_renderer1, trail_renderer2, trail_renderer3, trail_renderer4]
                         self.start_trail = False
                 elif self.drift_speed > self.min_drift_speed + 2 and not self.start_trail:
                     if self.pivot_rotation_distance < 60 or self.pivot_rotation_distance > -60:
@@ -466,7 +468,7 @@ class Car(Entity):
                 self.max_rotation_speed = 3.0
 
         # If Car is hitting the ground, stop TrailRenderer
-        if len(self.trails) == 2:
+        if len(self.trails) >= 1:
             if y_ray.distance > 2:
                 for trail in self.trails:
                     trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
@@ -644,7 +646,7 @@ class Car(Entity):
             self.reset_count = 100.0
             self.laps = 0
             self.start_time = False
-        if len(self.trails) == 2:
+        if len(self.trails) >= 1:
             for trail in self.trails:
                 trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
                 destroy(trail.renderer, 10)
