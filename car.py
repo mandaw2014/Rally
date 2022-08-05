@@ -1,6 +1,6 @@
 from ursina import *
 from ursina import curve
-from particles import ParticleSystem, TrailRenderer
+from particles import Particles, TrailRenderer
 import json
 
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
@@ -413,7 +413,7 @@ class Car(Entity):
                 self.camera_rotation -= self.acceleration * 30 * time.dt
 
                 # Particles
-                self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
+                self.particles = Particles(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
                 # Set Particle Texture based on Track
                 if self.sand_track.enabled:
                     self.particles.texture = "particle_sand_track.png"
@@ -443,11 +443,13 @@ class Car(Entity):
                         self.start_trail = False
                 elif self.drift_speed > self.min_drift_speed + 2 and not self.start_trail:
                     if self.pivot_rotation_distance < 60 or self.pivot_rotation_distance > -60:
-                        for trail in self.trails:
-                            trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
-                            destroy(trail.renderer, 10)
-                            destroy(trail)
-                        self.start_trail = True
+                        if len(self.trails) == 4:
+                            for trail in self.trails:
+                                trail.disable()
+                                trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
+                                destroy(trail.renderer, 10)
+                                destroy(trail, 10)
+                            self.start_trail = True
             else:
                 self.speed -= self.friction * 5 * time.dt
                 self.camera_rotation += self.friction * 20 * time.dt
@@ -467,13 +469,15 @@ class Car(Entity):
                 self.speed -= 20 * time.dt
                 self.max_rotation_speed = 3.0
 
-        # If Car is hitting the ground, stop TrailRenderer
-        if len(self.trails) >= 1:
-            if y_ray.distance > 2:
+        # If Car is not hitting the ground, stop TrailRenderer
+        if len(self.trails) == 4:
+            if y_ray.distance > 2.5:
                 for trail in self.trails:
-                    trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
+                    trail.disable()
+                    trail.renderer.fade_out(duration = 1, delay = 9, curve = curve.linear)
                     destroy(trail.renderer, 10)
-                    destroy(trail)
+                    destroy(trail, 10)
+                self.start_trail = True
 
         # Steering
         self.rotation_y += self.rotation_speed * 50 * time.dt
@@ -634,6 +638,7 @@ class Car(Entity):
         elif self.lake_track.enabled:
             self.position = (-121, -40, 158)
             self.rotation = (0, 90, 0)
+        camera.world_rotation_y = self.rotation_y
         self.speed = 0
         self.velocity_y = 0
         self.anti_cheat = 1
@@ -646,11 +651,14 @@ class Car(Entity):
             self.reset_count = 100.0
             self.laps = 0
             self.start_time = False
-        if len(self.trails) >= 1:
+        if len(self.trails) == 4:
             for trail in self.trails:
-                trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
+                trail.disable()
+                trail.renderer.fade_out(duration = 1, delay = 9, curve = curve.linear)
                 destroy(trail.renderer, 10)
-                destroy(trail)
+                destroy(trail, 10.5)
+                invoke(self.delete_trail, trail, delay = 11)
+            self.start_trail = True
 
     def simple_intersects(self, entity):
         """
@@ -936,6 +944,9 @@ class Car(Entity):
         self.count = self.reset_count
         self.timer.enable()
         self.reset_count_timer.disable()
+
+    def delete_trail(self, trail):
+        del trail
 
     def animate_highscore(self, direction = "down"):
         """

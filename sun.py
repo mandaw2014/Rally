@@ -11,8 +11,8 @@ class SunLight(Entity):
         dlight.setShadowCaster(True, resolution, resolution)
 
         lens = dlight.getLens()
-        lens.setNearFar(-80, 40)
-        lens.setFilmSize((60, 60))
+        lens.setNearFar(-80, 200)
+        lens.setFilmSize((100, 100))
 
         self.dlnp = render.attachNewNode(dlight)
         self.dlnp.lookAt(direction)

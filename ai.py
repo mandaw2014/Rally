@@ -1,6 +1,6 @@
 from ursina import *
 from ursina import curve
-from particles import ParticleSystem
+from particles import Particles
 
 sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
@@ -293,7 +293,7 @@ class AICar(Entity):
             if r == 0:
                 self.speed += self.acceleration * self.difficulty * time.dt
 
-                self.particles = ParticleSystem(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
+                self.particles = Particles(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
                 if self.sand_track.enabled:
                     self.particles.texture = "particle_sand_track.png"
                 elif self.grass_track.enabled:
@@ -307,7 +307,7 @@ class AICar(Entity):
                 else:
                     self.particles.texture = "particle_sand_track.png"
                 self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
-                invoke(self.particles.destroy, delay = 1)
+                destroy(self.particles, 1)
 
         # Main AI bit
         # If the ai's rotation y does not equal the next paths rotation, change it

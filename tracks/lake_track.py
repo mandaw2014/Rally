@@ -20,9 +20,10 @@ class LakeTrack(Entity):
 
         self.trees = Entity(model = "trees-lake.obj", texture = "tree-lake.png", y = -50, rotation_y = 90, scale = 14)
         self.rocks = Entity(model = "rocks-lake.obj", texture = "rock-lake.png", y = -50, rotation_y = 90, scale = 14)
+        self.grass = Entity(model = "grass-lake.obj", texture = "grass-lake.png", y = -50, rotation_y = 90, scale = 14)
 
         self.track = [
-            self.finish_line, self.boundaries, self.lake_bounds, self.wall_trigger, self.trees, self.rocks
+            self.finish_line, self.boundaries, self.lake_bounds, self.wall_trigger, self.trees, self.rocks, self.grass
         ]
         
         for i in self.track:

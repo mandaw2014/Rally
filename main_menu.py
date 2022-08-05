@@ -71,6 +71,8 @@ class MainMenu(Entity):
         self.car.position = (-80, -42, 18.8)
         self.car.visible = True
         self.grass_track.enable()
+        for details in self.grass_track.track:
+            details.enable()
 
         def singleplayer():
             car.multiplayer = False
@@ -576,7 +578,7 @@ class MainMenu(Entity):
             if grass_track.unlocked == False:
                 grass_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 20 seconds on Sand Track"
+                unlocked_text.text = "Get Less Than 22 seconds on Sand Track"
                 highscore_text.disable()
                 for i in grass_track.track:
                     i.alpha = 200
@@ -600,7 +602,7 @@ class MainMenu(Entity):
             if snow_track.unlocked == False:
                 snow_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 22 seconds on Grass Track"
+                unlocked_text.text = "Get Less Than 23 seconds on Grass Track"
                 highscore_text.disable()
                 for i in snow_track.track:
                     i.alpha = 200
@@ -624,7 +626,7 @@ class MainMenu(Entity):
             if forest_track.unlocked == False:
                 forest_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 38 seconds on Snow Track"
+                unlocked_text.text = "Get Less Than 40 seconds on Snow Track"
                 highscore_text.disable()
                 for i in forest_track.track:
                     i.alpha = 200
@@ -648,7 +650,7 @@ class MainMenu(Entity):
             if savannah_track.unlocked == False:
                 savannah_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 30 seconds on Forest Track"
+                unlocked_text.text = "Get Less Than 32 seconds on Forest Track"
                 highscore_text.disable()
                 for i in savannah_track.track:
                     i.alpha = 200
@@ -672,7 +674,7 @@ class MainMenu(Entity):
             if lake_track.unlocked == False:
                 lake_track.alpha = 200
                 unlocked_text.enable()
-                unlocked_text.text = "Get Less Than 18 seconds on Savannah Track"
+                unlocked_text.text = "Get Less Than 20 seconds on Savannah Track"
                 highscore_text.disable()
                 for i in lake_track.track:
                     i.alpha = 200
@@ -1011,6 +1013,7 @@ class MainMenu(Entity):
                         ai.next_path = ai.lp1
                         ai.speed = 0
                         ai.velocity_y = 0
+            camera.world_rotation_y = self.car.rotation_y
             self.car.speed = 0
             self.car.anti_cheat = 1
             self.car.velocity_y = 0
@@ -1024,11 +1027,6 @@ class MainMenu(Entity):
                 self.laps = 0
                 self.timer_running = False
                 self.start_time = False
-            if len(self.car.trails) >= 1:
-                for trail in self.car.trails:
-                    trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
-                    destroy(trail.renderer, 10)
-                    destroy(trail)
 
         def main_menu():
             self.car.position = (0, 0, 4)
@@ -1051,16 +1049,16 @@ class MainMenu(Entity):
                 track.disable()
                 track.alpha = 255
                 for i in track.track:
-                    i.disable()
+                    if track != self.grass_track:
+                        i.disable()
+                    else:
+                        i.enable()
             grass_track.enable()
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
                     ai.disable()
                     ai.speed = 0
                     ai.velocity_y = 0
-            if len(self.car.trails) >= 1:
-                for trail in self.car.trails:
-                    destroy(trail)
                 
         p_resume_button = Button(text = "Resume", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
         p_respawn_button = Button(text = "Respawn", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)

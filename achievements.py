@@ -136,7 +136,7 @@ class RallyAchievements():
             if menu.enabled == False:
                 if self.car.enabled and self.car.last_count != 0:
                     if self.sand_track.enabled and self.sand_track.unlocked:
-                        if self.car.last_count <= 20:
+                        if self.car.last_count <= 22:
                             # Unlock Grass Track
                             self.grass_track.unlocked = True
                             self.car.save_unlocked()
@@ -147,7 +147,7 @@ class RallyAchievements():
             if menu.enabled == False:
                 if self.car.enabled and self.car.last_count != 0:
                     if self.grass_track.enabled and self.grass_track.unlocked:
-                        if self.car.last_count <= 22:
+                        if self.car.last_count <= 23:
                             # Unlock Snow Track
                             self.snow_track.unlocked = True
                             self.car.save_unlocked()
@@ -158,7 +158,7 @@ class RallyAchievements():
             if menu.enabled == False:
                 if self.car.enabled and self.car.last_count != 0:
                     if self.snow_track.enabled and self.snow_track.unlocked:
-                        if self.car.last_count <= 38:
+                        if self.car.last_count <= 40:
                             # Unlock Forest Track
                             self.forest_track.unlocked = True
                             self.car.save_unlocked()
@@ -169,7 +169,7 @@ class RallyAchievements():
             if menu.enabled == False:
                 if self.car.enabled and self.car.last_count != 0:
                     if self.forest_track.enabled and self.forest_track.unlocked:
-                        if self.car.last_count <= 30:
+                        if self.car.last_count <= 32:
                             # Unlock Savannah Track
                             self.savannah_track.unlocked = True
                             self.car.save_unlocked()
@@ -180,7 +180,7 @@ class RallyAchievements():
             if menu.enabled == False:
                 if self.car.enabled and self.car.last_count != 0:
                     if self.savannah_track.enabled and self.savannah_track.unlocked:
-                        if self.car.last_count <= 18:
+                        if self.car.last_count <= 20:
                             # Unlock Lake Track
                             self.lake_track.unlocked = True
                             self.car.save_unlocked()

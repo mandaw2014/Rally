@@ -53,8 +53,8 @@ def load_assets():
         "sand_track_bounds.obj", "grass_track_bounds.obj", "snow_track_bounds.obj", 
         "forest_track_bounds.obj", "savannah_track_bounds.obj", "lake_track_bounds.obj",
         # Track Details
-        "rocks-sand.obj", "trees-grass.obj", "trees-snow.obj", "trees-forest.obj", "rocks-savannah.obj",
-        "trees-lake.obj", "rocks-lake.obj", "lake_bounds.obj",
+        "rocks-sand.obj", "cacti-sand.obj", "trees-grass.obj", "rocks-grass.obj", "grass-grass_track.obj", "trees-snow.obj", "trees-forest.obj", "rocks-savannah.obj",
+        "trees-lake.obj", "rocks-lake.obj", "grass-lake.obj", "lake_bounds.obj",
         # Cosmetics
         "viking_helmet.obj", "duck.obj", "banana.obj", "surfinbird.obj", "surfboard.obj"
     ]
@@ -79,8 +79,8 @@ def load_assets():
         "sand_track.png", "grass_track.png", "snow_track.png", "forest_track.png",
         "savannah_track.png", "lake_track.png",
         # Track Detail Textures
-        "rock-sand.png", "tree-grass.png", "tree-snow.png", "tree-forest.png", "rock-savannah.png",
-        "tree-lake.png", "rock-lake.png",
+        "rock-sand.png", "cactus-sand.png", "tree-grass.png", "rock-grass.png", "grass-grass_track.png", "tree-snow.png", "tree-forest.png", "rock-savannah.png",
+        "tree-lake.png", "rock-lake.png", "grass-lake.png",
         # Particle Textures
         "particle_sand_track.png", "particle_grass_track.png", "particle_snow_track", 
         "particle_forest_track.png", "particle_savannah_track.png", "particle_lake_track.png",
