@@ -474,7 +474,7 @@ class Car(Entity):
             if y_ray.distance > 2.5:
                 for trail in self.trails:
                     trail.disable()
-                    trail.renderer.fade_out(duration = 1, delay = 9, curve = curve.linear)
+                    trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
                     destroy(trail.renderer, 10)
                     destroy(trail, 10)
                 self.start_trail = True
@@ -654,10 +654,9 @@ class Car(Entity):
         if len(self.trails) == 4:
             for trail in self.trails:
                 trail.disable()
-                trail.renderer.fade_out(duration = 1, delay = 9, curve = curve.linear)
+                trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
                 destroy(trail.renderer, 10)
-                destroy(trail, 10.5)
-                invoke(self.delete_trail, trail, delay = 11)
+                destroy(trail, 10)
             self.start_trail = True
 
     def simple_intersects(self, entity):
@@ -944,9 +943,6 @@ class Car(Entity):
         self.count = self.reset_count
         self.timer.enable()
         self.reset_count_timer.disable()
-
-    def delete_trail(self, trail):
-        del trail
 
     def animate_highscore(self, direction = "down"):
         """
