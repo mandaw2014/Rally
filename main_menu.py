@@ -71,8 +71,10 @@ class MainMenu(Entity):
         self.car.position = (-80, -42, 18.8)
         self.car.visible = True
         self.grass_track.enable()
-        for details in self.grass_track.track:
-            details.enable()
+        for track in self.grass_track.track:
+            track.enable()
+        for detail in self.grass_track.details:
+            detail.enable()
 
         def singleplayer():
             car.multiplayer = False
@@ -84,8 +86,15 @@ class MainMenu(Entity):
             for track in self.tracks:
                 for i in track.track:
                     i.disable()
+                for i in track.details:
+                    i.disable()
             for track in self.grass_track.track:
                 track.enable()
+            if self.car.graphics != "ultra fast":
+                for detail in self.grass_track.details:
+                    detail.enable()
+            if self.car.graphics == "fast":
+                self.grass_track.grass.disable()
 
         def multiplayer():
             self.start_menu.disable()
@@ -97,8 +106,12 @@ class MainMenu(Entity):
             for track in self.tracks:
                 for i in track.track:
                     i.disable()
+                for i in track.details:
+                    i.disable()
             for track in self.snow_track.track:
                 track.enable()
+            if self.car.graphics != "ultra fast":
+                self.snow_track.trees.enable()
 
         def quit():
             application.quit()
@@ -147,8 +160,13 @@ class MainMenu(Entity):
                 for track in self.tracks:
                     for i in track.track:
                         i.disable()
+                    for i in track.details:
+                        i.disable()
                 for track in self.sand_track.track:
                     track.enable()
+                if self.car.graphics != "ultra fast":
+                    for detail in self.sand_track.details:
+                        detail.enable()
 
         def join_server_func():
             self.host_menu.disable()
@@ -160,8 +178,13 @@ class MainMenu(Entity):
             for track in self.tracks:
                 for i in track.track:
                     i.disable()
+                for i in track.details:
+                    i.disable()
             for track in self.sand_track.track:
                 track.enable()
+            if self.car.graphics != "ultra fast":
+                for detail in self.sand_track.details:
+                    detail.enable()
 
         def back_host():
             self.host_menu.disable()
@@ -174,8 +197,15 @@ class MainMenu(Entity):
             for track in self.tracks:
                 for i in track.track:
                     i.disable()
+                for i in track.details:
+                    i.disable()
             for track in self.grass_track.track:
                 track.enable()
+            if self.car.graphics != "ultra fast":
+                for detail in self.grass_track.details:
+                    detail.enable()
+            if self.car.graphics == "fast":
+                self.grass_track.grass.disable()
         
         self.car.host_ip = InputField(default_value = "IP", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.host_menu)
         self.car.host_port = InputField(default_value = "PORT", limit_content_to = "0123456789", color = color.black, alpha = 100, y = 0.02, parent = self.host_menu)
@@ -205,8 +235,15 @@ class MainMenu(Entity):
             for track in self.tracks:
                 for i in track.track:
                     i.disable()
+                for i in track.details:
+                    i.disable()
             for track in self.grass_track.track:
                 track.enable()
+            if self.car.graphics != "ultra fast":
+                for detail in self.grass_track.details:
+                    detail.enable()
+            if self.car.graphics == "fast":
+                self.grass_track.grass.disable()
 
         def stop_server():
             application.quit()
@@ -237,8 +274,15 @@ class MainMenu(Entity):
                 for track in self.tracks:
                     for i in track.track:
                         i.disable()
+                    for i in track.details:
+                        i.disable()
                 for track in self.grass_track.track:
                     track.enable()
+                if self.car.graphics != "ultra fast":
+                    for detail in self.grass_track.details:
+                        detail.enable()
+                if self.car.graphics == "fast":
+                    self.grass_track.grass.disable()
 
         def back_server():
             self.host_menu.enable()
@@ -250,8 +294,13 @@ class MainMenu(Entity):
             for track in self.tracks:
                 for i in track.track:
                     i.disable()
+                for i in track.details:
+                    i.disable()
             for track in self.snow_track.track:
                 track.enable()
+            if self.car.graphics != "ultra fast":
+                for detail in self.snow_track.details:
+                    detail.enable()
 
         car.username = InputField(default_value = car.username_text, color = color.black, alpha = 100, y = 0.18, parent = self.server_menu)
         car.ip = InputField(default_value = "IP", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.server_menu)
@@ -276,8 +325,15 @@ class MainMenu(Entity):
             for track in self.tracks:
                 for i in track.track:
                     i.disable()
+                for i in track.details:
+                    i.disable()
             for track in self.grass_track.track:
                 track.enable()
+            if self.car.graphics != "ultra fast":
+                for detail in self.grass_track.details:
+                    detail.enable()
+            if self.car.graphics == "fast":
+                self.grass_track.grass.disable()
 
         title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.main_menu, y = 0.3)
 
@@ -309,8 +365,15 @@ class MainMenu(Entity):
                 track.disable()
                 for i in track.track:
                     i.disable()
+                for i in track.details:
+                    i.disable()
             for track in self.grass_track.track:
                 track.enable()
+            if self.car.graphics != "ultra fast":
+                for detail in self.grass_track.details:
+                    detail.enable()
+            if self.car.graphics == "fast":
+                self.grass_track.grass.disable()
             grass_track.enable()
 
         def ai_func():
@@ -345,6 +408,8 @@ class MainMenu(Entity):
                     track.disable()
                     for i in track.track:
                         i.disable()
+                    for i in track.details:
+                        i.disable()
 
                 sand_track.enable()
                 sand_track.played = True
@@ -352,6 +417,10 @@ class MainMenu(Entity):
                 for s in sand_track.track:
                     s.enable()
                     s.alpha = 255
+                if self.car.graphics != "ultra fast":
+                    for detail in sand_track.details:
+                        detail.enable()
+                        detail.alpha = 255
 
                 if self.car.time_trial == False:
                     self.car.highscore_count = float(self.car.sand_track_hs)
@@ -383,6 +452,8 @@ class MainMenu(Entity):
                     track.disable()
                     for i in track.track:
                         i.disable()
+                    for i in track.details:
+                        i.disable()
 
                 grass_track.enable()
                 grass_track.played = True
@@ -390,6 +461,12 @@ class MainMenu(Entity):
                 for g in grass_track.track:
                     g.enable()
                     g.alpha = 255
+                if self.car.graphics != "ultra fast":
+                    for detail in grass_track.details:
+                        detail.enable()
+                        detail.alpha = 255
+                if self.car.graphics == "fast":
+                    grass_track.grass.disable()
 
                 if self.car.time_trial == False:
                     self.car.highscore_count = float(self.car.grass_track_hs)
@@ -421,6 +498,8 @@ class MainMenu(Entity):
                     track.disable()
                     for i in track.track:
                         i.disable()
+                    for i in track.details:
+                        i.disable()
 
                 snow_track.enable()
                 snow_track.played = True
@@ -428,6 +507,10 @@ class MainMenu(Entity):
                 for s in snow_track.track:
                     s.enable()
                     s.alpha = 255
+                if self.car.graphics != "ultra fast":
+                    for detail in snow_track.details:
+                        detail.enable()
+                        detail.alpha = 255
 
                 if self.car.time_trial == False:
                     self.car.highscore_count = float(self.car.snow_track_hs)
@@ -459,6 +542,8 @@ class MainMenu(Entity):
                     track.disable()
                     for i in track.track:
                         i.disable()
+                    for i in track.details:
+                        i.disable()
 
                 forest_track.enable()
                 forest_track.played = True
@@ -466,6 +551,10 @@ class MainMenu(Entity):
                 for f in forest_track.track:
                     f.enable()
                     f.alpha = 255
+                if self.car.graphics != "ultra fast":
+                    for detail in forest_track.details:
+                        detail.enable()
+                        detail.alpha = 255
 
                 if self.car.time_trial == False:
                     self.car.highscore_count = float(self.car.forest_track_hs)
@@ -497,6 +586,8 @@ class MainMenu(Entity):
                     track.disable()
                     for i in track.track:
                         i.disable()
+                    for i in track.details:
+                        i.disable()
 
                 savannah_track.enable()
                 savannah_track.played = True
@@ -504,6 +595,10 @@ class MainMenu(Entity):
                 for s in savannah_track.track:
                     s.enable()
                     s.alpha = 255
+                if self.car.graphics != "ultra fast":
+                    for detail in savannah_track.details:
+                        detail.enable()
+                        detail.alpha = 255
 
                 if self.car.time_trial == False:
                     self.car.highscore_count = float(self.car.savannah_track_hs)
@@ -535,6 +630,8 @@ class MainMenu(Entity):
                     track.disable()
                     for i in track.track:
                         i.disable()
+                    for i in track.details:
+                        i.disable()
 
                 lake_track.enable()
                 lake_track.played = True
@@ -542,6 +639,13 @@ class MainMenu(Entity):
                 for l in lake_track.track:
                     l.enable()
                     l.alpha = 255
+                if self.car.graphics != "ultra fast":
+                    for detail in lake_track.details:
+                        detail.enable()
+                        detail.alpha = 255
+                if self.car.graphics == "fast":
+                    lake_track.grass.disable()
+                    lake_track.rocks.disable()
 
                 if self.car.time_trial == False:
                     self.car.highscore_count = float(self.car.lake_track_hs)
@@ -558,6 +662,12 @@ class MainMenu(Entity):
                         i.disable()
                     else:
                         i.enable()
+                if self.car.graphics != "ultra fast":
+                    for i in track.details:
+                        if track != sand_track:
+                            i.disable()
+                        else:
+                            i.enable()
             sand_track.enable()
             self.car.position = (-40, 30, -175)
             unlocked_text.disable()
@@ -573,6 +683,14 @@ class MainMenu(Entity):
                         i.disable()
                     else:
                         i.enable()
+                if self.car.graphics != "ultra fast":
+                    for i in track.details:
+                        if track != grass_track:
+                            i.disable()
+                        else:
+                            i.enable()
+                if self.car.graphics == "fast":
+                    grass_track.grass.disable()
             grass_track.enable()
             self.car.position = (20, 30, -100)
             if grass_track.unlocked == False:
@@ -581,6 +699,8 @@ class MainMenu(Entity):
                 unlocked_text.text = "Get Less Than 22 seconds on Sand Track"
                 highscore_text.disable()
                 for i in grass_track.track:
+                    i.alpha = 200
+                for i in grass_track.details:
                     i.alpha = 200
             else:
                 if not self.car.time_trial:
@@ -597,6 +717,12 @@ class MainMenu(Entity):
                         i.disable()
                     else:
                         i.enable()
+                if self.car.graphics != "ultra fast":
+                    for i in track.details:
+                        if track != snow_track:
+                            i.disable()
+                        else:
+                            i.enable()
             snow_track.enable()
             self.car.position = (20, 30, -80)
             if snow_track.unlocked == False:
@@ -605,6 +731,8 @@ class MainMenu(Entity):
                 unlocked_text.text = "Get Less Than 23 seconds on Grass Track"
                 highscore_text.disable()
                 for i in snow_track.track:
+                    i.alpha = 200
+                for i in snow_track.details:
                     i.alpha = 200
             else:
                 if not self.car.time_trial:
@@ -621,6 +749,12 @@ class MainMenu(Entity):
                         i.disable()
                     else:
                         i.enable()
+                if self.car.graphics != "ultra fast":
+                    for i in track.details:
+                        if track != forest_track:
+                            i.disable()
+                        else:
+                            i.enable()
             forest_track.enable()
             self.car.position = (50, 30, -100)
             if forest_track.unlocked == False:
@@ -629,6 +763,8 @@ class MainMenu(Entity):
                 unlocked_text.text = "Get Less Than 40 seconds on Snow Track"
                 highscore_text.disable()
                 for i in forest_track.track:
+                    i.alpha = 200
+                for i in forest_track.details:
                     i.alpha = 200
             else:
                 if not self.car.time_trial:
@@ -645,6 +781,12 @@ class MainMenu(Entity):
                         i.disable()
                     else:
                         i.enable()
+                if self.car.graphics != "ultra fast":
+                    for i in track.details:
+                        if track != savannah_track:
+                            i.disable()
+                        else:
+                            i.enable()
             savannah_track.enable()
             self.car.position = (25, 30, -130)
             if savannah_track.unlocked == False:
@@ -653,6 +795,8 @@ class MainMenu(Entity):
                 unlocked_text.text = "Get Less Than 32 seconds on Forest Track"
                 highscore_text.disable()
                 for i in savannah_track.track:
+                    i.alpha = 200
+                for i in savannah_track.details:
                     i.alpha = 200
             else:
                 if not self.car.time_trial:
@@ -669,6 +813,15 @@ class MainMenu(Entity):
                         i.disable()
                     else:
                         i.enable()
+                if self.car.graphics != "ultra fast":
+                    for i in track.details:
+                        if track != lake_track:
+                            i.disable()
+                        else:
+                            i.enable()
+                if self.car.graphics == "fast":
+                    lake_track.grass.disable()
+                    lake_track.rocks.disable()
             lake_track.enable()
             self.car.position = (140, 200, -350)
             if lake_track.unlocked == False:
@@ -677,6 +830,8 @@ class MainMenu(Entity):
                 unlocked_text.text = "Get Less Than 20 seconds on Savannah Track"
                 highscore_text.disable()
                 for i in lake_track.track:
+                    i.alpha = 200
+                for i in lake_track.details:
                     i.alpha = 200
             else:
                 if not self.car.time_trial:
@@ -806,6 +961,30 @@ class MainMenu(Entity):
 
         # Gameplay Menu
 
+        def graphics():
+            if self.car.graphics == "fancy":
+                self.car.graphics = "fast"
+                graphics_button.text = "Graphics: Fast"
+                for track in self.tracks:
+                    if track.enabled:
+                        for detail in track.details:
+                            detail.enable()
+                        grass_track.grass.disable()
+            elif self.car.graphics == "fast":
+                self.car.graphics = "ultra fast"
+                graphics_button.text = "Graphics: Ultra Fast"
+                for track in self.tracks:
+                    if track.enabled:
+                        for detail in track.details:
+                            detail.disable()
+            elif self.car.graphics == "ultra fast":
+                self.car.graphics = "fancy"
+                graphics_button.text = "Graphics: Fancy"
+                for track in self.tracks:
+                    if track.enabled:
+                        for detail in track.details:
+                            detail.enable()
+
         def camera_angle():
             if self.car.camera_angle == "top":
                 self.car.camera_angle = "side"
@@ -832,11 +1011,13 @@ class MainMenu(Entity):
             self.gameplay_menu.disable()
             self.settings_menu.enable()
 
+        graphics_button = Button("Graphics: Fancy", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.24, parent = self.gameplay_menu)
         camera_angle_button = Button("Camera Angle: Top", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.gameplay_menu)
         camera_shake_button = Button("Camera Shake: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.gameplay_menu)
         reset_highsore_button = Button(text = "Reset Highscore", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.gameplay_menu)
         back_button_gameplay = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.24, parent = self.gameplay_menu)
 
+        graphics_button.on_click = Func(graphics)
         camera_angle_button.on_click = Func(camera_angle)
         camera_shake_button.on_click = Func(camera_shake)
         reset_highsore_button.on_click = Func(self.car.reset_highscore)
@@ -1027,6 +1208,13 @@ class MainMenu(Entity):
                 self.laps = 0
                 self.timer_running = False
                 self.start_time = False
+            if len(self.car.trails) >= 1:
+                for trail in self.car.trails:
+                    trail.disable()
+                    trail.renderer.fade_out(duration = 1, delay = 9, curve = curve.linear)
+                    destroy(trail.renderer, 10)
+                    destroy(trail, 10)
+                self.car.start_trail = True
 
         def main_menu():
             self.car.position = (0, 0, 4)
@@ -1053,12 +1241,26 @@ class MainMenu(Entity):
                         i.disable()
                     else:
                         i.enable()
+                if self.car.graphics != "ultra fast":
+                    for i in track.details:
+                        if track != grass_track:
+                            i.disable()
+                        else:
+                            i.enable()
+                if self.car.graphics == "fast":
+                    grass_track.grass.disable()
             grass_track.enable()
             if self.car.multiplayer_update == False and self.car.ai:
                 for ai in ai_list:
                     ai.disable()
                     ai.speed = 0
                     ai.velocity_y = 0
+            if len(self.car.trails) >= 1:
+                for trail in self.car.trails:
+                    trail.disable()
+                    destroy(trail.renderer)
+                    destroy(trail)
+                self.car.start_trail = True
                 
         p_resume_button = Button(text = "Resume", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
         p_respawn_button = Button(text = "Respawn", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)
@@ -1081,8 +1283,15 @@ class MainMenu(Entity):
             for track in self.tracks:
                 for i in track.track:
                     i.disable()
+                for i in track.details:
+                    i.disable()
             for track in self.grass_track.track:
                 track.enable()
+            if self.car.graphics != "ultra fast":
+                for detail in grass_track.details:
+                    detail.enable()
+            if self.car.graphics == "fast":
+                grass_track.grass.disable()
 
             self.car.highscore_count = float(self.car.grass_track_hs)
 
