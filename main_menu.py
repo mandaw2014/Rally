@@ -1209,7 +1209,8 @@ class MainMenu(Entity):
                 self.timer_running = False
                 self.start_time = False
             for trail in self.car.trails:
-                trail.end_trail()
+                if trail.trailing:
+                    trail.end_trail()
             self.car.start_trail = True
 
         def main_menu():
@@ -1252,7 +1253,8 @@ class MainMenu(Entity):
                     ai.speed = 0
                     ai.velocity_y = 0
             for trail in self.car.trails:
-                trail.end_trail()
+                if trail.trailing:
+                    trail.end_trail()
             self.car.start_trail = True
                 
         p_resume_button = Button(text = "Resume", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
