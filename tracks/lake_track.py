@@ -23,10 +23,16 @@ class LakeTrack(Entity):
         self.grass = Entity(model = "grass-lake.obj", texture = "grass-lake.png", y = -50, rotation_y = 90, scale = 14)
 
         self.track = [
-            self.finish_line, self.boundaries, self.lake_bounds, self.wall_trigger, self.trees, self.rocks, self.grass
+            self.finish_line, self.boundaries, self.lake_bounds, self.wall_trigger
+        ]
+
+        self.details = [
+            self.trees, self.rocks, self.grass
         ]
         
         for i in self.track:
+            i.disable()
+        for i in self.details:
             i.disable()
 
         self.disable()

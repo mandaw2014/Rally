@@ -27,17 +27,22 @@ class ForestTrack(Entity):
 
         self.wall_trigger = Entity(model = "cube", position = (11, -45, -70), rotation = (0, 0, 0), scale = (3, 20, 40), visible = False)
 
-        trees = Entity(model = "trees-forest.obj", texture = "tree-forest.png", position = (0, -50, 0), scale = 12, rotation_y = 270)
+        self.trees = Entity(model = "trees-forest.obj", texture = "tree-forest.png", position = (0, -50, 0), scale = 12, rotation_y = 270)
 
         self.track = [
             self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
-            self.wall4, self.wall5, self.wall6, self.wall7, self.wall8, self.wall_trigger,
-            trees
+            self.wall4, self.wall5, self.wall6, self.wall7, self.wall8, self.wall_trigger
+        ]
+
+        self.details = [
+            self.trees
         ]
         
         self.disable()
 
         for i in self.track:
+            i.disable()
+        for i in self.details:
             i.disable()
         
         self.played = False

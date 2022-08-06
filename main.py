@@ -1,5 +1,4 @@
 from ursina import *
-from ursina.shaders import fxaa_shader
 from direct.stdpy import thread
 
 from car import Car

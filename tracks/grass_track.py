@@ -30,11 +30,17 @@ class GrassTrack(Entity):
 
         self.track = [
             self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
-            self.wall4, self.wall_trigger, self.wall_trigger_ramp, self.trees, self.rocks, self.grass
+            self.wall4, self.wall_trigger, self.wall_trigger_ramp
+        ]
+
+        self.details = [
+            self.trees, self.rocks, self.grass
         ]
         
         for i in self.track:
             i.enable()
+        for i in self.details:
+            i.disable()
 
         self.played = False
         self.unlocked = False

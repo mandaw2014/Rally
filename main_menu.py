@@ -1208,13 +1208,9 @@ class MainMenu(Entity):
                 self.laps = 0
                 self.timer_running = False
                 self.start_time = False
-            if len(self.car.trails) >= 1:
-                for trail in self.car.trails:
-                    trail.disable()
-                    trail.renderer.fade_out(duration = 1, delay = 9, curve = curve.linear)
-                    destroy(trail.renderer, 10)
-                    destroy(trail, 10)
-                self.car.start_trail = True
+            for trail in self.car.trails:
+                trail.end_trail()
+            self.car.start_trail = True
 
         def main_menu():
             self.car.position = (0, 0, 4)
@@ -1255,12 +1251,9 @@ class MainMenu(Entity):
                     ai.disable()
                     ai.speed = 0
                     ai.velocity_y = 0
-            if len(self.car.trails) >= 1:
-                for trail in self.car.trails:
-                    trail.disable()
-                    destroy(trail.renderer)
-                    destroy(trail)
-                self.car.start_trail = True
+            for trail in self.car.trails:
+                trail.end_trail()
+            self.car.start_trail = True
                 
         p_resume_button = Button(text = "Resume", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
         p_respawn_button = Button(text = "Respawn", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)
@@ -1308,8 +1301,13 @@ class MainMenu(Entity):
             for track in self.tracks:
                 for i in track.track:
                     i.disable()
+                for i in track.details:
+                    i.disable()
             for track in self.sand_track.track:
                 track.enable()
+            if self.car.graphics != "ultra fast":
+                for detail in sand_track.details:
+                    detail.enable()
 
         def cars_menu():
             self.cars_menu.enable()

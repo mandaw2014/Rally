@@ -20,10 +20,16 @@ class SavannahTrack(Entity):
         self.rocks = Entity(model = "rocks-savannah.obj", texture = "rock-savannah.png", y = -50, rotation_y = 270, scale = 27)
 
         self.track = [
-            self.finish_line, self.boundaries, self.wall_trigger, self.rocks
+            self.finish_line, self.boundaries, self.wall_trigger
+        ]
+
+        self.details = [
+            self.rocks
         ]
         
         for i in self.track:
+            i.disable()
+        for i in self.details:
             i.disable()
 
         self.played = False

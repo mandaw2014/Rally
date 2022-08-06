@@ -64,7 +64,13 @@ class Car(Entity):
 
         # TrailRenderer
         self.trail_pivot = Entity(parent = self, position = (0, -1, 2))
-        self.trails = []
+
+        self.trail_renderer1 = TrailRenderer(parent = self.particle_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+        self.trail_renderer2 = TrailRenderer(parent = self.particle_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+        self.trail_renderer3 = TrailRenderer(parent = self.trail_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+        self.trail_renderer4 = TrailRenderer(parent = self.trail_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+        
+        self.trails = [self.trail_renderer1, self.trail_renderer2, self.trail_renderer3, self.trail_renderer4]
         self.start_trail = True
 
         # Collision
@@ -440,21 +446,15 @@ class Car(Entity):
                     if self.graphics != "fast":
                         if self.drift_speed <= self.min_drift_speed + 2 and self.start_trail:   
                             if self.pivot_rotation_distance > 60 or self.pivot_rotation_distance < -60:
-                                trail_renderer1 = TrailRenderer(parent = self.particle_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
-                                trail_renderer2 = TrailRenderer(parent = self.particle_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
-                                trail_renderer3 = TrailRenderer(parent = self.trail_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
-                                trail_renderer4 = TrailRenderer(parent = self.trail_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
-                                self.trails = [trail_renderer1, trail_renderer2, trail_renderer3, trail_renderer4]
+                                for trail in self.trails:
+                                    trail.start_trail()
                                 self.start_trail = False
                         elif self.drift_speed > self.min_drift_speed + 2 and not self.start_trail:
                             if self.pivot_rotation_distance < 60 or self.pivot_rotation_distance > -60:
-                                if len(self.trails) == 4:
-                                    for trail in self.trails:
-                                        trail.disable()
-                                        trail.renderer.fade_out(duration = 1, delay = 9, curve = curve.linear)
-                                        destroy(trail.renderer, 10)
-                                        destroy(trail, 10)
-                                    self.start_trail = True
+                                for trail in self.trails:
+                                    if trail.trailing:
+                                        trail.end_trail()
+                                self.start_trail = True
             else:
                 self.speed -= self.friction * 5 * time.dt
                 self.camera_rotation += self.friction * 20 * time.dt
@@ -473,6 +473,13 @@ class Car(Entity):
                 self.drift_speed -= 40 * time.dt
                 self.speed -= 20 * time.dt
                 self.max_rotation_speed = 3.0
+
+        # If Car is not hitting the ground, stop the trail
+        if self.trail_renderer1.trailing:
+            if y_ray.distance > 2.5:
+                for trail in self.trails:
+                    trail.end_trail()
+                self.start_trail = True
 
         # Steering
         self.rotation_y += self.rotation_speed * 50 * time.dt
@@ -646,13 +653,9 @@ class Car(Entity):
             self.reset_count = 100.0
             self.laps = 0
             self.start_time = False
-        if len(self.trails) == 4:
-            for trail in self.trails:
-                trail.disable()
-                trail.renderer.fade_out(duration = 1, delay = 0.9, curve = curve.linear)
-                destroy(trail.renderer, 10)
-                destroy(trail, 10)
-            self.start_trail = True
+        for trail in self.trails:
+            trail.end_trail()
+        self.start_trail = True
 
     def simple_intersects(self, entity):
         """

@@ -40,10 +40,15 @@ class SnowTrack(Entity):
             self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
             self.wall4, self.wall5, self.wall6, self.wall7, self.wall8, self.wall9, 
             self.wall10, self.wall11, self.wall12, self.wall_trigger, self.wall_trigger_end,
+        ]
+
+        self.details = [
             self.trees
         ]
 
         for i in self.track:
+            i.disable()
+        for i in self.details:
             i.disable()
 
         self.played = False

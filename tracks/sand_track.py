@@ -28,12 +28,18 @@ class SandTrack(Entity):
 
         self.track = [
             self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
-            self.wall4, self.wall_trigger, self.cacti, self.rocks
+            self.wall4, self.wall_trigger
+        ]
+
+        self.details = [
+            self.cacti, self.rocks
         ]
         
         self.disable()
 
         for i in self.track:
+            i.disable()
+        for i in self.details:
             i.disable()
 
         self.played = False
