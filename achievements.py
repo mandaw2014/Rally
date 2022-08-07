@@ -253,7 +253,7 @@ class RallyAchievements():
             and self.car.beat_mandaw_snow_track and self.car.beat_mandaw_forest_track \
                 and self.car.beat_mandaw_savannah_track and self.car.beat_mandaw_lake_track:
                 # Unlock Surfin Bird
-                self.car.bird_unlocked = True
+                self.car.surfinbird_unlocked = True
                 self.car.save_unlocked()
                 return True
 
