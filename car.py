@@ -467,7 +467,7 @@ class Car(Entity):
                 self.max_rotation_speed = 3.0
 
         # If Car is not hitting the ground, stop the trail
-        if self.graphics == "fancy":
+        if self.graphics != "ultra fast":
             if y_ray.distance > 2.5:
                 if self.trail_renderer1.trailing:
                     for trail in self.trails:

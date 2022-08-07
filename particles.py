@@ -4,21 +4,14 @@ from ursina import curve
 class Particles(Entity):
     def __init__(self, car, position):
         super().__init__(
+            model = "particles.obj",
             scale = 0.1,
             position = position, 
             rotation_y = random.random() * 360
         )
-
-        if hasattr(car, "graphics"):
-            if car.graphics == "fancy":
-                self.model = "particles.obj"
-            else:
-                self.model = "particles_low_poly.obj"
-        else:
-            self.model = "particles.obj"
         
         self.car = car
-        self.direction = Vec3(random.random(), random.random(), random.random()) * 0.07
+        self.direction = Vec3(random.random(), random.random(), random.random())
 
         if car.sand_track.enabled:
             self.texture = "particle_sand_track.png"
@@ -36,7 +29,7 @@ class Particles(Entity):
             self.texture = "particle_sand_track.png"
 
     def update(self):
-        self.position += self.direction * 120 * time.dt
+        self.position += self.direction * 5 * time.dt
         if hasattr(self.car, "graphics"):
             if self.car.graphics != "fancy":
                 self.scale_x += 0.1 * time.dt
