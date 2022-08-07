@@ -2,28 +2,50 @@ from ursina import *
 from ursina import curve
 
 class Particles(Entity):
-    def __init__(self, position, rotation_y, number_of_particles):
+    def __init__(self, car, position):
         super().__init__(
-            model = "particles.obj", 
             scale = 0.1,
-            position = position,
-            rotation_y = rotation_y,
+            position = position, 
+            rotation_y = random.random() * 360
         )
 
-        self.number_of_particles = number_of_particles
-        if self.number_of_particles >= 0.1:
-            self.number_of_particles = 0.1
-        elif self.number_of_particles <= 0.05:
-            self.number_of_particles = 0.05
-        self.direction = Vec3(random.random(), random.random(), random.random()) * self.number_of_particles
+        if hasattr(car, "graphics"):
+            if car.graphics == "fancy":
+                self.model = "particles.obj"
+            else:
+                self.model = "particles_low_poly.obj"
+        else:
+            self.model = "particles.obj"
+        
+        self.car = car
+        self.direction = Vec3(random.random(), random.random(), random.random()) * 0.07
+
+        if car.sand_track.enabled:
+            self.texture = "particle_sand_track.png"
+        elif car.grass_track.enabled:
+            self.texture = "particle_grass_track.png"
+        elif car.snow_track.enabled:
+            self.texture = "particle_snow_track.png"
+        elif car.forest_track.enabled:
+            self.texture = "particle_forest_track.png"
+        elif car.savannah_track.enabled:
+            self.texture = "particle_savannah_track.png"
+        elif car.lake_track.enabled:
+            self.texture = "particle_lake_track.png"
+        else:
+            self.texture = "particle_sand_track.png"
 
     def update(self):
         self.position += self.direction * 120 * time.dt
+        if hasattr(self.car, "graphics"):
+            if self.car.graphics != "fancy":
+                self.scale_x += 0.1 * time.dt
+                self.scale_y += 0.1 * time.dt
 
-        if self.number_of_particles >= 0.1:
-            self.number_of_particles = 0.1
-        elif self.number_of_particles <= 0.05:
-            self.number_of_particles = 0.05
+    def destroy(self, delay = 1):
+        self.fade_out(duration = 0.2, delay = 0.7, curve = curve.linear)
+        destroy(self, delay)
+        del self
 
 class TrailRenderer(Entity):
     def __init__(self, thickness = 10, length = 6, **kwargs):

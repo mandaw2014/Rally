@@ -58,17 +58,18 @@ class Car(Entity):
         self.car_type = "sports"
 
         # Particles
-        self.number_of_particles = 0.05
+        self.particle_time = 0
+        self.particle_amount = 0.07 # The lower, the more
         self.particle_pivot = Entity(parent = self)
         self.particle_pivot.position = (0, -1, -2)
 
         # TrailRenderer
         self.trail_pivot = Entity(parent = self, position = (0, -1, 2))
 
-        self.trail_renderer1 = TrailRenderer(parent = self.particle_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
-        self.trail_renderer2 = TrailRenderer(parent = self.particle_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
-        self.trail_renderer3 = TrailRenderer(parent = self.trail_pivot, position = (0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
-        self.trail_renderer4 = TrailRenderer(parent = self.trail_pivot, position = (-0.8, -0.3, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+        self.trail_renderer1 = TrailRenderer(parent = self.particle_pivot, position = (0.8, -0.2, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+        self.trail_renderer2 = TrailRenderer(parent = self.particle_pivot, position = (-0.8, -0.2, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+        self.trail_renderer3 = TrailRenderer(parent = self.trail_pivot, position = (0.8, -0.2, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
+        self.trail_renderer4 = TrailRenderer(parent = self.trail_pivot, position = (-0.8, -0.2, 0), color = color.black, alpha = 0, thickness = 7, length = 200)
         
         self.trails = [self.trail_renderer1, self.trail_renderer2, self.trail_renderer3, self.trail_renderer4]
         self.start_trail = True
@@ -297,7 +298,7 @@ class Car(Entity):
 
     def update(self):
         # Stopwatch/Timer
-        if self.time_trial == False:
+        if not self.time_trial:
             self.highscore.text = str(round(self.highscore_count, 1))
             self.laps_text.disable()
             if self.timer_running:
@@ -350,11 +351,15 @@ class Car(Entity):
         self.c_pivot.rotation_y = self.rotation_y
         self.camera_pivot.position = self.camera_offset
 
+        # Camera
         if self.camera_follow:
+            # Side Camera Angle
             if self.camera_angle == "side":
                 camera.rotation = (35, -20, 0)
+                self.camera_speed = 8
                 self.change_camera = False
                 camera.world_position = lerp(camera.world_position, self.world_position + (20, 40, -50), time.dt * self.camera_speed)
+            # Top Camera Angle
             elif self.camera_angle == "top":
                 if self.change_camera:
                     camera.rotation_x = 35
@@ -365,14 +370,21 @@ class Car(Entity):
                 camera.rotation_x = lerp(camera.rotation_x, self.camera_rotation, 2 * time.dt)
                 camera.world_position = lerp(camera.world_position, self.camera_pivot.world_position, time.dt * self.camera_speed / 2)
                 camera.world_rotation_y = lerp(camera.world_rotation_y, self.world_rotation_y, time.dt * self.camera_speed / 2)
+            # Third Person Camera Angle
             elif self.camera_angle == "behind":
+                if self.change_camera:
+                    camera.rotation_x = 12
+                    self.camera_rotation = 40
                 self.camera_offset = (0, 10, -30)
                 self.change_camera = False
-                camera.rotation_x = 12
-                camera.world_position = lerp(camera.world_position, self.camera_pivot.world_position, time.dt * self.camera_speed)
-                camera.world_rotation_y = lerp(camera.world_rotation_y, self.world_rotation_y, time.dt * self.camera_speed)
+                self.camera_speed = 8
+                camera.rotation_x = lerp(camera.rotation_x, self.camera_rotation / 3, 2 * time.dt)
+                camera.world_position = lerp(camera.world_position, self.camera_pivot.world_position, time.dt * self.camera_speed / 2)
+                camera.world_rotation_y = lerp(camera.world_rotation_y, self.world_rotation_y, time.dt * self.camera_speed / 2)
+            # First Person Camera Angle
             elif self.camera_angle == "first-person":
                 self.change_camera = False
+                self.camera_speed = 8
                 camera.world_position = lerp(camera.world_position, self.world_position + (0.5, 0, 0), time.dt * 30)
                 camera.world_rotation = lerp(camera.world_rotation, self.world_rotation, time.dt * 30)
 
@@ -400,12 +412,6 @@ class Car(Entity):
                 else:
                     self.drift_speed += self.pivot_rotation_distance / 5 * time.dt
 
-        # Change number of particles depending on the rotation of the car
-        if self.pivot_rotation_distance > 20 or self.pivot_rotation_distance < -20:
-            self.number_of_particles += 1 * time.dt
-        else:
-            self.number_of_particles -= 2 * time.dt
-
         # Gravity
         movementY = self.velocity_y / 50
         direction = (0, sign(movementY), 0)
@@ -422,39 +428,25 @@ class Car(Entity):
                 self.camera_rotation -= self.acceleration * 30 * time.dt
 
                 # Particles
+                self.particle_time += time.dt
+                if self.particle_time >= self.particle_amount:
+                    self.particle_time = 0
+                    self.particles = Particles(self, self.particle_pivot.world_position - (0, 1, 0))
+                    self.particles.destroy(1)
+            
+                # TrailRenderer / Skid Marks
                 if self.graphics != "ultra fast":
-                    self.particles = Particles(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
-                    # Set Particle Texture based on Track
-                    if self.sand_track.enabled:
-                        self.particles.texture = "particle_sand_track.png"
-                    elif self.grass_track.enabled:
-                        self.particles.texture = "particle_grass_track.png"
-                    elif self.snow_track.enabled:
-                        self.particles.texture = "particle_snow_track.png"
-                    elif self.forest_track.enabled:
-                        self.particles.texture = "particle_forest_track.png"
-                    elif self.savannah_track.enabled:
-                        self.particles.texture = "particle_savannah_track.png"
-                    elif self.lake_track.enabled:
-                        self.particles.texture = "particle_lake_track.png"
-                    else:
-                        self.particles.texture = "particle_sand_track.png"
-                    self.particles.fade_out(duration = 0.2, delay = 0.7, curve = curve.linear)
-                    destroy(self.particles, 1)
-                
-                    # TrailRenderer / Skid Marks
-                    if self.graphics != "fast":
-                        if self.drift_speed <= self.min_drift_speed + 2 and self.start_trail:   
-                            if self.pivot_rotation_distance > 60 or self.pivot_rotation_distance < -60:
-                                for trail in self.trails:
-                                    trail.start_trail()
-                                self.start_trail = False
-                        elif self.drift_speed > self.min_drift_speed + 2 and not self.start_trail:
-                            if self.pivot_rotation_distance < 60 or self.pivot_rotation_distance > -60:
-                                for trail in self.trails:
-                                    if trail.trailing:
-                                        trail.end_trail()
-                                self.start_trail = True
+                    if self.drift_speed <= self.min_drift_speed + 2 and self.start_trail:   
+                        if self.pivot_rotation_distance > 60 or self.pivot_rotation_distance < -60:
+                            for trail in self.trails:
+                                trail.start_trail()
+                            self.start_trail = False
+                    elif self.drift_speed > self.min_drift_speed + 2 and not self.start_trail:
+                        if self.pivot_rotation_distance < 60 or self.pivot_rotation_distance > -60:
+                            for trail in self.trails:
+                                if trail.trailing:
+                                    trail.end_trail()
+                            self.start_trail = True
             else:
                 self.speed -= self.friction * 5 * time.dt
                 self.camera_rotation += self.friction * 20 * time.dt
@@ -475,11 +467,12 @@ class Car(Entity):
                 self.max_rotation_speed = 3.0
 
         # If Car is not hitting the ground, stop the trail
-        if self.trail_renderer1.trailing:
+        if self.graphics == "fancy":
             if y_ray.distance > 2.5:
-                for trail in self.trails:
-                    trail.end_trail()
-                self.start_trail = True
+                if self.trail_renderer1.trailing:
+                    for trail in self.trails:
+                        trail.end_trail()
+                    self.start_trail = True
 
         # Steering
         self.rotation_y += self.rotation_speed * 50 * time.dt
@@ -538,6 +531,7 @@ class Car(Entity):
         if self.y >= 300:
             self.reset_car()
 
+        # Cap the camera rotation
         if self.camera_rotation >= 40:
             self.camera_rotation = 40
         elif self.camera_rotation <= 30:
@@ -654,7 +648,8 @@ class Car(Entity):
             self.laps = 0
             self.start_time = False
         for trail in self.trails:
-            trail.end_trail()
+            if trail.trailing:
+                trail.end_trail()
         self.start_trail = True
 
     def simple_intersects(self, entity):

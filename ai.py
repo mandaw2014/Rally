@@ -1,8 +1,5 @@
 from ursina import *
-from ursina import curve
 from particles import Particles
-
-sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
 
 class AICar(Entity):
     def __init__(self, car, ai_list, sand_track, grass_track, snow_track, forest_track, savannah_track, lake_track):
@@ -41,10 +38,10 @@ class AICar(Entity):
         self.pivot.rotation = self.rotation
 
         # Particles
-        self.number_of_particles = 0.05
-        self.particle_pivot = Entity()
-        self.particle_pivot.parent = self
-        self.particle_pivot.position = self.position - (0, 1, 2)
+        self.particle_time = 0
+        self.particle_amount = 0.075 # The lower, the more
+        self.particle_pivot = Entity(parent = self)
+        self.particle_pivot.position = (0, -1, -2)
 
         # Makes the tracks accessible
         self.sand_track = sand_track
@@ -262,11 +259,6 @@ class AICar(Entity):
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
                 self.speed -= self.pivot_rotation_distance / 4.5 * time.dt
 
-        if self.pivot.rotation_y - self.rotation_y < -20 or self.pivot.rotation_y - self.rotation_y > 20:
-            self.number_of_particles += 1 * time.dt
-        else:
-            self.number_of_particles -= 2 * time.dt
-
         if self.sand_track.enabled or self.grass_track.enabled or self.savannah_track.enabled or self.lake_track.enabled:
             self.difficulty = 60
         elif self.snow_track.enabled or self.forest_track.enabled:
@@ -293,21 +285,11 @@ class AICar(Entity):
             if r == 0:
                 self.speed += self.acceleration * self.difficulty * time.dt
 
-                self.particles = Particles(position = self.particle_pivot.world_position, rotation_y = random.random() * 360, number_of_particles = self.number_of_particles)
-                if self.sand_track.enabled:
-                    self.particles.texture = "particle_sand_track.png"
-                elif self.grass_track.enabled:
-                    self.particles.texture = "particle_grass_track.png"
-                elif self.snow_track.enabled:
-                    self.particles.texture = "particle_snow_track.png"
-                elif self.forest_track.enabled:
-                    self.particles.texture = "particle_forest_track.png"
-                elif self.lake_track.enabled:
-                    self.particles.texture = "particle_lake_track.png"
-                else:
-                    self.particles.texture = "particle_sand_track.png"
-                self.particles.fade_out(duration = 0.2, delay = 1 - 0.2, curve = curve.linear)
-                destroy(self.particles, 1)
+                self.particle_time += time.dt
+                if self.particle_time >= self.particle_amount:
+                    self.particle_time = 0
+                    self.particles = Particles(self, position = self.particle_pivot.world_position - (0, 1, 0))
+                    self.particles.destroy(1)
 
         # Main AI bit
         # If the ai's rotation y does not equal the next paths rotation, change it

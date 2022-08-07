@@ -964,6 +964,7 @@ class MainMenu(Entity):
         def graphics():
             if self.car.graphics == "fancy":
                 self.car.graphics = "fast"
+                self.car.particle_amount = 0.085
                 graphics_button.text = "Graphics: Fast"
                 for track in self.tracks:
                     if track.enabled:
@@ -972,6 +973,7 @@ class MainMenu(Entity):
                         grass_track.grass.disable()
             elif self.car.graphics == "fast":
                 self.car.graphics = "ultra fast"
+                self.car.particle_amount = 0.1
                 graphics_button.text = "Graphics: Ultra Fast"
                 for track in self.tracks:
                     if track.enabled:
@@ -979,6 +981,7 @@ class MainMenu(Entity):
                             detail.disable()
             elif self.car.graphics == "ultra fast":
                 self.car.graphics = "fancy"
+                self.car.particle_amount = 0.07
                 graphics_button.text = "Graphics: Fancy"
                 for track in self.tracks:
                     if track.enabled:
@@ -1715,21 +1718,22 @@ class MainMenu(Entity):
 
         # AI Slider
         if self.car.multiplayer_update == False:
-            if self.ai_slider.value == 0: 
-                for ai in self.ai_list:
-                    ai.set_enabled = False
-            elif self.ai_slider.value == 1:
-                self.ai_list[0].set_enabled = True
-                self.ai_list[1].set_enabled = False
-                self.ai_list[2].set_enabled = False
-            elif self.ai_slider.value == 2:
-                self.ai_list[0].set_enabled = True
-                self.ai_list[1].set_enabled = True
-                self.ai_list[2].set_enabled = False
-            elif self.ai_slider.value == 3:
-                self.ai_list[0].set_enabled = True
-                self.ai_list[1].set_enabled = True
-                self.ai_list[2].set_enabled = True
+            if self.ai_slider.enabled:
+                if self.ai_slider.value == 0: 
+                    for ai in self.ai_list:
+                        ai.set_enabled = False
+                elif self.ai_slider.value == 1:
+                    self.ai_list[0].set_enabled = True
+                    self.ai_list[1].set_enabled = False
+                    self.ai_list[2].set_enabled = False
+                elif self.ai_slider.value == 2:
+                    self.ai_list[0].set_enabled = True
+                    self.ai_list[1].set_enabled = True
+                    self.ai_list[2].set_enabled = False
+                elif self.ai_slider.value == 3:
+                    self.ai_list[0].set_enabled = True
+                    self.ai_list[1].set_enabled = True
+                    self.ai_list[2].set_enabled = True
 
         # Set the camera's position and make the car rotate
         if self.start_menu.enabled or self.host_menu.enabled or self.garage_menu.enabled or self.server_menu.enabled or self.quit_menu.enabled:
