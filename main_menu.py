@@ -1346,7 +1346,7 @@ class MainMenu(Entity):
                 self.car.banana.disable()
                 self.car.surfinbird.disable()
             else:
-                self.garage_locked_text("Get Less Than 17s on Savannah Track")
+                self.garage_locked_text("Get Less Than 18s on Savannah Track")
 
         def limo():
             if self.car.limo_unlocked:
@@ -1357,7 +1357,7 @@ class MainMenu(Entity):
                 self.car.banana.disable()
                 self.car.surfinbird.disable()
             else:
-                self.garage_locked_text("Get Less Than 19s on Grass Track")
+                self.garage_locked_text("Get Less Than 20s on Grass Track")
 
         def lorry():
             if self.car.lorry_unlocked:
@@ -1368,7 +1368,7 @@ class MainMenu(Entity):
                 self.car.banana.disable()
                 self.car.surfinbird.disable()
             else:
-                self.garage_locked_text("Get Less Than 27s on Forest Track")
+                self.garage_locked_text("Get Less Than 28s on Forest Track")
 
         def hatchback():
             if self.car.hatchback_unlocked:
@@ -1379,7 +1379,7 @@ class MainMenu(Entity):
                 self.car.banana.disable()
                 self.car.surfinbird.disable()
             else:
-                self.garage_locked_text("Get Less Than 19s on Sand Track")
+                self.garage_locked_text("Get Less Than 20s on Sand Track")
 
         def rally():
             if self.car.rally_unlocked:
@@ -1390,7 +1390,7 @@ class MainMenu(Entity):
                 self.car.banana.disable()
                 self.car.surfinbird.disable()
             else:
-                self.garage_locked_text("Get Less Than 58s on Lake Track")
+                self.garage_locked_text("Get Less Than 60s on Lake Track")
 
         def sports_hover():
             self.garage_name_text.enable()
@@ -1427,7 +1427,7 @@ class MainMenu(Entity):
                         return
                 elif self.car.car_type == "limo":
                     if not self.car.limo_red_unlocked:
-                        self.garage_locked_text("Get Less Than 18s on Sand Track with the Limo")
+                        self.garage_locked_text("Get Less Than 19s on Sand Track with the Limo")
                         return
                 elif self.car.car_type == "lorry":
                     if not self.car.lorry_red_unlocked:
@@ -1473,11 +1473,11 @@ class MainMenu(Entity):
                         return
                 elif self.car.car_type == "limo":
                     if not self.car.limo_green_unlocked:
-                        self.garage_locked_text("Get Less Than 27s on Forest Track with the Limo")
+                        self.garage_locked_text("Get Less Than 28s on Forest Track with the Limo")
                         return
                 elif self.car.car_type == "lorry":
                     if not self.car.lorry_green_unlocked:
-                        self.garage_locked_text("Get Less Than 20s on Grass Track with the Lorry")
+                        self.garage_locked_text("Get Less Than 21s on Grass Track with the Lorry")
                         return
                 elif self.car.car_type == "rally":
                     if not self.car.rally_green_unlocked:
@@ -1500,7 +1500,7 @@ class MainMenu(Entity):
                         return
                 elif self.car.car_type == "hatchback":
                     if not self.car.hatchback_orange_unlocked:
-                        self.garage_locked_text("Get Less Than 17s on Savannah Track with the Hatchback")
+                        self.garage_locked_text("Get Less Than 18s on Savannah Track with the Hatchback")
                         return
                 elif self.car.car_type == "rally":
                     if not self.car.rally_orange_unlocked:
@@ -1511,11 +1511,11 @@ class MainMenu(Entity):
             if colour == "black":
                 if self.car.car_type == "sports":
                     if not self.car.sports_black_unlocked:
-                        self.garage_locked_text("Get Less Than 27s on Forest Track with the Sports Car")
+                        self.garage_locked_text("Get Less Than 29s on Forest Track with the Sports Car")
                         return
                 elif self.car.car_type == "muscle":
                     if not self.car.muscle_black_unlocked:
-                        self.garage_locked_text("Get Less Than 26s on Forest Track with the Muscle Car")
+                        self.garage_locked_text("Get Less Than 28s on Forest Track with the Muscle Car")
                         return
                 elif self.car.car_type == "lorry":
                     if not self.car.lorry_black_unlocked:
@@ -1538,15 +1538,15 @@ class MainMenu(Entity):
                         return
                 elif self.car.car_type == "muscle":
                     if not self.car.muscle_white_unlocked:
-                        self.garage_locked_text("Get Less Than 36s on Snow Track with the Muscle Car")
+                        self.garage_locked_text("Get Less Than 38s on Snow Track with the Muscle Car")
                         return
                 elif self.car.car_type == "limo":
                     if not self.car.limo_white_unlocked:
-                        self.garage_locked_text("Get Less Than 36s on Snow Track with the Limo")
+                        self.garage_locked_text("Get Less Than 38s on Snow Track with the Limo")
                         return
                 elif self.car.car_type == "hatchback":
                     if not self.car.hatchback_white_unlocked:
-                        self.garage_locked_text("Get Less Than 19s on Grass Track with the Hatchback")
+                        self.garage_locked_text("Get Less Than 20s on Grass Track with the Hatchback")
                         return
                 elif self.car.car_type == "rally":
                     if not self.car.rally_white_unlocked:

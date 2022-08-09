@@ -215,9 +215,9 @@ class Car(Entity):
         self.car_type = "muscle"
         self.model = "muscle-car.obj"
         self.texture = "muscle-orange.png"
-        self.topspeed = 35
+        self.topspeed = 38
         self.acceleration = 0.32
-        self.drift_amount = 5
+        self.drift_amount = 6
         self.turning_speed = 10
         self.min_drift_speed = 22
         self.max_drift_speed = 40

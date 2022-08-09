@@ -34,7 +34,7 @@ class RallyAchievements():
         create_achievement("Play Time Trial!", self.time_trial, icon = "confetti.png", ringtone = None)
 
         create_achievement("Get under 20s on Sand Track!", sand_achievements.twenty_seconds_sand_track, icon = "confetti.png", ringtone = None)
-        create_achievement("Get under 16s on Sand Track!", sand_achievements.sixteen_seconds_sand_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 17s on Sand Track!", sand_achievements.seventeen_seconds_sand_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 15s on Sand Track!", sand_achievements.fifteen_seconds_sand_track, icon = "confetti.png", ringtone = None)
 
         create_achievement("Get under 22s on Grass Track!", grass_achievements.twentytwo_seconds_grass_track, icon = "confetti.png", ringtone = None)
@@ -42,8 +42,8 @@ class RallyAchievements():
         create_achievement("Get under 18s on Grass Track!", grass_achievements.eighteen_seconds_grass_track, icon = "confetti.png", ringtone = None)
         
         create_achievement("Get under 40s on Snow Track!", snow_achievements.fourty_seconds_snow_track, icon = "confetti.png", ringtone = None)
-        create_achievement("Get under 35s on Snow Track!", snow_achievements.thirtyfive_seconds_snow_track, icon = "confetti.png", ringtone = None)
-        create_achievement("Get under 32s on Snow Track!", snow_achievements.thirtytwo_seconds_snow_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 36s on Snow Track!", snow_achievements.thirtysix_seconds_snow_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 33s on Snow Track!", snow_achievements.thirtythree_seconds_snow_track, icon = "confetti.png", ringtone = None)
 
         create_achievement("Get under 30s on Forest Track!", forest_achievements.thirty_seconds_forest_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 28s on Forest Track!", forest_achievements.twentyeight_seconds_forest_track, icon = "confetti.png", ringtone = None)
@@ -52,7 +52,7 @@ class RallyAchievements():
 
         create_achievement("Get under 20s on Savannah Track!", savannah_achievements.twenty_seconds_savannah_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 18s on Savannah Track!", savannah_achievements.eighteen_seconds_savannah_track, icon = "confetti.png", ringtone = None)
-        create_achievement("Get under 17s on Savannah Track!", savannah_achievements.seventeen_seconds_savannah_track, icon = "confetti.png", ringtone = None)
+        create_achievement("Get under 16s on Savannah Track!", savannah_achievements.sixteen_seconds_savannah_track, icon = "confetti.png", ringtone = None)
 
         create_achievement("Get under 60s on Lake Track!", lake_achievements.sixty_seconds_lake_track, icon = "confetti.png", ringtone = None)
         create_achievement("Get under 55s on Lake Track!", lake_achievements.fiftyfive_seconds_lake_track, icon = "confetti.png", ringtone = None)
@@ -276,12 +276,12 @@ class SandTrackAchievements():
                     if self.car.last_count != 0:
                         return self.car.last_count <= 20
 
-    def sixteen_seconds_sand_track(self):
+    def seventeen_seconds_sand_track(self):
         if self.sand_track.enabled:
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.last_count != 0:
-                        return self.car.last_count <= 16
+                        return self.car.last_count <= 17
 
     def fifteen_seconds_sand_track(self):
         if self.sand_track.enabled:
@@ -347,7 +347,7 @@ class SnowTrackAchievements():
                         if self.car.last_count != 0:
                             return self.car.last_count <= 40
 
-    def thirtyfive_seconds_snow_track(self):
+    def thirtysix_seconds_snow_track(self):
         if self.snow_track.enabled:
             if self.car.enabled:
                 for menu in self.main_menu.menus:
@@ -355,7 +355,7 @@ class SnowTrackAchievements():
                         if self.car.last_count != 0:
                             return self.car.last_count <= 35
 
-    def thirtytwo_seconds_snow_track(self):
+    def thirtythree_seconds_snow_track(self):
         if self.snow_track.enabled:
             if self.car.enabled:
                 for menu in self.main_menu.menus:
@@ -439,7 +439,7 @@ class SavannahTrackAchievements():
                         if self.car.last_count != 0:
                             return self.car.last_count <= 18
 
-    def seventeen_seconds_savannah_track(self):
+    def sixteen_seconds_savannah_track(self):
         if self.savannah_track.enabled:
             if self.car.enabled:
                 for menu in self.main_menu.menus:
@@ -511,7 +511,7 @@ class CarAchievements():
                 for menu in self.main_menu.menus:
                     if not menu.enabled:
                         if self.car.last_count != 0:
-                            if self.car.last_count <= 17:
+                            if self.car.last_count <= 18:
                                 self.car.muscle_unlocked = True
                                 self.car.save_unlocked()
                                 return True
@@ -522,7 +522,7 @@ class CarAchievements():
                 for menu in self.main_menu.menus:
                     if not menu.enabled:
                         if self.car.last_count != 0:
-                            if self.car.last_count <= 19:
+                            if self.car.last_count <= 20:
                                 self.car.limo_unlocked = True
                                 self.car.save_unlocked()
                                 return True
@@ -533,7 +533,7 @@ class CarAchievements():
                 for menu in self.main_menu.menus:
                     if not menu.enabled:
                         if self.car.last_count != 0:
-                            if self.car.last_count <= 27:
+                            if self.car.last_count <= 28:
                                 self.car.lorry_unlocked = True
                                 self.car.save_unlocked()
                                 return True
@@ -544,7 +544,7 @@ class CarAchievements():
                 for menu in self.main_menu.menus:
                     if not menu.enabled:
                         if self.car.last_count != 0:
-                            if self.car.last_count <= 19:
+                            if self.car.last_count <= 20:
                                 self.car.hatchback_unlocked = True
                                 self.car.save_unlocked()
                                 return True
@@ -555,7 +555,7 @@ class CarAchievements():
                 for menu in self.main_menu.menus:
                     if not menu.enabled:
                         if self.car.last_count != 0:
-                            if self.car.last_count <= 58:
+                            if self.car.last_count <= 60:
                                 self.car.rally_unlocked = True
                                 self.car.save_unlocked()
                                 return True
@@ -601,7 +601,7 @@ class CarAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.car_type == "sports":
-                        if self.car.last_count <= 27 and self.car.last_count != 0:
+                        if self.car.last_count <= 29 and self.car.last_count != 0:
                             # Unlock Sports Car Black Colour
                             self.car.sports_black_unlocked = True
                             self.car.save_unlocked()
@@ -648,7 +648,7 @@ class CarAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.car_type == "muscle":
-                        if self.car.last_count <= 36 and self.car.last_count != 0:
+                        if self.car.last_count <= 38 and self.car.last_count != 0:
                             # Unlock Muscle Car White Colour
                             self.car.muscle_white_unlocked = True
                             self.car.save_unlocked()
@@ -659,7 +659,7 @@ class CarAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.car_type == "muscle":
-                        if self.car.last_count <= 26 and self.car.last_count != 0:
+                        if self.car.last_count <= 28 and self.car.last_count != 0:
                             # Unlock Muscle Car Black Colour
                             self.car.muscle_black_unlocked = True
                             self.car.save_unlocked()
@@ -673,7 +673,7 @@ class CarAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.car_type == "limo":
-                        if self.car.last_count <= 18 and self.car.last_count != 0:
+                        if self.car.last_count <= 19 and self.car.last_count != 0:
                             # Unlock Limo Red Colour
                             self.car.limo_red_unlocked = True
                             self.car.save_unlocked()
@@ -695,7 +695,7 @@ class CarAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.car_type == "limo":
-                        if self.car.last_count <= 27 and self.car.last_count != 0:
+                        if self.car.last_count <= 28 and self.car.last_count != 0:
                             # Unlock Limo Green Colour
                             self.car.limo_green_unlocked = True
                             self.car.save_unlocked()
@@ -706,7 +706,7 @@ class CarAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.car_type == "limo":
-                        if self.car.last_count <= 36 and self.car.last_count != 0:
+                        if self.car.last_count <= 38 and self.car.last_count != 0:
                             # Unlock Limo White Colour
                             self.car.limo_white_unlocked = True
                             self.car.save_unlocked()
@@ -753,7 +753,7 @@ class CarAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.car_type == "lorry":
-                        if self.car.last_count <= 20 and self.car.last_count != 0:
+                        if self.car.last_count <= 21 and self.car.last_count != 0:
                             # Unlock Lorry Green Colour
                             self.car.lorry_green_unlocked = True
                             self.car.save_unlocked()
@@ -811,7 +811,7 @@ class CarAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.car_type == "hatchback":
-                        if self.car.last_count <= 19 and self.car.last_count != 0:
+                        if self.car.last_count <= 20 and self.car.last_count != 0:
                             # Unlock Hatchback White Colour
                             self.car.hatchback_white_unlocked = True
                             self.car.save_unlocked()
@@ -833,7 +833,7 @@ class CarAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.car_type == "hatchback":
-                        if self.car.last_count <= 17 and self.car.last_count != 0:
+                        if self.car.last_count <= 18 and self.car.last_count != 0:
                             # Unlock Hatchback Orange Colour
                             self.car.hatchback_orange_unlocked = True
                             self.car.save_unlocked()
