@@ -44,6 +44,7 @@ class MainMenu(Entity):
         self.savannah_track = savannah_track
         self.lake_track = lake_track
         self.ai_list = ai_list
+        self.sun = None
 
         self.tracks = [
             self.sand_track, self.grass_track, self.snow_track, self.forest_track, self.savannah_track, self.lake_track
@@ -971,6 +972,7 @@ class MainMenu(Entity):
                         for detail in track.details:
                             detail.enable()
                         grass_track.grass.disable()
+                self.sun.resolution = 2048
             elif self.car.graphics == "fast":
                 self.car.graphics = "ultra fast"
                 self.car.particle_amount = 0.1
@@ -979,6 +981,7 @@ class MainMenu(Entity):
                     if track.enabled:
                         for detail in track.details:
                             detail.disable()
+                self.sun.resolution = 1024
             elif self.car.graphics == "ultra fast":
                 self.car.graphics = "fancy"
                 self.car.particle_amount = 0.07
@@ -987,6 +990,8 @@ class MainMenu(Entity):
                     if track.enabled:
                         for detail in track.details:
                             detail.enable()
+                self.sun.resolution = 3072
+            self.sun.update_resolution()
 
         def camera_angle():
             if self.car.camera_angle == "top":
