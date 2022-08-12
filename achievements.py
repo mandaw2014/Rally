@@ -191,62 +191,62 @@ class RallyAchievements():
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.last_count != 0:
-                        if self.car.last_count <= 14.49:
+                        if self.car.last_count <= 13.09:
                             self.car.beat_mandaw_sand_track = True
                             self.car.save_unlocked()
-                        return self.car.last_count <= 14.49
+                            return True
 
     def beat_mandaw_in_grass_track(self):
         if self.grass_track.enabled:
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.last_count != 0:
-                        if self.car.last_count <= 17.78:
+                        if self.car.last_count <= 15.55:
                             # Unlock Banana
                             self.car.beat_mandaw_grass_track = True
                             self.car.banana_unlocked = True
                             self.car.save_unlocked()
-                        return self.car.last_count <= 17.78
+                            return True
     
     def beat_mandaw_in_snow_track(self):
         if self.snow_track.enabled:
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.last_count != 0:
-                        if self.car.last_count <= 31.45:
+                        if self.car.last_count <= 27.41:
                             self.car.beat_mandaw_snow_track = True
                             self.car.save_unlocked()
-                        return self.car.last_count <= 31.45
+                            return True
 
     def beat_mandaw_in_forest_track(self):
         if self.forest_track.enabled:
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.last_count != 0:
-                        if self.car.last_count <= 24.28:
+                        if self.car.last_count <= 21.73:
                             self.car.beat_mandaw_forest_track = True
                             self.car.save_unlocked()
-                        return self.car.last_count <= 24.28
+                            return True
 
     def beat_mandaw_in_savannah_track(self):
         if self.savannah_track.enabled:
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.last_count != 0:
-                        if self.car.last_count <= 14.13:
+                        if self.car.last_count <= 12.31:
                             self.car.beat_mandaw_savannah_track = True
                             self.car.save_unlocked()
-                        return self.car.last_count <= 14.13
+                            return True
 
     def beat_mandaw_in_lake_track(self):
         if self.lake_track.enabled:
             for menu in self.main_menu.menus:
                 if menu.enabled == False:
                     if self.car.last_count != 0:
-                        if self.car.last_count <= 47.53:
+                        if self.car.last_count <= 39.45:
                             self.car.beat_mandaw_lake_track = True
                             self.car.save_unlocked()
-                        return self.car.last_count <= 47.53
+                            return True
 
     def beat_mandaw_in_everything(self):
         if self.car.beat_mandaw_sand_track and self.car.beat_mandaw_grass_track \

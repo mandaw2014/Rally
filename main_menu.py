@@ -674,7 +674,7 @@ class MainMenu(Entity):
             unlocked_text.disable()
             if not self.car.time_trial:
                 highscore_text.enable()
-                highscore_text.text = "Highscore: " + str(round(self.car.sand_track_hs, 2)) + "\n Mandaw: 14.49"
+                highscore_text.text = "Highscore: " + str(round(self.car.sand_track_hs, 2)) + "\n Mandaw: 13.09"
 
         def grass_track_hover():
             for track in self.tracks:
@@ -706,7 +706,7 @@ class MainMenu(Entity):
             else:
                 if not self.car.time_trial:
                     highscore_text.enable()
-                    highscore_text.text = "Highscore: " + str(round(self.car.grass_track_hs, 2)) + "\n Mandaw: 17.76"
+                    highscore_text.text = "Highscore: " + str(round(self.car.grass_track_hs, 2)) + "\n Mandaw: 15.55"
                 unlocked_text.disable()
                 grass_track.alpha = 255
 
@@ -738,7 +738,7 @@ class MainMenu(Entity):
             else:
                 if not self.car.time_trial:
                     highscore_text.enable()
-                    highscore_text.text = "Highscore: " + str(round(self.car.snow_track_hs, 2)) + "\n Mandaw: 31.45"
+                    highscore_text.text = "Highscore: " + str(round(self.car.snow_track_hs, 2)) + "\n Mandaw: 27.41"
                 unlocked_text.disable()
                 snow_track.alpha = 255
         
@@ -770,7 +770,7 @@ class MainMenu(Entity):
             else:
                 if not self.car.time_trial:
                     highscore_text.enable()
-                    highscore_text.text = "Highscore: " + str(round(self.car.forest_track_hs, 2)) + "\n Mandaw: 24.28"
+                    highscore_text.text = "Highscore: " + str(round(self.car.forest_track_hs, 2)) + "\n Mandaw: 21.73"
                 unlocked_text.disable()
                 forest_track.alpha = 255
 
@@ -802,7 +802,7 @@ class MainMenu(Entity):
             else:
                 if not self.car.time_trial:
                     highscore_text.enable()
-                    highscore_text.text = "Highscore: " + str(round(self.car.savannah_track_hs, 2)) + "\n Mandaw: 14.13"
+                    highscore_text.text = "Highscore: " + str(round(self.car.savannah_track_hs, 2)) + "\n Mandaw: 12.31"
                 unlocked_text.disable()
                 savannah_track.alpha = 255
 
@@ -837,7 +837,7 @@ class MainMenu(Entity):
             else:
                 if not self.car.time_trial:
                     highscore_text.enable()
-                    highscore_text.text = "Highscore: " + str(round(self.car.lake_track_hs, 2)) + "\n Mandaw: 47.53"
+                    highscore_text.text = "Highscore: " + str(round(self.car.lake_track_hs, 2)) + "\n Mandaw: 39.45"
                 unlocked_text.disable()
                 lake_track.alpha = 255
 
