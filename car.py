@@ -206,6 +206,7 @@ class Car(Entity):
         self.min_drift_speed = 18
         self.max_drift_speed = 38
         self.max_rotation_speed = 3
+        self.steering_amount = 8
         self.particle_pivot.position = (0, -1, -1.5)
         self.trail_pivot.position = (0, -1, 1.5)
         for cosmetic in self.cosmetics:
@@ -222,7 +223,7 @@ class Car(Entity):
         self.min_drift_speed = 22
         self.max_drift_speed = 40
         self.max_rotation_speed = 3
-        self.steering_amount = 7.5
+        self.steering_amount = 8.5
         self.particle_pivot.position = (0, -1, -1.8)
         self.trail_pivot.position = (0, -1, 1.8)
         for cosmetic in self.cosmetics:
@@ -256,7 +257,7 @@ class Car(Entity):
         self.min_drift_speed = 20
         self.max_drift_speed = 40
         self.max_rotation_speed = 3
-        self.steering_amount = 7
+        self.steering_amount = 7.5
         self.particle_pivot.position = (0, -1, -3.5)
         self.trail_pivot.position = (0, -1, 3.5)
         for cosmetic in self.cosmetics:
@@ -273,7 +274,7 @@ class Car(Entity):
         self.min_drift_speed = 20
         self.max_drift_speed = 40
         self.max_rotation_speed = 3
-        self.steering_amount = 8
+        self.steering_amount = 8.5
         self.particle_pivot.position = (0, -1, -1.5)
         self.trail_pivot.position = (0, -1, 1.5)
         for cosmetic in self.cosmetics:
@@ -290,7 +291,7 @@ class Car(Entity):
         self.min_drift_speed = 22
         self.max_drift_speed = 40
         self.max_rotation_speed = 3
-        self.steering_amount = 9
+        self.steering_amount = 8.5
         self.particle_pivot.position = (0, -1, -1.5)
         self.trail_pivot.position = (0, -1, 1.5)
         for cosmetic in self.cosmetics:
