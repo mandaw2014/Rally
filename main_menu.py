@@ -1808,6 +1808,8 @@ class MainMenu(Entity):
                 self.car.timer.disable()
              
             self.car.highscore.enable()
+            if self.car.time_trial:
+                self.car.laps_text.enable()
         else:
             self.car.timer.disable()
             self.car.reset_count_timer.disable()

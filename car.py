@@ -307,7 +307,6 @@ class Car(Entity):
         elif self.time_trial:
             self.highscore.text = str(self.laps_hs)
             self.laps_text.text = str(self.laps)
-            self.laps_text.enable()
             if self.timer_running:
                 self.count -= time.dt
                 self.reset_count -= time.dt
@@ -687,18 +686,18 @@ class Car(Entity):
             self.reset_count_timer.enable()
 
             if self.highscore_count == 0:
-                if self.last_count >= 10:
+                if self.last_count >= 5:
                     self.highscore_count = self.last_count
-                    self.animate_highscore("up")
+                    self.animate_highscore(direction = "up")
                     invoke(self.animate_highscore, delay = 0.2)
             if self.last_count <= self.highscore_count:
-                if self.last_count >= 10.0:
+                if self.last_count >= 5:
                     self.highscore_count = self.last_count
-                    self.animate_highscore("up")
+                    self.animate_highscore(direction = "up")
                     invoke(self.animate_highscore, delay = 0.2)
-                if self.highscore_count <= 13:
+                if self.highscore_count <= 6:
                     self.highscore_count = self.last_count
-                    self.animate_highscore("up")
+                    self.animate_highscore(direction = "up")
                     invoke(self.animate_highscore, delay = 0.2)
 
             if self.sand_track.enabled:
@@ -718,6 +717,8 @@ class Car(Entity):
         elif self.time_trial:
             if self.start_time:
                 self.laps += 1
+                self.animate_highscore(time_trial = True, direction = "up")
+                invoke(self.animate_highscore, True,  delay = 0.2)
             self.start_time = True
 
     def save_highscore(self):
@@ -937,15 +938,21 @@ class Car(Entity):
         self.timer.enable()
         self.reset_count_timer.disable()
 
-    def animate_highscore(self, direction = "down"):
+    def animate_highscore(self, time_trial = False, direction = "down"):
         """
         Animates the scale of the highscore text
         """
-        if self.last_count > 1:
+        if not time_trial:
+            if self.last_count > 1:
+                if direction == "up":
+                    self.highscore.animate_scale((1.2, 1.2, 1.2), duration = 0.2, curve = curve.out_expo)
+                elif direction == "down":
+                    self.highscore.animate_scale((0.6, 0.6, 0.6), duration = 0.1, curve = curve.linear)
+        else:
             if direction == "up":
-                self.highscore.animate_scale((1.2, 1.2, 1.2), duration = 0.2, curve = curve.out_expo)
+                self.laps_text.animate_scale((1.7, 1.7, 1.7), duration = 0.2, curve = curve.out_expo)
             elif direction == "down":
-                self.highscore.animate_scale((0.6, 0.6, 0.6), duration = 0.1, curve = curve.linear)
+                self.laps_text.animate_scale((1.1, 1.1, 1.1), duration = 0.1, curve = curve.linear)
     
     def shake_camera(self):
         """
