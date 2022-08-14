@@ -74,6 +74,16 @@ class Car(Entity):
         self.trails = [self.trail_renderer1, self.trail_renderer2, self.trail_renderer3, self.trail_renderer4]
         self.start_trail = True
 
+        # Audio
+        self.audio = True
+        self.volume = 1
+        self.start_sound = True
+        self.start_fall = True
+        self.drive_sound = Audio("rally.mp3", loop = True, autoplay = False, volume = 0.5)
+        self.dirt_sound = Audio("dirt-skid.mp3", loop = True, autoplay = False, volume = 0.8)
+        self.skid_sound = Audio("skid.mp3", loop = True, autoplay = False, volume = 0.5)
+        self.hit_sound = Audio("hit.wav", autoplay = False, volume = 0.5)
+
         # Collision
         self.copy_normals = False
         self.hitting_wall = False
@@ -199,6 +209,7 @@ class Car(Entity):
         self.car_type = "sports"
         self.model = "sports-car.obj"
         self.texture = "sports-red.png"
+        self.drive_sound.clip = "sports.mp3"
         self.topspeed = 30
         self.acceleration = 0.38
         self.drift_amount = 5
@@ -216,6 +227,7 @@ class Car(Entity):
         self.car_type = "muscle"
         self.model = "muscle-car.obj"
         self.texture = "muscle-orange.png"
+        self.drive_sound.clip = "muscle.mp3"
         self.topspeed = 38
         self.acceleration = 0.32
         self.drift_amount = 6
@@ -233,6 +245,7 @@ class Car(Entity):
         self.car_type = "limo"
         self.model = "limousine.obj"
         self.texture = "limo-black.png"
+        self.drive_sound.clip = "limo.mp3"
         self.topspeed = 30
         self.acceleration = 0.33
         self.drift_amount = 5.5
@@ -250,6 +263,7 @@ class Car(Entity):
         self.car_type = "lorry"
         self.model = "lorry.obj"
         self.texture = "lorry-white.png"
+        self.drive_sound.clip = "lorry.mp3"
         self.topspeed = 30
         self.acceleration = 0.3
         self.drift_amount = 7
@@ -267,6 +281,7 @@ class Car(Entity):
         self.car_type = "hatchback"
         self.model = "hatchback.obj"
         self.texture = "hatchback-green.png"
+        self.drive_sound.clip = "hatchback.mp3"
         self.topspeed = 28
         self.acceleration = 0.43
         self.drift_amount = 6
@@ -284,6 +299,7 @@ class Car(Entity):
         self.car_type = "rally"
         self.model = "rally-car.obj"
         self.texture = "rally-red.png"
+        self.drive_sound.clip = "rally.mp3"
         self.topspeed = 34
         self.acceleration = 0.46
         self.drift_amount = 4
@@ -427,6 +443,22 @@ class Car(Entity):
 
                 self.camera_rotation -= self.acceleration * 30 * time.dt
 
+                # Audio
+                if self.start_sound and self.audio:
+                    if not self.drive_sound.playing:
+                        self.drive_sound.loop = True
+                        self.drive_sound.play()
+                    if not self.dirt_sound.playing:
+                        self.drive_sound.loop = True
+                        self.dirt_sound.play()
+                    self.start_sound = False
+
+                self.drive_sound.volume = self.speed / 70 * self.volume
+                if self.pivot_rotation_distance > 0:
+                    self.dirt_sound.volume = self.pivot_rotation_distance / 100 * self.volume
+                elif self.pivot_rotation_distance < 0:
+                    self.dirt_sound.volume = -self.pivot_rotation_distance / 100 * self.volume
+
                 # Particles
                 self.particle_time += time.dt
                 if self.particle_time >= self.particle_amount:
@@ -440,16 +472,23 @@ class Car(Entity):
                         if self.pivot_rotation_distance > 60 or self.pivot_rotation_distance < -60:
                             for trail in self.trails:
                                 trail.start_trail()
+                            if self.audio:
+                                self.skid_sound.volume = self.volume / 2
+                                self.skid_sound.play()
                             self.start_trail = False
                     elif self.drift_speed > self.min_drift_speed + 2 and not self.start_trail:
                         if self.pivot_rotation_distance < 60 or self.pivot_rotation_distance > -60:
                             for trail in self.trails:
                                 if trail.trailing:
                                     trail.end_trail()
+                            if self.audio:
+                                self.skid_sound.stop(False)
                             self.start_trail = True
             else:
                 self.speed -= self.friction * 5 * time.dt
                 self.camera_rotation += self.friction * 20 * time.dt
+                self.drive_sound.volume -= 0.5 * time.dt
+                self.dirt_sound.volume -= 0.5 * time.dt
 
             # Braking
             if held_keys[self.controls[2] or held_keys["down arrow"]]:
@@ -588,10 +627,16 @@ class Car(Entity):
                     self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
                 else:
                     self.rotation_parent.rotation = self.rotation
+
+                if self.start_fall and self.audio:
+                    self.hit_sound.volume = self.volume / 2
+                    self.hit_sound.play()
+                    self.start_fall = False
             else:
                 self.y += movementY * 50 * time.dt
                 self.velocity_y -= 50 * time.dt
                 self.rotation_parent.rotation = self.rotation
+                self.start_fall = True
 
         # Movement
         movementX = self.pivot.forward[0] * self.speed * time.dt
@@ -651,6 +696,12 @@ class Car(Entity):
             if trail.trailing:
                 trail.end_trail()
         self.start_trail = True
+        self.start_sound = True
+        if self.audio:
+            if self.skid_sound.playing:
+                self.skid_sound.stop(False)
+            if self.dirt_sound.playing:
+                self.dirt_sound.stop(False)
 
     def simple_intersects(self, entity):
         """

@@ -39,7 +39,7 @@ class AICar(Entity):
 
         # Particles
         self.particle_time = 0
-        self.particle_amount = 0.075 # The lower, the more
+        self.particle_amount = 0.125 # The lower, the more
         self.particle_pivot = Entity(parent = self)
         self.particle_pivot.position = (0, -1, -2)
 
@@ -50,6 +50,10 @@ class AICar(Entity):
         self.forest_track = forest_track
         self.savannah_track = savannah_track
         self.lake_track = lake_track
+
+        self.current_track = self.sand_track
+
+        self.tracks = [self.sand_track, self.grass_track, self.snow_track, self.forest_track, self.savannah_track, self.lake_track]
 
         self.ai_list = ai_list
         self.set_enabled = True
@@ -155,7 +159,7 @@ class AICar(Entity):
         self.forest_path = [self.fp1, self.fp2, self.fp3, self.fp4, self.fp5, self.fp6, self.fp7, self.fp8, self.fp9, self.fp10, self.fp11, self.fp12, self.fp13]
         self.savannah_path = [self.svp1, self.svp2, self.svp3, self.svp4, self.svp5, self.svp6, self.svp7, self.svp8]
         self.lake_path = [self.lp1, self.lp2, self.lp3, self.lp4, self.lp5, self.lp6, self.lp7, self.lp8, self.lp9, self.lp10, self.lp11, self.lp12, self.lp13, self.lp14, self.lp15, self.lp16, self.lp17, self.lp18, self.lp19, self.lp20, self.lp21]
-
+        
         # The next point the ai is going to
         self.next_path = self.gp1
 
@@ -273,12 +277,9 @@ class AICar(Entity):
         # Lerps the car's rotation to the rotation parent's rotation (Makes it smoother)
         self.rotation_x = lerp(self.rotation_x, self.rotation_parent.rotation_x, 20 * time.dt)
         self.rotation_z = lerp(self.rotation_z, self.rotation_parent.rotation_z, 20 * time.dt)
-
-        # Gravity
-        movementY = self.velocity_y * time.dt
-
+        
         # Main raycast for collision
-        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), ignore = [self, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, ])
+        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), traverse_target = self.current_track, ignore = [self, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, ])
 
         if y_ray.distance <= 4:
             r = random.randint(0, 1)
@@ -357,6 +358,9 @@ class AICar(Entity):
         # If the AI is above 100, reset the position
         if self.y >= 100:
             self.reset()
+
+        # Gravity
+        movementY = self.velocity_y * time.dt
 
         if y_ray.distance <= self.scale_y * 1.7 + abs(movementY):
             self.velocity_y = 0
@@ -438,6 +442,11 @@ class AICar(Entity):
             (minYA <= maxYB and maxYA >= minYB) and
             (minZA <= maxZB and maxZA >= minZB)
         )
+
+    def check_track(self):
+        for track in self.tracks:
+            if track.enabled:
+                self.current_track = track
 
 # Path Point class
 class PathObject(Entity):

@@ -68,9 +68,12 @@ class TrailRenderer(Entity):
             static = False,
         ), color = color.rgba(10, 10, 10, 90))
     
-    def end_trail(self):
-        self.renderer.fade_out(duration = 1, delay = 8, curve = curve.linear)
-        destroy(self.renderer, 10)
+    def end_trail(self, now = False):
+        if not now:
+            self.renderer.fade_out(duration = 1, delay = 8, curve = curve.linear)
+            destroy(self.renderer, 10)
+        else:
+            destroy(self.renderer)
         self.trailing = False
 
 # class Smoke(Entity):
