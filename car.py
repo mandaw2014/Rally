@@ -453,7 +453,7 @@ class Car(Entity):
                         self.dirt_sound.play()
                     self.start_sound = False
 
-                self.drive_sound.volume = self.speed / 70 * self.volume
+                self.drive_sound.volume = self.speed / 80 * self.volume
                 if self.pivot_rotation_distance > 0:
                     self.dirt_sound.volume = self.pivot_rotation_distance / 100 * self.volume
                 elif self.pivot_rotation_distance < 0:
@@ -489,6 +489,10 @@ class Car(Entity):
                 self.camera_rotation += self.friction * 20 * time.dt
                 self.drive_sound.volume -= 0.5 * time.dt
                 self.dirt_sound.volume -= 0.5 * time.dt
+                if self.skid_sound.playing:
+                    self.skid_sound.stop(False)
+                if self.dirt_sound.playing:
+                    self.dirt_sound.stop(False)
 
             # Braking
             if held_keys[self.controls[2] or held_keys["down arrow"]]:
