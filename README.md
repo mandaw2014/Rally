@@ -2,7 +2,7 @@
 
 A Simple 3D Racing Game Made In Python With The Ursina Engine
 
-Feel free to leave comments or feedback on how I can improve the game
+Feel free to leave comments or feedback on how I can improve the game :)
 
 # Installation
 
@@ -46,6 +46,23 @@ SPACE - Hand Brake
 ESCAPE - Pause Menu
 
 G - Respawn
+
+# Credits
+
+Sound Effects: [https://touati.itch.io/car-game-sfx-pack](https://touati.itch.io/car-game-sfx-pack)
+
+Sports Car: [https://poly.pizza/m/dVLJ5CjB0h](https://poly.pizza/m/dVLJ5CjB0h)
+
+Car modelling tutorial: [https://www.youtube.com/watch?v=YALV3HqfdLY](https://www.youtube.com/watch?v=YALV3HqfdLY)
+
+Achievements Library by TheAssassin: [https://github.com/megat69/UrsinaAchievements](https://github.com/megat69/UrsinaAchievements)
+
+Networking Library by K3: [https://github.com/kstzl/UrsinaNetworking](https://github.com/kstzl/UrsinaNetworking)
+
+
+Tusnad30: Shadows + Lighting
+
+TheAssassin: Achievements + Asset loading + threading
 
 # Screenshots
 
