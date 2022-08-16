@@ -32,6 +32,7 @@ class RallyAchievements():
         create_achievement("Play Multiplayer!", self.play_multiplayer, icon = "confetti.png", ringtone = "unlock.mp3")
         create_achievement("Go to the Garage!", self.garage, icon = "confetti.png", ringtone = "unlock.mp3")
         create_achievement("Play Time Trial!", self.time_trial, icon = "confetti.png", ringtone = "unlock.mp3")
+        create_achievement("Unlock Drift Gamemode!", self.unlock_drift, icon = "confetti.png", ringtone = "unlock.mp3")
 
         create_achievement("Get under 20s on Sand Track!", sand_achievements.twenty_seconds_sand_track, icon = "confetti.png", ringtone = "unlock.mp3")
         create_achievement("Get under 17s on Sand Track!", sand_achievements.seventeen_seconds_sand_track, icon = "confetti.png", ringtone = "unlock.mp3")
@@ -129,7 +130,15 @@ class RallyAchievements():
         return self.main_menu.garage_menu.enabled
 
     def time_trial(self):
-        return self.car.time_trial
+        return self.car.gamemode == "time trial"
+
+    def unlock_drift(self):
+        if self.sand_track.unlocked and self.grass_track.unlocked and \
+            self.snow_track.unlocked and self.forest_track.unlocked and \
+                self.savannah_track.unlocked and self.lake_track.unlocked:
+                self.car.drift_unlocked = True
+                self.car.save_unlocked()
+                return True
 
     def unlock_grass_track(self):
         for menu in self.main_menu.menus:

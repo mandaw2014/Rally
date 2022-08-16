@@ -78,5 +78,8 @@
         "duck": false,
         "banana": false,
         "surfinbird": false
+    },
+    "gamemodes": {
+        "drift": false
     }
 }

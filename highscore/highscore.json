@@ -14,5 +14,13 @@
         "forest_track": 0,
         "savannah_track": 0,
         "lake_track": 0
+    },
+    "drift": {
+        "sand_track": 0,
+        "grass_track": 0,
+        "snow_track": 0,
+        "forest_track": 0,
+        "savannah_track": 0,
+        "lake_track": 0
     }
 }

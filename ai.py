@@ -1,6 +1,8 @@
 from ursina import *
 from particles import Particles
 
+sign = lambda x: -1 if x < 0 else (1 if x > 0 else 0)
+
 class AICar(Entity):
     def __init__(self, car, ai_list, sand_track, grass_track, snow_track, forest_track, savannah_track, lake_track):
         super().__init__(
@@ -58,6 +60,12 @@ class AICar(Entity):
         self.ai_list = ai_list
         self.set_enabled = True
         self.hitting_wall = False
+
+        self.t = 0
+        self.update_step = 0.05
+
+        # Collision raycast
+        self.y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), traverse_target = self.current_track, ignore = [self, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, ])
 
         # Makes sure the AI doesn't get stuck
         self.old_pos = round(self.position)
@@ -279,9 +287,12 @@ class AICar(Entity):
         self.rotation_z = lerp(self.rotation_z, self.rotation_parent.rotation_z, 20 * time.dt)
         
         # Main raycast for collision
-        y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), traverse_target = self.current_track, ignore = [self, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, ])
+        self.t += time.dt
+        if self.t >= self.update_step:
+            self.t = 0
+            self.y_ray = raycast(origin = self.world_position, direction = (0, -1, 0), traverse_target = self.current_track, ignore = [self, self.sand_track.wall1, self.sand_track.wall2, self.sand_track.wall3, self.sand_track.wall4, self.grass_track.wall1, self.grass_track.wall2, self.grass_track.wall3, self.grass_track.wall4, self.snow_track.wall1, self.snow_track.wall2, self.snow_track.wall3, self.snow_track.wall4, self.snow_track.wall5, self.snow_track.wall6, self.snow_track.wall7, self.snow_track.wall8, self.snow_track.wall9, self.snow_track.wall10, self.snow_track.wall11, self.snow_track.wall12, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, self.forest_track.wall1, self.forest_track.wall2, self.forest_track.wall3, self.forest_track.wall4, ])
 
-        if y_ray.distance <= 4:
+        if self.y_ray.distance <= 4:
             r = random.randint(0, 1)
             if r == 0:
                 self.speed += self.acceleration * self.difficulty * time.dt
@@ -362,18 +373,18 @@ class AICar(Entity):
         # Gravity
         movementY = self.velocity_y * time.dt
 
-        if y_ray.distance <= self.scale_y * 1.7 + abs(movementY):
+        if self.y_ray.distance <= self.scale_y * 1.7 + abs(movementY):
             self.velocity_y = 0
             # Check if hitting a wall or steep slope
-            if y_ray.world_normal.y > 0.7 and y_ray.world_point.y - self.world_y < 0.5:
+            if self.y_ray.world_normal.y > 0.7 and self.y_ray.world_point.y - self.world_y < 0.5:
                 # Set the y value to the ground's y value
-                self.y = y_ray.world_point.y + 1.4
+                self.y = self.y_ray.world_point.y + 1.4
                 self.hitting_wall = False
             else:
                 self.hitting_wall = True
 
             if not self.hitting_wall:
-                self.rotation_parent.look_at(self.position + y_ray.world_normal, axis = "up")
+                self.rotation_parent.look_at(self.position + self.y_ray.world_normal, axis = "up")
                 self.rotation_parent.rotate((0, self.rotation_y + 180, 0))
             else:
                 self.rotation_parent.rotation = self.rotation
@@ -388,6 +399,7 @@ class AICar(Entity):
 
         if movementX != 0:
             self.x += movementX
+
         if movementZ != 0:
             self.z += movementZ
 

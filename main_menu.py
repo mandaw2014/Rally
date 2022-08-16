@@ -427,10 +427,14 @@ class MainMenu(Entity):
                         ai.next_path = ai.sap1
                         ai.check_track()
 
-                if self.car.time_trial == False:
+                if self.car.gamemode == "race":
                     self.car.highscore_count = float(self.car.sand_track_hs)
-                else:
+                elif self.car.gamemode == "time trial":
                     self.car.highscore_count = float(self.car.sand_track_laps)
+                elif self.car.gamemode == "drift":
+                    self.car.drift_time = 25
+                    self.car.highscore_count = float(self.car.sand_track_drift)
+                    self.car.highscore.text = str(int(self.car.highscore_count))
             else:
                 unlocked_text.shake()
 
@@ -474,10 +478,14 @@ class MainMenu(Entity):
                         ai.next_path = ai.gp1
                         ai.check_track()
 
-                if self.car.time_trial == False:
+                if self.car.gamemode == "race":
                     self.car.highscore_count = float(self.car.grass_track_hs)
-                else:
+                elif self.car.gamemode == "time trial":
                     self.car.highscore_count = float(self.car.grass_track_laps)
+                elif self.car.gamemode == "drift":
+                    self.car.drift_time = 30
+                    self.car.highscore_count = float(self.car.grass_track_drift)
+                    self.car.highscore.text = str(int(self.car.highscore_count))
             else:
                 unlocked_text.shake()
 
@@ -519,10 +527,14 @@ class MainMenu(Entity):
                         ai.next_path = ai.snp1
                         ai.check_track()
 
-                if self.car.time_trial == False:
+                if self.car.gamemode == "race":
                     self.car.highscore_count = float(self.car.snow_track_hs)
-                else:
+                elif self.car.gamemode == "time trial":
                     self.car.highscore_count = float(self.car.snow_track_laps)
+                elif self.car.gamemode == "drift":
+                    self.car.drift_time = 50
+                    self.car.highscore_count = float(self.car.snow_track_drift)
+                    self.car.highscore.text = str(int(self.car.highscore_count))
             else:
                 unlocked_text.shake()
 
@@ -564,10 +576,14 @@ class MainMenu(Entity):
                         ai.next_path = ai.fp1
                         ai.check_track()
 
-                if self.car.time_trial == False:
+                if self.car.gamemode == "race":
                     self.car.highscore_count = float(self.car.forest_track_hs)
-                else:
+                elif self.car.gamemode == "time trial":
                     self.car.highscore_count = float(self.car.forest_track_laps)
+                elif self.car.gamemode == "drift":
+                    self.car.drift_time = 40
+                    self.car.highscore_count = float(self.car.forest_track_drift)
+                    self.car.highscore.text = str(int(self.car.highscore_count))
             else:
                 unlocked_text.shake()
 
@@ -609,10 +625,14 @@ class MainMenu(Entity):
                         ai.next_path = ai.svp1
                         ai.check_track()
 
-                if self.car.time_trial == False:
+                if self.car.gamemode == "race":
                     self.car.highscore_count = float(self.car.savannah_track_hs)
-                else:
+                elif self.car.gamemode == "time trial":
                     self.car.highscore_count = float(self.car.savannah_track_laps)
+                elif self.car.gamemode == "drift":
+                    self.car.drift_time = 25
+                    self.car.highscore_count = float(self.car.savannah_track_drift)
+                    self.car.highscore.text = str(int(self.car.highscore_count))
             else:
                 unlocked_text.shake()
             
@@ -657,10 +677,14 @@ class MainMenu(Entity):
                         ai.next_path = ai.lp1
                         ai.check_track()
 
-                if self.car.time_trial == False:
+                if self.car.gamemode == "race":
                     self.car.highscore_count = float(self.car.lake_track_hs)
-                else:
+                elif self.car.gamemode == "time trial":
                     self.car.highscore_count = float(self.car.lake_track_laps)
+                elif self.car.gamemode == "drift":
+                    self.car.drift_time = 75
+                    self.car.highscore_count = float(self.car.lake_track_drift)
+                    self.car.highscore.text = str(int(self.car.highscore_count))
             else:
                 unlocked_text.shake()
 
@@ -681,7 +705,7 @@ class MainMenu(Entity):
             sand_track.enable()
             self.car.position = (-40, 30, -175)
             unlocked_text.disable()
-            if not self.car.time_trial:
+            if self.car.gamemode == "race":
                 highscore_text.enable()
                 highscore_text.text = "Highscore: " + str(round(self.car.sand_track_hs, 2)) + "\n Mandaw: 13.09"
 
@@ -713,7 +737,7 @@ class MainMenu(Entity):
                 for i in grass_track.details:
                     i.alpha = 200
             else:
-                if not self.car.time_trial:
+                if self.car.gamemode == "race":
                     highscore_text.enable()
                     highscore_text.text = "Highscore: " + str(round(self.car.grass_track_hs, 2)) + "\n Mandaw: 15.55"
                 unlocked_text.disable()
@@ -745,7 +769,7 @@ class MainMenu(Entity):
                 for i in snow_track.details:
                     i.alpha = 200
             else:
-                if not self.car.time_trial:
+                if self.car.gamemode == "race":
                     highscore_text.enable()
                     highscore_text.text = "Highscore: " + str(round(self.car.snow_track_hs, 2)) + "\n Mandaw: 27.41"
                 unlocked_text.disable()
@@ -777,7 +801,7 @@ class MainMenu(Entity):
                 for i in forest_track.details:
                     i.alpha = 200
             else:
-                if not self.car.time_trial:
+                if self.car.gamemode == "race":
                     highscore_text.enable()
                     highscore_text.text = "Highscore: " + str(round(self.car.forest_track_hs, 2)) + "\n Mandaw: 21.73"
                 unlocked_text.disable()
@@ -809,7 +833,7 @@ class MainMenu(Entity):
                 for i in savannah_track.details:
                     i.alpha = 200
             else:
-                if not self.car.time_trial:
+                if self.car.gamemode == "race":
                     highscore_text.enable()
                     highscore_text.text = "Highscore: " + str(round(self.car.savannah_track_hs, 2)) + "\n Mandaw: 12.31"
                 unlocked_text.disable()
@@ -844,7 +868,7 @@ class MainMenu(Entity):
                 for i in lake_track.details:
                     i.alpha = 200
             else:
-                if not self.car.time_trial:
+                if self.car.gamemode == "race":
                     highscore_text.enable()
                     highscore_text.text = "Highscore: " + str(round(self.car.lake_track_hs, 2)) + "\n Mandaw: 39.45"
                 unlocked_text.disable()
@@ -907,7 +931,7 @@ class MainMenu(Entity):
             self.race_menu.disable()
             self.maps_menu.enable()
             ai_button.enable()
-            self.car.time_trial = False
+            self.car.gamemode = "race"
             self.car.count = 0.0
             self.car.reset_count = 0.0
 
@@ -916,21 +940,42 @@ class MainMenu(Entity):
             self.maps_menu.enable()
             ai_button.disable()
             self.ai_slider.disable()
-            self.car.time_trial = True
+            self.car.gamemode = "time trial"
             self.car.count = 100.0
             self.car.reset_count = 100.0
             self.car.ai = False
+
+        def drift_func():
+            if self.car.drift_unlocked:
+                self.race_menu.disable()
+                self.maps_menu.enable()
+                ai_button.disable()
+                self.ai_slider.disable()
+                self.car.gamemode = "drift"
+                self.car.count = 0.0
+                self.car.reset_count = 0.0
+                self.car.ai = False
+            else:
+                unlocked_text.parent = self.race_menu
+                unlocked_text.y = -0.3
+                unlocked_text.enable()
+                unlocked_text.shake()
+                unlocked_text.text = "Play Every Track to Unlock the Drift Gamemode"
+                invoke(setattr, unlocked_text, "parent", self.maps_menu, delay = 1.5)
+                invoke(setattr, unlocked_text, "y", -0.1, delay = 1.6)
 
         def back_race():
             self.race_menu.disable()
             self.main_menu.enable()
 
-        race_button = Button(text = "Race", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.06, parent = self.race_menu)
-        time_trial_button = Button(text = "Time Trial", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.06, parent = self.race_menu)
+        race_button = Button(text = "Race", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.race_menu)
+        time_trial_button = Button(text = "Time Trial", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.race_menu)
+        drift_button = Button(text = "Drift", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.race_menu)
         back_button_race = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.race_menu)
 
         race_button.on_click = Func(race_button_func)
         time_trial_button.on_click = Func(time_trial_func)
+        drift_button.on_click = Func(drift_func)
         back_button_race.on_click = Func(back_race)
 
         # Settings
@@ -1245,16 +1290,19 @@ class MainMenu(Entity):
             self.car.speed = 0
             self.car.anti_cheat = 1
             self.car.velocity_y = 0
-            if self.car.time_trial == False:
+            if self.car.gamemode == "race":
                 self.car.count = 0.0
                 self.car.reset_count = 0.0
                 self.car.timer_running = False
-            elif self.car.time_trial:
+            elif self.car.gamemode == "time trial":
                 self.count = 100.0
                 self.reset_count = 100.0
                 self.laps = 0
                 self.timer_running = False
                 self.start_time = False
+            elif self.car.gamemode == "drift":
+                self.car.timer_running = False
+                self.car.reset_drift_score()
             for trail in self.car.trails:
                 if trail.trailing:
                     trail.end_trail(True)
@@ -1276,7 +1324,9 @@ class MainMenu(Entity):
             self.car.last_count = 0.0
             self.car.reset_count = 0.0
             self.car.laps = 0
-            self.car.time_trial = False
+            self.car.drift_score = 0
+            self.car.reset_drift_score()
+            self.car.gamemode = "race"
             self.car.start_time = False
             self.car.reset_count_timer.disable()
             self.car.timer_running = False
@@ -1859,13 +1909,18 @@ class MainMenu(Entity):
                 self.car.timer.disable()
              
             self.car.highscore.enable()
-            if self.car.time_trial:
+            if self.car.gamemode == "time trial":
                 self.car.laps_text.enable()
+            elif self.car.gamemode == "drift":
+                self.car.drift_text.enable()
+                self.car.drift_timer.enable()
         else:
             self.car.timer.disable()
             self.car.reset_count_timer.disable()
             self.car.highscore.disable()
             self.car.laps_text.disable()
+            self.car.drift_text.disable()
+            self.car.drift_timer.disable()
             self.car.camera_speed = 8
 
         # Audio

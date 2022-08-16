@@ -47,7 +47,6 @@ class LakeTrack(Entity):
         if self.car.simple_intersects(self.finish_line):
             if self.car.anti_cheat == 1:
                 self.car.timer_running = True
-                self.car.last_count = self.car.count
                 self.car.anti_cheat = 0
                 invoke(self.car.reset_timer, delay = 3)
 

@@ -53,6 +53,7 @@ class Car(Entity):
         self.pivot = Entity()
         self.pivot.position = self.position
         self.pivot.rotation = self.rotation
+        self.drifting = False
 
         # Car Type
         self.car_type = "sports"
@@ -128,12 +129,23 @@ class Car(Entity):
         self.laps_text.disable()
         self.reset_count_timer.disable()
 
-        self.time_trial = False
+        self.gamemode = "race"
         self.start_time = False
         self.laps = 0
         self.laps_hs = 0
-
         self.anti_cheat = 1
+
+        # Drift Gamemode
+        self.drift_text = Text(text = "", origin = (0, 0), color = color.white, size = 0.05, scale = (1.1, 1.1), position = (0, 0.43), visible = False)
+        self.drift_timer = Text(text = "", origin = (0, 0), size = 0.05, scale = (1, 1), position = (0.7, 0.43))
+        self.start_drift = False
+        self.drift_score = 0
+        self.drift_time = 0
+        self.drift_multiplier = 20
+        self.get_hundred = False
+        self.get_thousand = False
+        self.get_fivethousand = False
+
         self.ai = False
         self.ai_list = []
 
@@ -176,6 +188,13 @@ class Car(Entity):
         self.forest_track_laps = self.highscores["time_trial"]["forest_track"]
         self.savannah_track_laps = self.highscores["time_trial"]["savannah_track"]
         self.lake_track_laps = self.highscores["time_trial"]["lake_track"]
+
+        self.sand_track_drift = self.highscores["drift"]["sand_track"]
+        self.grass_track_drift = self.highscores["drift"]["grass_track"]
+        self.snow_track_drift = self.highscores["drift"]["snow_track"]
+        self.forest_track_drift = self.highscores["drift"]["forest_track"]
+        self.savannah_track_drift = self.highscores["drift"]["savannah_track"]
+        self.lake_track_drift = self.highscores["drift"]["lake_track"]
 
         self.highscore_count = self.sand_track_hs
         self.highscore_count = float(self.highscore_count)
@@ -315,13 +334,15 @@ class Car(Entity):
 
     def update(self):
         # Stopwatch/Timer
-        if not self.time_trial:
+        # Race Gamemode
+        if self.gamemode == "race":
             self.highscore.text = str(round(self.highscore_count, 1))
             self.laps_text.disable()
             if self.timer_running:
                 self.count += time.dt
                 self.reset_count += time.dt
-        elif self.time_trial:
+        # Time Trial Gamemode
+        elif self.gamemode == "time trial":
             self.highscore.text = str(self.laps_hs)
             self.laps_text.text = str(self.laps)
             if self.timer_running:
@@ -354,9 +375,55 @@ class Car(Entity):
 
                     self.save_highscore()
                     self.reset_car()
+        # Drift Gamemode
+        elif self.gamemode == "drift":
+            self.timer.text = str(int(self.drift_score))
+            self.drift_text.text = str(int(self.count))
+            self.drift_timer.text = str(float(round(self.drift_time, 1)))
+            self.laps_text.disable()
+            if self.timer_running:
+                self.drift_time -= time.dt
+                if self.drifting and held_keys["w"]:
+                    self.count += self.drift_multiplier * time.dt
+                    self.drift_multiplier += time.dt * 10
+                    self.start_drift = True
+                    self.drift_text.visible = True
+                    self.drift_text.x = 0
 
-        self.timer.text = str(round(self.count, 1))
-        self.reset_count_timer.text = str(round(self.reset_count, 1))
+                    if abs(100 - self.count) <= 5 or abs(200 - self.count) <= 20:
+                        if not self.get_hundred:
+                            self.animate_text(self.drift_text, 1.7, 1.1)
+                            self.get_hundred = True
+                    if abs(1000 - self.count) <= 10 or abs(2000 - self.count) <= 50:
+                        if not self.get_thousand:
+                            self.animate_text(self.drift_text, 1.7, 1.1)
+                            self.get_thousand = True
+                    if abs(5000 - self.count) <= 20 or abs(10000 - self.count) <= 100:
+                        if not self.get_fivethousand:
+                            self.animate_text(self.drift_text, 1.7, 1.1)
+                            self.get_fivethousand = True
+
+                    if self.count >= 100 and self.count < 1000:
+                        self.drift_text.color = color.hex("#6eb1ff")
+                    elif self.count >= 1000 and self.count < 5000:
+                        self.drift_text.color = color.gold
+                    elif self.count >= 5000:
+                        self.drift_text.color = color.red
+                    else:
+                        self.drift_text.color = color.white
+                else:
+                    if self.start_drift:
+                        self.reset_drift()
+                        self.start_drift = False
+                if self.drift_time <= 0:
+                    self.drift_timer.shake()
+                    self.reset_car()
+
+        if self.gamemode != "drift":
+            self.timer.text = str(round(self.count, 1))
+            self.reset_count_timer.text = str(round(self.reset_count, 1))
+        else:
+            self.reset_count_timer.text = str(int(self.reset_count))
 
         # Read the username
         with open(self.username_path, "r") as username:
@@ -455,9 +522,9 @@ class Car(Entity):
 
                 self.drive_sound.volume = self.speed / 80 * self.volume
                 if self.pivot_rotation_distance > 0:
-                    self.dirt_sound.volume = self.pivot_rotation_distance / 100 * self.volume
+                    self.dirt_sound.volume = self.pivot_rotation_distance / 110 * self.volume
                 elif self.pivot_rotation_distance < 0:
-                    self.dirt_sound.volume = -self.pivot_rotation_distance / 100 * self.volume
+                    self.dirt_sound.volume = -self.pivot_rotation_distance / 110 * self.volume
 
                 # Particles
                 self.particle_time += time.dt
@@ -469,13 +536,16 @@ class Car(Entity):
                 # TrailRenderer / Skid Marks
                 if self.graphics != "ultra fast":
                     if self.drift_speed <= self.min_drift_speed + 2 and self.start_trail:   
-                        if self.pivot_rotation_distance > 60 or self.pivot_rotation_distance < -60:
+                        if self.pivot_rotation_distance > 60 or self.pivot_rotation_distance < -60 and self.speed > 10:
                             for trail in self.trails:
                                 trail.start_trail()
                             if self.audio:
                                 self.skid_sound.volume = self.volume / 2
                                 self.skid_sound.play()
                             self.start_trail = False
+                            self.drifting = True
+                        else:
+                            self.drifting = False
                     elif self.drift_speed > self.min_drift_speed + 2 and not self.start_trail:
                         if self.pivot_rotation_distance < 60 or self.pivot_rotation_distance > -60:
                             for trail in self.trails:
@@ -484,6 +554,10 @@ class Car(Entity):
                             if self.audio:
                                 self.skid_sound.stop(False)
                             self.start_trail = True
+                            self.drifting = False
+                        self.drifting = False
+                    if self.speed < 10:
+                        self.drifting = False
             else:
                 self.speed -= self.friction * 5 * time.dt
                 self.camera_rotation += self.friction * 20 * time.dt
@@ -491,8 +565,6 @@ class Car(Entity):
                 self.dirt_sound.volume -= 0.5 * time.dt
                 if self.skid_sound.playing:
                     self.skid_sound.stop(False)
-                if self.dirt_sound.playing:
-                    self.dirt_sound.stop(False)
 
             # Braking
             if held_keys[self.controls[2] or held_keys["down arrow"]]:
@@ -688,14 +760,16 @@ class Car(Entity):
         self.velocity_y = 0
         self.anti_cheat = 1
         self.timer_running = False
-        if not self.time_trial:
+        if self.gamemode == "race":
             self.count = 0.0
             self.reset_count = 0.0
-        elif self.time_trial:
+        elif self.gamemode == "time trial":
             self.count = 100.0
             self.reset_count = 100.0
             self.laps = 0
             self.start_time = False
+        elif self.gamemode == "drift":
+            self.reset_drift_score()
         for trail in self.trails:
             if trail.trailing:
                 trail.end_trail()
@@ -736,7 +810,8 @@ class Car(Entity):
         """
         Checks if the score is lower than the highscore
         """
-        if self.time_trial == False:
+        if self.gamemode == "race":
+            self.last_count = self.count
             self.reset_count = 0.0
             self.timer.disable()
             self.reset_count_timer.enable()
@@ -744,17 +819,14 @@ class Car(Entity):
             if self.highscore_count == 0:
                 if self.last_count >= 5:
                     self.highscore_count = self.last_count
-                    self.animate_highscore(direction = "up")
-                    invoke(self.animate_highscore, delay = 0.2)
-            if self.last_count <= self.highscore_count:
+                    self.animate_text(self.highscore)
+            if self.last_count <= self.highscore_count and self.last_count != 0:
                 if self.last_count >= 5:
                     self.highscore_count = self.last_count
-                    self.animate_highscore(direction = "up")
-                    invoke(self.animate_highscore, delay = 0.2)
+                    self.animate_text(self.highscore)
                 if self.highscore_count <= 6:
                     self.highscore_count = self.last_count
-                    self.animate_highscore(direction = "up")
-                    invoke(self.animate_highscore, delay = 0.2)
+                    self.animate_text(self.highscore)
 
             if self.sand_track.enabled:
                 self.sand_track_hs = float(self.highscore_count)
@@ -770,12 +842,45 @@ class Car(Entity):
                 self.lake_track_hs = float(self.highscore_count)
             self.save_highscore()
 
-        elif self.time_trial:
+        elif self.gamemode == "time trial":
+            self.last_count = self.count
             if self.start_time:
                 self.laps += 1
-                self.animate_highscore(time_trial = True, direction = "up")
-                invoke(self.animate_highscore, True,  delay = 0.2)
+                self.animate_text(self.laps_text, 1.7, 1.1)
             self.start_time = True
+
+        elif self.gamemode == "drift":
+            self.drift_score += self.count
+
+            if self.drift_score >= self.highscore_count:
+                self.highscore_count = self.drift_score
+                if self.highscore_count != 0:
+                    self.animate_text(self.highscore)
+
+            self.reset_count = self.drift_score
+            self.reset_count_timer.enable()
+            self.timer.disable()
+            invoke(self.reset_count_timer.disable, delay = 3)
+            invoke(self.timer.enable, delay = 3)
+
+            self.reset_drift_score()
+            
+            self.highscore.text = str(int(self.highscore_count))
+            
+            if self.sand_track.enabled:
+                self.sand_track_drift = int(self.highscore_count)
+            elif self.grass_track.enabled:
+                self.grass_track_drift = int(self.highscore_count)
+            elif self.snow_track.enabled:
+                self.snow_track_drift = int(self.highscore_count)
+            elif self.forest_track.enabled:
+                self.forest_track_drift = int(self.highscore_count)
+            elif self.savannah_track.enabled:
+                self.savannah_track_drift = int(self.highscore_count)
+            elif self.lake_track.enabled:
+                self.lake_track_drift = int(self.highscore_count)
+
+            self.save_highscore()
 
     def save_highscore(self):
         """
@@ -798,6 +903,15 @@ class Car(Entity):
                 "forest_track": self.forest_track_laps,
                 "savannah_track": self.savannah_track_laps,
                 "lake_track": self.lake_track_laps
+            },
+
+            "drift": {
+                "sand_track": self.sand_track_drift,
+                "grass_track": self.grass_track_drift, 
+                "snow_track": self.snow_track_drift, 
+                "forest_track": self.forest_track_drift,
+                "savannah_track": self.savannah_track_drift,
+                "lake_track": self.lake_track_drift
             }
         }
 
@@ -821,6 +935,13 @@ class Car(Entity):
         self.forest_track_laps = 0
         self.savannah_track_laps = 0
         self.lake_track_laps = 0
+
+        self.sand_track_drift = 0.0
+        self.grass_track_drift = 0.0
+        self.snow_track_drift = 0.0
+        self.forest_track_drift = 0.0
+        self.savannah_track_drift = 0.0
+        self.lake_track_drift = 0.0
 
         self.save_highscore()
 
@@ -895,6 +1016,8 @@ class Car(Entity):
         self.duck_unlocked = self.unlocked["cosmetics"]["duck"]
         self.banana_unlocked = self.unlocked["cosmetics"]["banana"]
         self.surfinbird_unlocked = self.unlocked["cosmetics"]["surfinbird"]
+
+        self.drift_unlocked = self.unlocked["gamemodes"]["drift"]
 
     def save_unlocked(self):
         """
@@ -980,6 +1103,9 @@ class Car(Entity):
                 "duck": self.duck_unlocked,
                 "banana": self.banana_unlocked,
                 "surfinbird": self.surfinbird_unlocked
+            },
+            "gamemodes": {
+                "drift": self.drift_unlocked
             }
         }
 
@@ -994,22 +1120,59 @@ class Car(Entity):
         self.timer.enable()
         self.reset_count_timer.disable()
 
-    def animate_highscore(self, time_trial = False, direction = "down"):
+    def reset_drift(self):
         """
-        Animates the scale of the highscore text
+        Resets the drift
         """
-        if not time_trial:
+        self.animate_text(self.drift_text, 1.7, 1.1)
+        invoke(self.drift_text.animate_position, (-0.8, 0.43), 0.3, curve = curve.out_expo, delay = 0.3)
+        invoke(self.reset_drift_text, delay = 0.4)
+        self.get_hundred = False
+        self.get_thousand = False
+        self.get_fivethousand = False
+
+    def reset_drift_text(self):
+        """
+        Resets the drift text
+        """
+        self.drift_score += self.count
+        self.drift_multiplier = 20
+        self.count = 0
+        self.drifting = False
+        invoke(setattr, self.drift_text, "visible", False, delay = 0.1)
+        invoke(setattr, self.drift_text, "position", (0, 0.43), delay = 0.3)
+
+    def reset_drift_score(self):
+        self.count = 0
+        self.drift_score = 0
+        self.drift_multiplier = 20
+        self.drifting = False
+
+        if self.sand_track.enabled:
+            self.drift_time = 25.0
+        elif self.grass_track.enabled:
+            self.drift_time = 30.0
+        elif self.snow_track.enabled:
+            self.drift_time = 50.0
+        elif self.forest_track.enabled:
+            self.drift_time = 40.0
+        elif self.savannah_track.enabled:
+            self.drift_time = 25.0
+        elif self.lake_track.enabled:
+            self.drift_time = 75.0
+
+    def animate_text(self, text, top = 1.2, bottom = 0.6):
+        """
+        Animates the scale of text
+        """
+        if self.gamemode != "drift":
             if self.last_count > 1:
-                if direction == "up":
-                    self.highscore.animate_scale((1.2, 1.2, 1.2), duration = 0.2, curve = curve.out_expo)
-                elif direction == "down":
-                    self.highscore.animate_scale((0.6, 0.6, 0.6), duration = 0.1, curve = curve.linear)
+                text.animate_scale((top, top, top), curve = curve.out_expo)
+                invoke(text.animate_scale, (bottom, bottom, bottom), delay = 0.2)
         else:
-            if direction == "up":
-                self.laps_text.animate_scale((1.7, 1.7, 1.7), duration = 0.2, curve = curve.out_expo)
-            elif direction == "down":
-                self.laps_text.animate_scale((1.1, 1.1, 1.1), duration = 0.1, curve = curve.linear)
-    
+            text.animate_scale((top, top, top), curve = curve.out_expo)
+            invoke(text.animate_scale, (bottom, bottom, bottom), delay = 0.2)
+
     def shake_camera(self):
         """
         Camera shake
