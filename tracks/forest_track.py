@@ -28,6 +28,7 @@ class ForestTrack(Entity):
         self.wall_trigger = Entity(model = "cube", position = (11, -45, -70), rotation = (0, 0, 0), scale = (3, 20, 40), visible = False)
 
         self.trees = Entity(model = "trees-forest.obj", texture = "tree-forest.png", position = (0, -50, 0), scale = 12, rotation_y = 270)
+        self.thin_trees = Entity(model = "thintrees-forest.obj", texture = "thintree-forest.png", position = (0, -50, 0), scale = 12, rotation_y = 270)
 
         self.track = [
             self.finish_line, self.boundaries, self.wall1, self.wall2, self.wall3, 
@@ -35,7 +36,7 @@ class ForestTrack(Entity):
         ]
 
         self.details = [
-            self.trees
+            self.trees, self.thin_trees
         ]
         
         self.disable()

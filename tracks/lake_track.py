@@ -19,7 +19,9 @@ class LakeTrack(Entity):
         self.wall_trigger = Entity(model = "cube", position = (143, -30, -145), scale = (3, 10, 30), visible = False)
 
         self.trees = Entity(model = "trees-lake.obj", texture = "tree-lake.png", y = -50, rotation_y = 90, scale = 14)
+        self.thin_trees = Entity(model = "thintrees-lake.obj", texture = "thintree-lake.png", y = -50, rotation_y = 90, scale = 14)
         self.rocks = Entity(model = "rocks-lake.obj", texture = "rock-lake.png", y = -50, rotation_y = 90, scale = 14)
+        self.bigrocks = Entity(model = "bigrocks-lake.obj", texture = "rock-lake.png", y = -50, rotation_y = 90, scale = 14)
         self.grass = Entity(model = "grass-lake.obj", texture = "grass-lake.png", y = -50, rotation_y = 90, scale = 14)
 
         self.track = [
@@ -27,7 +29,7 @@ class LakeTrack(Entity):
         ]
 
         self.details = [
-            self.trees, self.rocks, self.grass
+            self.trees, self.rocks, self.grass, self.thin_trees, self.bigrocks
         ]
         
         for i in self.track:

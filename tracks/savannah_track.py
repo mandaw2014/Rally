@@ -17,6 +17,7 @@ class SavannahTrack(Entity):
         self.boundaries = Entity(model = "savannah_track_bounds.obj", collider = "mesh", position = (0, -50, 0), rotation = (0, 270, 0), scale = (27, 27, 27), visible = False)
         self.wall_trigger = Entity(model = "cube", position = (-63, -48, -47), rotation = (0, 0, 0), scale = (50, 20, 3), visible = False)
 
+        self.trees = Entity(model = "trees-savannah.obj", texture = "tree-savannah.png", y = -50, rotation_y = 270, scale = 27)
         self.rocks = Entity(model = "rocks-savannah.obj", texture = "rock-savannah.png", y = -50, rotation_y = 270, scale = 27)
 
         self.track = [
@@ -24,7 +25,7 @@ class SavannahTrack(Entity):
         ]
 
         self.details = [
-            self.rocks
+            self.trees, self.rocks
         ]
         
         for i in self.track:
