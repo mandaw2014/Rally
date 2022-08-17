@@ -58,7 +58,8 @@ class SnowTrack(Entity):
             if self.car.anti_cheat == 1:
                 self.car.timer_running = True
                 self.car.anti_cheat = 0
-                invoke(self.car.reset_timer, delay = 3)
+                if self.car.gamemode != "drift":
+                    invoke(self.car.reset_timer, delay = 3)
 
                 self.car.check_highscore()
 
@@ -74,8 +75,6 @@ class SnowTrack(Entity):
                 self.wall10.enable()
                 self.wall11.disable()
                 self.wall12.disable()
-
-                invoke(self.car.reset_timer, delay = 3)
 
         if self.car.simple_intersects(self.wall_trigger):
             self.wall1.enable()

@@ -960,7 +960,7 @@ class MainMenu(Entity):
                 unlocked_text.y = -0.3
                 unlocked_text.enable()
                 unlocked_text.shake()
-                unlocked_text.text = "Play Every Track to Unlock the Drift Gamemode"
+                unlocked_text.text = "Unlock Every Track to play Drift Gamemode"
                 invoke(setattr, unlocked_text, "parent", self.maps_menu, delay = 1.5)
                 invoke(setattr, unlocked_text, "y", -0.1, delay = 1.6)
 

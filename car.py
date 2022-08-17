@@ -84,6 +84,7 @@ class Car(Entity):
         self.dirt_sound = Audio("dirt-skid.mp3", loop = True, autoplay = False, volume = 0.8)
         self.skid_sound = Audio("skid.mp3", loop = True, autoplay = False, volume = 0.5)
         self.hit_sound = Audio("hit.wav", autoplay = False, volume = 0.5)
+        self.drift_swush = Audio("unlock.mp3", autoplay = False, volume = 0.8)
 
         # Collision
         self.copy_normals = False
@@ -1127,6 +1128,7 @@ class Car(Entity):
         self.animate_text(self.drift_text, 1.7, 1.1)
         invoke(self.drift_text.animate_position, (-0.8, 0.43), 0.3, curve = curve.out_expo, delay = 0.3)
         invoke(self.reset_drift_text, delay = 0.4)
+        self.drift_swush.play()
         self.get_hundred = False
         self.get_thousand = False
         self.get_fivethousand = False
