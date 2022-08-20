@@ -1903,6 +1903,8 @@ class MainMenu(Entity):
                 self.pause_menu.enabled = not self.pause_menu.enabled
                 mouse.locked = not mouse.locked
 
+            self.start_spin = False
+
             if self.car.reset_count_timer.enabled == False:
                 self.car.timer.enable()
             else:
@@ -1922,6 +1924,7 @@ class MainMenu(Entity):
             self.car.drift_text.disable()
             self.car.drift_timer.disable()
             self.car.camera_speed = 8
+            self.start_spin = True
 
         # Audio
         if self.car.audio:
@@ -1963,8 +1966,3 @@ class MainMenu(Entity):
             self.car.copy_normals = False
         else:
             self.car.copy_normals = True
-
-        if key == "w":
-            self.start_spin = False
-        elif key == "w up":
-            self.start_spin = True
