@@ -13,20 +13,21 @@ class Particles(Entity):
         self.car = car
         self.direction = Vec3(random.random(), random.random(), random.random())
 
-        if car.sand_track.enabled:
-            self.texture = "particle_sand_track.png"
-        elif car.grass_track.enabled:
-            self.texture = "particle_grass_track.png"
-        elif car.snow_track.enabled:
-            self.texture = "particle_snow_track.png"
-        elif car.forest_track.enabled:
-            self.texture = "particle_forest_track.png"
-        elif car.savannah_track.enabled:
-            self.texture = "particle_savannah_track.png"
-        elif car.lake_track.enabled:
-            self.texture = "particle_lake_track.png"
-        else:
-            self.texture = "particle_sand_track.png"
+        if hasattr(self.car, "sand_track"):
+            if car.sand_track.enabled:
+                self.texture = "particle_sand_track.png"
+            elif car.grass_track.enabled:
+                self.texture = "particle_grass_track.png"
+            elif car.snow_track.enabled:
+                self.texture = "particle_snow_track.png"
+            elif car.forest_track.enabled:
+                self.texture = "particle_forest_track.png"
+            elif car.savannah_track.enabled:
+                self.texture = "particle_savannah_track.png"
+            elif car.lake_track.enabled:
+                self.texture = "particle_lake_track.png"
+            else:
+                self.texture = "particle_sand_track.png"
 
     def update(self):
         self.position += self.direction * 5 * time.dt

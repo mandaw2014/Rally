@@ -147,6 +147,10 @@ class Car(Entity):
         self.get_thousand = False
         self.get_fivethousand = False
 
+        # Bools
+        self.driving = False
+        self.braking = False
+
         self.ai = False
         self.ai_list = []
 
@@ -479,7 +483,8 @@ class Car(Entity):
         if self.pivot.rotation_y != self.rotation_y:
             if self.pivot.rotation_y > self.rotation_y:
                 self.pivot.rotation_y -= (self.drift_speed * ((self.pivot.rotation_y - self.rotation_y) / 40)) * time.dt
-                self.speed += self.pivot_rotation_distance / self.drift_amount * time.dt
+                if self.speed > 1 or self.speed < -1:
+                    self.speed += self.pivot_rotation_distance / self.drift_amount * time.dt
                 self.camera_rotation -= self.pivot_rotation_distance / 3 * time.dt
                 self.rotation_speed -= 1 * time.dt
                 if self.pivot_rotation_distance >= 50 or self.pivot_rotation_distance <= -50:
@@ -488,7 +493,8 @@ class Car(Entity):
                     self.drift_speed -= self.pivot_rotation_distance / 5 * time.dt
             if self.pivot.rotation_y < self.rotation_y:
                 self.pivot.rotation_y += (self.drift_speed * ((self.rotation_y - self.pivot.rotation_y) / 40)) * time.dt
-                self.speed -= self.pivot_rotation_distance / self.drift_amount * time.dt
+                if self.speed > 1 or self.speed < -1:
+                    self.speed -= self.pivot_rotation_distance / self.drift_amount * time.dt
                 self.camera_rotation += self.pivot_rotation_distance / 3 * time.dt
                 self.rotation_speed += 1 * time.dt
                 if self.pivot_rotation_distance >= 50 or self.pivot_rotation_distance <= -50:
@@ -510,22 +516,7 @@ class Car(Entity):
                 self.speed += -self.velocity_y * 4 * time.dt
 
                 self.camera_rotation -= self.acceleration * 30 * time.dt
-
-                # Audio
-                if self.start_sound and self.audio:
-                    if not self.drive_sound.playing:
-                        self.drive_sound.loop = True
-                        self.drive_sound.play()
-                    if not self.dirt_sound.playing:
-                        self.drive_sound.loop = True
-                        self.dirt_sound.play()
-                    self.start_sound = False
-
-                self.drive_sound.volume = self.speed / 80 * self.volume
-                if self.pivot_rotation_distance > 0:
-                    self.dirt_sound.volume = self.pivot_rotation_distance / 110 * self.volume
-                elif self.pivot_rotation_distance < 0:
-                    self.dirt_sound.volume = -self.pivot_rotation_distance / 110 * self.volume
+                self.driving = True
 
                 # Particles
                 self.particle_time += time.dt
@@ -560,17 +551,46 @@ class Car(Entity):
                     if self.speed < 10:
                         self.drifting = False
             else:
-                self.speed -= self.friction * 5 * time.dt
+                self.driving = False
+                if self.speed > 1:
+                    self.speed -= self.friction * 5 * time.dt
+                elif self.speed < -1:
+                    self.speed += self.friction * 5 * time.dt
                 self.camera_rotation += self.friction * 20 * time.dt
-                self.drive_sound.volume -= 0.5 * time.dt
-                self.dirt_sound.volume -= 0.5 * time.dt
-                if self.skid_sound.playing:
-                    self.skid_sound.stop(False)
 
             # Braking
             if held_keys[self.controls[2] or held_keys["down arrow"]]:
                 self.speed -= self.braking_strenth * time.dt
                 self.drift_speed -= 20 * time.dt
+                self.braking = True
+            else:
+                self.braking = False
+
+            # Audio
+            if self.driving or self.braking:
+                if self.start_sound and self.audio:
+                    if not self.drive_sound.playing:
+                        self.drive_sound.loop = True
+                        self.drive_sound.play()
+                    if not self.dirt_sound.playing:
+                        self.drive_sound.loop = True
+                        self.dirt_sound.play()
+                    self.start_sound = False
+
+                if self.speed > 0:
+                    self.drive_sound.volume = self.speed / 80 * self.volume
+                elif self.speed < 0:
+                    self.drive_sound.volume = -self.speed / 80 * self.volume
+
+                if self.pivot_rotation_distance > 0:
+                    self.dirt_sound.volume = self.pivot_rotation_distance / 110 * self.volume
+                elif self.pivot_rotation_distance < 0:
+                    self.dirt_sound.volume = -self.pivot_rotation_distance / 110 * self.volume
+            else:
+                self.drive_sound.volume -= 0.5 * time.dt
+                self.dirt_sound.volume -= 0.5 * time.dt
+                if self.skid_sound.playing:
+                    self.skid_sound.stop(False)
 
             # Hand Braking
             if held_keys["space"]:
@@ -598,15 +618,21 @@ class Car(Entity):
         elif self.rotation_speed < 0:
             self.rotation_speed += self.speed / 6 * time.dt
 
-        if self.speed > 1:
+        if self.speed > 1 or self.speed < -1:
             if held_keys[self.controls[1]] or held_keys["left arrow"]:
                 self.rotation_speed -= self.steering_amount * time.dt
                 self.drift_speed -= 5 * time.dt
-                self.speed -= self.turning_speed * time.dt
+                if self.speed > 1:
+                    self.speed -= self.turning_speed * time.dt
+                elif self.speed < 0:
+                    self.speed += self.turning_speed / 5 * time.dt
             elif held_keys[self.controls[3]] or held_keys["right arrow"]:
                 self.rotation_speed += self.steering_amount * time.dt
                 self.drift_speed -= 5 * time.dt
-                self.speed -= self.turning_speed * time.dt
+                if self.speed > 1:
+                    self.speed -= self.turning_speed * time.dt
+                elif self.speed < 0:
+                    self.speed += self.turning_speed / 5 * time.dt
             else:
                 self.drift_speed += 15 * time.dt
                 if self.rotation_speed > 0:
@@ -619,9 +645,10 @@ class Car(Entity):
         # Cap the speed
         if self.speed >= self.topspeed:
             self.speed = self.topspeed
-        if self.speed <= 0.1:
-            self.speed = 0.1
-            self.pivot.rotation = self.rotation
+        if self.speed <= -15:
+            self.speed = -15
+        if self.speed <= 0:
+            self.pivot.rotation_y = self.rotation_y
 
         # Cap the drifting
         if self.drift_speed <= self.min_drift_speed:
@@ -654,7 +681,7 @@ class Car(Entity):
             self.camera_rotation = 30
 
         # Camera Shake
-        if self.speed >= 1 and held_keys[self.controls[0]] or held_keys["up arrow"]:
+        if self.speed >= 1 and self.driving:
             self.can_shake = True
             if self.pivot_rotation_distance > 0:
                 self.shake_amount = self.speed * self.pivot_rotation_distance / 200
