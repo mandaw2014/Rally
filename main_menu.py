@@ -6,6 +6,26 @@ import os
 Text.default_resolution = 1080 * Text.size
 
 class MainMenu(Entity):
+    def action_quit_menu(self):
+        self.quit_menu.enabled = not self.quit_menu.enabled
+        self.start_menu.enabled = not self.start_menu.enabled
+
+    def quit_menu_toggle(self, up):
+        for button in (element for element in self.quit_menu.children if type(element) is Button):
+            if self.quit_menu_button_selected != button:
+                self.quit_menu_button_selected.color = color.black
+                self.quit_menu_button_selected = button
+                self.quit_menu_button_selected.color = color.gray
+                return
+        self.sel_first_button_menu()
+
+    def sel_first_button_menu(self):
+        if self.quit_menu_button_selected is not None:
+            self.quit_menu_button_selected.color = color.black
+
+        self.quit_menu_button_selected = [element for element in self.quit_menu.children if type(element) is Button][0]
+        self.quit_menu_button_selected.color = color.gray
+
     def __init__(self, car, ai_list, sand_track, grass_track, snow_track, forest_track, savannah_track, lake_track):
         super().__init__(
             parent = camera.ui
@@ -119,14 +139,15 @@ class MainMenu(Entity):
 
         start_title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.start_menu, y = 0.3)
 
-        singleplayer_button = Button(text = "Singleplayer", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = 0.05, parent = self.start_menu)
-        multiplayer_button = Button(text = "Multiplayer", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.08, parent = self.start_menu)
+        singleplayer_button = Button(text = "Singleplayer", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, x = -0.20, y = 0.10, parent = self.start_menu)
+        multiplayer_button = Button(text = "Multiplayer", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, x = 0.20, y = 0.10, parent = self.start_menu)
+        exit_button = Button(text = "Quit", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.08, parent = self.start_menu)
         
         singleplayer_button.on_click = Func(singleplayer)
         multiplayer_button.on_click = Func(multiplayer)
+        exit_button.on_click = Func(self.action_quit_menu)
 
         # Quit Menu
-
         def quit():
             application.quit()
             os._exit(0)
@@ -138,6 +159,9 @@ class MainMenu(Entity):
         quit_text = Text("Are you sure you want to quit?", scale = 1.5, line_height = 2, x = 0, origin = 0, y = 0.2, parent = self.quit_menu)
         quit_yes = Button(text = "Yes", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.05, parent = self.quit_menu)
         quit_no = Button(text = "No", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.07, parent = self.quit_menu)
+
+        self.quit_menu_button_selected = None
+        self.sel_first_button_menu()
 
         quit_yes.on_click = Func(quit)
         quit_no.on_click = Func(dont_quit)
@@ -1937,9 +1961,15 @@ class MainMenu(Entity):
         # Quit Menu
         if self.start_menu.enabled or self.quit_menu.enabled:
             if key == "escape":
-                self.quit_menu.enabled = not self.quit_menu.enabled
-                self.start_menu.enabled = not self.start_menu.enabled
+                self.action_quit_menu()
 
+        if self.quit_menu.enabled:
+            if key == "enter":
+                self.quit_menu_button_selected.on_click()
+            elif key == "up arrow" or key == "tab":
+                self.quit_menu_toggle_button(True)
+            elif key == "down arrow":
+                self.quit_menu_toggle_button(False)
         # Settings Menu
         if key == "escape":
             if self.settings_menu.enabled:
