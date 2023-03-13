@@ -117,10 +117,6 @@ class MainMenu(Entity):
             if self.car.graphics != "ultra fast":
                 self.snow_track.trees.enable()
 
-        def quit():
-            application.quit()
-            os._exit(0)
-
         start_title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.start_menu, y = 0.3)
 
         singleplayer_button = Button(text = "Singleplayer", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = 0.05, parent = self.start_menu)
