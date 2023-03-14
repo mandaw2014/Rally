@@ -1,15 +1,13 @@
 from ursina import *
 from ursina import curve
 from server import Server
+from menu import Menu
+
 import os
 
 Text.default_resolution = 1080 * Text.size
 
 class MainMenu(Entity):
-    def action_quit_menu(self):
-        self.quit_menu.enabled = not self.quit_menu.enabled
-        self.start_menu.enabled = not self.start_menu.enabled
-
     def quit_menu_toggle(self, up):
         for button in (element for element in self.quit_menu.children if type(element) is Button):
             if self.quit_menu_button_selected != button:
@@ -26,37 +24,173 @@ class MainMenu(Entity):
         self.quit_menu_button_selected = [element for element in self.quit_menu.children if type(element) is Button][0]
         self.quit_menu_button_selected.color = color.gray
 
+
+    class MultiPlayerMenu(Menu):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+
+        def on_toggle(self):
+            parent = self.parent
+            car = parent.car
+            if self.enabled:
+                car.visible = True
+                car.position = (-3, -44.5, 92)
+                parent.grass_track.disable()
+                parent.snow_track.enable()
+                for track in parent.tracks:
+                    for i in track.track:
+                        i.disable()
+                    for i in track.details:
+                        i.disable()
+                for track in parent.snow_track.track:
+                    track.enable()
+                if car.graphics != "ultra fast":
+                    parent.snow_track.trees.enable()
+            else:
+                car.position = (-80, -42, 18.8)
+                car.rotation = (0, 90, 0)
+                car.visible = True
+                parent.grass_track.enable()
+                parent.snow_track.disable()
+                for track in parent.tracks:
+                    for i in track.track:
+                        i.disable()
+                    for i in track.details:
+                        i.disable()
+                for track in parent.grass_track.track:
+                    track.enable()
+                if car.graphics != "ultra fast":
+                    for detail in parent.grass_track.details:
+                        detail.enable()
+                if car.graphics == "fast":
+                    parent.grass_track.grass.disable()
+
+    class SinglePlayerMenu(Menu):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+
+        def on_toggle(self):
+            parent = self.parent
+            car = parent.car
+            if self.enabled:
+                car.multiplayer = False
+                parent.grass_track.enable()
+                car.position = (0, 0, 4)
+                car.visible = False
+                for track in parent.tracks:
+                    for i in track.track:
+                        i.disable()
+                    for i in track.details:
+                        i.disable()
+                for track in parent.grass_track.track:
+                    track.enable()
+                if car.graphics != "ultra fast":
+                    for detail in parent.grass_track.details:
+                        detail.enable()
+                if car.graphics == "fast":
+                    parent.grass_track.grass.disable()
+            else:
+                car.position = (-80, -42, 18.8)
+                car.rotation = (0, 90, 0)
+                car.visible = True
+                parent.grass_track.enable()
+                if car.multiplayer_update:
+                    car.multiplayer_update = False
+                for track in parent.tracks:
+                    for i in track.track:
+                        i.disable()
+                    for i in track.details:
+                        i.disable()
+                for track in parent.grass_track.track:
+                    track.enable()
+                if car.graphics != "ultra fast":
+                    for detail in parent.grass_track.details:
+                        detail.enable()
+                if car.graphics == "fast":
+                    parent.grass_track.grass.disable()
+
+    class ServerMenu(Menu):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+
+        def on_toggle(self):
+            parent = self.parent
+            car = parent.car
+            if self.enabled:
+                car.visible = True
+                car.position = (-105, -50, -59)
+                parent.snow_track.disable()
+                parent.sand_track.enable()
+                for track in parent.tracks:
+                    for i in track.track:
+                        i.disable()
+                    for i in track.details:
+                        i.disable()
+                for track in parent.sand_track.track:
+                    track.enable()
+                if car.graphics != "ultra fast":
+                    for detail in parent.sand_track.details:
+                        detail.enable()
+            else:
+                car.visible = True
+                car.position = (-3, -44.5, 92)
+                parent.sand_track.disable()
+                parent.snow_track.enable()
+                for track in parent.tracks:
+                    for i in track.track:
+                        i.disable()
+                    for i in track.details:
+                        i.disable()
+                for track in parent.snow_track.track:
+                    track.enable()
+                if car.graphics != "ultra fast":
+                    for detail in parent.snow_track.details:
+                        detail.enable()
+
     def __init__(self, car, ai_list, sand_track, grass_track, snow_track, forest_track, savannah_track, lake_track):
         super().__init__(
             parent = camera.ui
         )
 
         # The different menus
-        self.start_menu = Entity(parent = self, enabled = True)
-        self.host_menu = Entity(parent = self, enabled = False)
-        self.created_server_menu = Entity(parent = self, enabled = False)
-        self.server_menu = Entity(parent = self, enabled = False)
-        self.main_menu = Entity(parent = self, enabled = False)
-        self.race_menu = Entity(parent = self, enabled = False)
+        self.start_menu = Menu(parent = self, ignore=False, enabled = True)
+        self.host_menu = self.MultiPlayerMenu(parent = self, enabled = False, parent_menu = self.start_menu)
+        self.created_server_menu = Menu(parent = self, enabled = False)
+        self.server_menu = self.ServerMenu(parent = self, enabled = False, parent_menu = self.host_menu)
+        self.singleplayer_menu = self.SinglePlayerMenu(parent = self, enabled = False, parent_menu = self.start_menu)
+        self.race_menu = Menu(parent = self, enabled = False, parent_menu = self.singleplayer_menu)
         self.maps_menu = Entity(parent = self, enabled = False)
-        self.settings_menu = Entity(parent = self, enabled = False)
-        self.video_menu = Entity(parent = self, enabled = False)
-        self.gameplay_menu = Entity(parent = self, enabled = False)
-        self.audio_menu = Entity(parent = self, enabled = False)
-        self.controls_menu = Entity(parent = self, enabled = False)
-        self.garage_menu = Entity(parent = self, enabled = False)
+        self.settings_menu = Menu(parent = self, enabled = False, parent_menu = self.singleplayer_menu)
+        self.video_menu = Menu(parent = self, enabled = False, parent_menu = self.settings_menu)
+        self.gameplay_menu = Menu(parent = self, enabled = False, parent_menu = self.settings_menu)
+        self.audio_menu = Menu(parent = self, enabled = False, parent_menu = self.settings_menu)
+        self.controls_menu = Menu(parent = self, enabled = False, parent_menu = self.settings_menu)
+        self.garage_menu = Menu(parent = self, enabled = False, parent_menu = self.singleplayer_menu)
         self.cars_menu = Entity(parent = self.garage_menu, enabled = False)
         self.colours_menu = Entity(parent = self.garage_menu, enabled = False)
         self.cosmetics_menu = Entity(parent = self.garage_menu, enabled = False)
         self.pause_menu = Entity(parent = self, enabled = False)
-        self.quit_menu = Entity(parent = self, enabled = False)
+        self.quit_menu = Menu(parent = self, enabled = False, parent_menu = self.start_menu)
+        self.start_menu.parent_menu = self.quit_menu
 
         self.menus = [
-            self.start_menu, self.host_menu, self.created_server_menu, self.server_menu,
-            self.main_menu, self.race_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu,
-            self.audio_menu, self.controls_menu, self.garage_menu, self.pause_menu, self.quit_menu
+            self.start_menu,
+            self.host_menu,
+            self.created_server_menu,
+            self.server_menu,
+            self.singleplayer_menu,
+            self.race_menu,
+            self.maps_menu,
+            self.settings_menu,
+            self.video_menu,
+            self.gameplay_menu,
+            self.audio_menu,
+            self.controls_menu,
+            self.garage_menu,
+            self.pause_menu,
+            self.quit_menu
         ]
-        
+
         self.car = car
         self.sand_track = sand_track
         self.grass_track = grass_track
@@ -74,7 +208,18 @@ class MainMenu(Entity):
         ]
 
         # Animate the menu
-        for menu in (self.start_menu, self.main_menu, self.race_menu, self.maps_menu, self.settings_menu, self.video_menu, self.gameplay_menu, self.audio_menu, self.controls_menu, self.pause_menu, self.quit_menu, self.garage_menu):
+        for menu in (self.start_menu,
+                     self.singleplayer_menu,
+                     self.race_menu,
+                     self.maps_menu,
+                     self.settings_menu,
+                     self.video_menu,
+                     self.gameplay_menu,
+                     self.audio_menu,
+                     self.controls_menu,
+                     self.pause_menu,
+                     self.quit_menu,
+                     self.garage_menu):
             def animate_in_menu(menu = menu):
                 for i, e in enumerate(menu.children):
                     e.original_scale = e.scale
@@ -101,51 +246,20 @@ class MainMenu(Entity):
             detail.enable()
 
         def singleplayer():
-            car.multiplayer = False
-            self.start_menu.disable()
-            self.main_menu.enable()
-            grass_track.enable()
-            self.car.position = (0, 0, 4)
-            self.car.visible = False
-            for track in self.tracks:
-                for i in track.track:
-                    i.disable()
-                for i in track.details:
-                    i.disable()
-            for track in self.grass_track.track:
-                track.enable()
-            if self.car.graphics != "ultra fast":
-                for detail in self.grass_track.details:
-                    detail.enable()
-            if self.car.graphics == "fast":
-                self.grass_track.grass.disable()
+            self.singleplayer_menu.toggle()
 
         def multiplayer():
-            self.start_menu.disable()
-            self.host_menu.enable()
-            self.car.visible = True
-            self.car.position = (-3, -44.5, 92)
-            grass_track.disable()
-            snow_track.enable()
-            for track in self.tracks:
-                for i in track.track:
-                    i.disable()
-                for i in track.details:
-                    i.disable()
-            for track in self.snow_track.track:
-                track.enable()
-            if self.car.graphics != "ultra fast":
-                self.snow_track.trees.enable()
+            self.host_menu.toggle()
 
         start_title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.start_menu, y = 0.3)
 
         singleplayer_button = Button(text = "Singleplayer", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, x = -0.20, y = 0.10, parent = self.start_menu)
         multiplayer_button = Button(text = "Multiplayer", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, x = 0.20, y = 0.10, parent = self.start_menu)
         exit_button = Button(text = "Quit", color = color.gray, highlight_color = color.light_gray, scale_y = 0.1, scale_x = 0.3, y = -0.08, parent = self.start_menu)
-        
+
         singleplayer_button.on_click = Func(singleplayer)
         multiplayer_button.on_click = Func(multiplayer)
-        exit_button.on_click = Func(self.action_quit_menu)
+        exit_button.on_click = Func(self.quit_menu.toggle)
 
         # Quit Menu
         def quit():
@@ -164,7 +278,7 @@ class MainMenu(Entity):
         self.sel_first_button_menu()
 
         quit_yes.on_click = Func(quit)
-        quit_no.on_click = Func(dont_quit)
+        quit_no.on_click = Func(self.quit_menu.toggle)
 
         # Host Server Menu
 
@@ -193,44 +307,8 @@ class MainMenu(Entity):
                         detail.enable()
 
         def join_server_func():
-            self.host_menu.disable()
-            self.server_menu.enable()
-            self.car.visible = True
-            self.car.position = (-105, -50, -59)
-            snow_track.disable()
-            sand_track.enable()
-            for track in self.tracks:
-                for i in track.track:
-                    i.disable()
-                for i in track.details:
-                    i.disable()
-            for track in self.sand_track.track:
-                track.enable()
-            if self.car.graphics != "ultra fast":
-                for detail in self.sand_track.details:
-                    detail.enable()
+            self.server_menu.toggle()
 
-        def back_host():
-            self.host_menu.disable()
-            self.start_menu.enable()
-            self.car.position = (-80, -42, 18.8)
-            self.car.rotation = (0, 90, 0)
-            self.car.visible = True
-            self.grass_track.enable()
-            self.snow_track.disable()
-            for track in self.tracks:
-                for i in track.track:
-                    i.disable()
-                for i in track.details:
-                    i.disable()
-            for track in self.grass_track.track:
-                track.enable()
-            if self.car.graphics != "ultra fast":
-                for detail in self.grass_track.details:
-                    detail.enable()
-            if self.car.graphics == "fast":
-                self.grass_track.grass.disable()
-        
         self.car.host_ip = InputField(default_value = "IP", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.host_menu)
         self.car.host_port = InputField(default_value = "PORT", limit_content_to = "0123456789", color = color.black, alpha = 100, y = 0.02, parent = self.host_menu)
 
@@ -240,7 +318,7 @@ class MainMenu(Entity):
 
         create_server_button.on_click = Func(create_server)
         join_server_button.on_click = Func(join_server_func)
-        back_button_host.on_click = Func(back_host)
+        back_button_host.on_click = Func(multiplayer)
 
         # Created Server
 
@@ -249,7 +327,7 @@ class MainMenu(Entity):
             car.port.text = car.host_port.text
             car.multiplayer = True
             self.created_server_menu.disable()
-            self.main_menu.enable()
+            self.singleplayer_menu.enable()
             self.car.position = (0, 0, 4)
             self.car.camera_offset = (20, 40, -50)
             camera.rotation = (35, -20, 0)
@@ -287,7 +365,7 @@ class MainMenu(Entity):
             if str(self.car.ip.text) != "IP" and str(self.car.port.text) != "PORT":
                 car.multiplayer = True
                 self.server_menu.disable()
-                self.main_menu.enable()
+                self.singleplayer_menu.enable()
                 grass_track.enable()
                 sand_track.disable()
                 self.car.position = (0, 0, 4)
@@ -309,22 +387,7 @@ class MainMenu(Entity):
                     self.grass_track.grass.disable()
 
         def back_server():
-            self.host_menu.enable()
-            self.server_menu.disable()
-            self.car.visible = True
-            self.car.position = (-3, -44.5, 92)
-            sand_track.disable()
-            snow_track.enable()
-            for track in self.tracks:
-                for i in track.track:
-                    i.disable()
-                for i in track.details:
-                    i.disable()
-            for track in self.snow_track.track:
-                track.enable()
-            if self.car.graphics != "ultra fast":
-                for detail in self.snow_track.details:
-                    detail.enable()
+            self.server_menu.toggle()
 
         car.username = InputField(default_value = car.username_text, color = color.black, alpha = 100, y = 0.18, parent = self.server_menu)
         car.ip = InputField(default_value = "IP", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.server_menu)
@@ -337,37 +400,15 @@ class MainMenu(Entity):
 
         # Main Menu
 
-        def back_singleplayer():
-            self.car.position = (-80, -42, 18.8)
-            self.car.rotation = (0, 90, 0)
-            self.car.visible = True
-            self.grass_track.enable()
-            self.start_menu.enable()
-            self.main_menu.disable()
-            if self.car.multiplayer_update:
-                self.car.multiplayer_update = False
-            for track in self.tracks:
-                for i in track.track:
-                    i.disable()
-                for i in track.details:
-                    i.disable()
-            for track in self.grass_track.track:
-                track.enable()
-            if self.car.graphics != "ultra fast":
-                for detail in self.grass_track.details:
-                    detail.enable()
-            if self.car.graphics == "fast":
-                self.grass_track.grass.disable()
+        title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.singleplayer_menu, y = 0.3)
 
-        title = Entity(model = "quad", scale = (0.5, 0.2, 0.2), texture = "rally-logo", parent = self.main_menu, y = 0.3)
-
-        back_button_singleplayer = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.34, parent = self.main_menu)
-        back_button_singleplayer.on_click = Func(back_singleplayer)
+        back_button_singleplayer = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.34, parent = self.singleplayer_menu)
+        back_button_singleplayer.on_click = Func(singleplayer)
 
         # Maps Menu
 
         def start():
-            self.main_menu.disable()
+            self.singleplayer_menu.disable()
             if self.car.multiplayer_update:
                 ai_button.disable()
                 self.ai_slider.disable()
@@ -378,10 +419,10 @@ class MainMenu(Entity):
         def back():
             self.maps_menu.disable()
             if self.car.multiplayer_update:
-                self.main_menu.enable()
+                self.singleplayer_menu.enable()
             else:
                 self.race_menu.enable()
-                
+
             self.car.position = (0, 0, 4)
             unlocked_text.disable()
             for track in self.tracks:
@@ -417,7 +458,7 @@ class MainMenu(Entity):
                 self.car.position = (-63, -30, -7)
                 self.car.rotation = (0, 90, 0)
                 self.car.reset_count_timer.enable()
-                        
+
                 for track in self.tracks:
                     track.disable()
                     for i in track.track:
@@ -517,7 +558,7 @@ class MainMenu(Entity):
                 self.car.position = (-5, -35, 93)
                 self.car.rotation = (0, 90, 0)
                 self.car.reset_count_timer.enable()
-                        
+
                 for track in self.tracks:
                     track.disable()
                     for i in track.track:
@@ -576,7 +617,7 @@ class MainMenu(Entity):
 
                 forest_track.enable()
                 forest_track.played = True
-                
+
                 for f in forest_track.track:
                     f.enable()
                     f.alpha = 255
@@ -894,7 +935,7 @@ class MainMenu(Entity):
                 unlocked_text.disable()
                 lake_track.alpha = 255
 
-        start_button = Button(text = "Start Game", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.02, parent = self.main_menu)
+        start_button = Button(text = "Start Game", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.02, parent = self.singleplayer_menu)
         sand_track_button = Button(text = "Sand Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = -0.5, parent = self.maps_menu)
         grass_track_button = Button(text = "Grass Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0, parent = self.maps_menu)
         snow_track_button = Button(text = "Snow Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.3, x = 0.5, parent = self.maps_menu)
@@ -902,7 +943,7 @@ class MainMenu(Entity):
         savannah_track_button = Button(text = "Savannah Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = 0, parent = self.maps_menu)
         lake_track_button = Button(text = "Lake Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = 0.5, parent = self.maps_menu)
         back_button = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
-        
+
         unlocked_text = Text("Get Less Than 20 seconds on Sand Track to Unlock Grass Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = -0.1, parent = self.maps_menu)
         unlocked_text.disable()
 
@@ -916,7 +957,7 @@ class MainMenu(Entity):
 
         self.leaderboard_background = Entity(model = "quad", color = color.hex("0099ff"), alpha = 100, scale = (0.4, 0.42), position = Vec2(0.6, 0.25), parent = camera.ui)
         self.leaderboard_title = Text("Leaderboard", color = color.gold, scale = 5, line_height = 2, origin = 0, y = 0.4, parent = self.leaderboard_background)
-        
+
         self.leaderboard_01 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = 0.2, parent = self.leaderboard_background)
         self.leaderboard_02 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = 0.1, parent = self.leaderboard_background)
         self.leaderboard_03 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = 0, parent = self.leaderboard_background)
@@ -985,8 +1026,7 @@ class MainMenu(Entity):
                 invoke(setattr, unlocked_text, "y", -0.1, delay = 1.6)
 
         def back_race():
-            self.race_menu.disable()
-            self.main_menu.enable()
+            self.race_menu.toggle()
 
         race_button = Button(text = "Race", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.race_menu)
         time_trial_button = Button(text = "Time Trial", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.race_menu)
@@ -1001,31 +1041,22 @@ class MainMenu(Entity):
         # Settings
 
         def settings():
-            self.main_menu.disable()
-            self.settings_menu.enable()
+            self.settings_menu.toggle()
 
         def video():
-            self.settings_menu.disable()
-            self.video_menu.enable()
+            self.video_menu.toggle()
 
         def gameplay():
-            self.settings_menu.disable()
-            self.gameplay_menu.enable()
+            self.gameplay_menu.toggle()
 
         def audio():
-            self.settings_menu.disable()
-            self.audio_menu.enable()
+            self.audio_menu.toggle()
 
         def controls():
-            self.settings_menu.disable()
-            self.controls_menu.enable()
+            self.controls_menu.toggle()
 
-        def back_settings():
-            self.settings_menu.disable()
-            self.main_menu.enable()
+        settings_button = Button(text = "Settings", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.singleplayer_menu)
 
-        settings_button = Button(text = "Settings", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.main_menu)
-        
         video_button = Button(text = "Video", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.24, parent = self.settings_menu)
         gameplay_button = Button(text = "Gameplay", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.settings_menu)
         audio_button = Button(text = "Audio", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.settings_menu)
@@ -1033,12 +1064,12 @@ class MainMenu(Entity):
 
         back_button_settings = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.24, parent = self.settings_menu)
 
-        settings_button.on_click = Func(settings) 
+        settings_button.on_click = Func(settings)
         video_button.on_click = Func(video)
         gameplay_button.on_click = Func(gameplay)
         audio_button.on_click = Func(audio)
         controls_button.on_click = Func(controls)
-        back_button_settings.on_click = Func(back_settings)
+        back_button_settings.on_click = Func(settings)
 
         # Gameplay Menu
 
@@ -1096,8 +1127,7 @@ class MainMenu(Entity):
                 camera_shake_button.text = "Camera Shake: Off"
 
         def back_gameplay():
-            self.gameplay_menu.disable()
-            self.settings_menu.enable()
+            self.gameplay_menu.toggle()
 
         graphics_button = Button("Graphics: Fancy", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.24, parent = self.gameplay_menu)
         camera_angle_button = Button("Camera Angle: Top", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.gameplay_menu)
@@ -1143,8 +1173,7 @@ class MainMenu(Entity):
                 exit_button.text = "Exit Button: Off"
 
         def back_video():
-            self.video_menu.disable()
-            self.settings_menu.enable()
+            self.video_menu.toggle()
 
         fullscreen_button = Button("Fullscreen: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.24, parent = self.video_menu)
         borderless_button = Button("Borderless: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.video_menu)
@@ -1170,8 +1199,7 @@ class MainMenu(Entity):
             self.car.audio = not self.car.audio
         
         def back_audio():
-            self.audio_menu.disable()
-            self.settings_menu.enable()
+            self.audio_menu.toggle()
 
         audio_button = Button("Audio: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.audio_menu)
         back_button_audio = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.audio_menu)
@@ -1185,8 +1213,7 @@ class MainMenu(Entity):
         # Controls
 
         def back_controls():
-            self.controls_menu.disable()
-            self.settings_menu.enable()
+            self.controls_menu.toggle()
 
         def controls_settings():
             if self.car.controls == "wasd":
@@ -1351,7 +1378,7 @@ class MainMenu(Entity):
             self.car.reset_count_timer.disable()
             self.car.timer_running = False
             self.car.anti_cheat = 1
-            self.main_menu.enable()
+            self.singleplayer_menu.enable()
             self.pause_menu.disable()
             for track in self.tracks:
                 track.disable()
@@ -1385,7 +1412,7 @@ class MainMenu(Entity):
                     self.car.skid_sound.stop(False)
                 if self.car.dirt_sound.playing:
                     self.car.dirt_sound.stop(False)
-                
+
         p_resume_button = Button(text = "Resume", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.11, parent = self.pause_menu)
         p_respawn_button = Button(text = "Respawn", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.01, parent = self.pause_menu)
         p_mainmenu_button = Button(text = "Main Menu", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.13, parent = self.pause_menu)
@@ -1396,8 +1423,7 @@ class MainMenu(Entity):
         # Garage
 
         def back_garage():
-            self.garage_menu.disable()
-            self.main_menu.enable()
+            self.garage_menu.toggle()
             self.car.position = (0, 0, 4)
             self.car.camera_offset = (20, 40, -50)
             camera.rotation = (35, -20, 0)
@@ -1420,8 +1446,7 @@ class MainMenu(Entity):
             self.car.highscore_count = float(self.car.grass_track_hs)
 
         def garage_button_func():
-            self.garage_menu.enable()
-            self.main_menu.disable()
+            self.garage_menu.toggle()
             self.cars_menu.enable()
             self.cosmetics_menu.disable()
             self.colours_menu.disable()
@@ -1529,7 +1554,7 @@ class MainMenu(Entity):
         def limo_hover():
             self.garage_name_text.enable()
             self.garage_name_text.text = "Limo"
-        
+
         def lorry_hover():
             self.garage_name_text.enable()
             self.garage_name_text.text = "Lorry"
@@ -1736,17 +1761,17 @@ class MainMenu(Entity):
         def banana_hover():
             self.garage_name_text.enable()
             self.garage_name_text.text = "Banana"
-        
+
         def surfinbird_hover():
             self.garage_name_text.enable()
             self.garage_name_text.text = "Surfin Bird"
 
         self.start_spin = True
 
-        garage_button = Button(text = "Garage", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.main_menu)
+        garage_button = Button(text = "Garage", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.singleplayer_menu)
 
         back_button_garage = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.garage_menu)
-        
+
         cars_menu_button = Button(text = "Cars", color = color.black, scale_y = 0.1, scale_x = 0.15, x = -0.7, y = -0.3, parent = self.garage_menu)
         colours_menu_button = Button(text = "Colours", color = color.black, scale_y = 0.1, scale_x = 0.15, x = -0.5, y = -0.3, parent = self.garage_menu)
         cosmetics_menu_button = Button(text = "Cosmetics", color = color.black, scale_y = 0.1, scale_x = 0.15, x = -0.3, y = -0.3, parent = self.garage_menu)
@@ -1759,7 +1784,7 @@ class MainMenu(Entity):
         rally_car_button = Button(texture = "rally-icon.png", color = color.white, scale = (0.16, 0.1), y = -0.1, x = -0.3, alpha = 255, parent = self.cars_menu)
 
         red_button = Button(color = color.red, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.7, parent = self.colours_menu)
-        blue_button = Button(color = color.cyan, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.colours_menu)
+        blue_button = Button(color = color.blue, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.5, parent = self.colours_menu)
         green_button = Button(color = color.lime, scale_y = 0.1, scale_x = 0.15, y = 0.1, x = -0.3, parent = self.colours_menu)
         orange_button = Button(color = color.orange, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.7, parent = self.colours_menu)
         black_button = Button(color = color.black, scale_y = 0.1, scale_x = 0.15, y = -0.1, x = -0.5, parent = self.colours_menu)
@@ -1782,7 +1807,7 @@ class MainMenu(Entity):
         cosmetics_menu_button.on_click = Func(cosmetics_menu)
 
         back_button_garage.on_click = Func(back_garage)
-        
+
         sports_car_button.on_click = Func(sports_car)
         muscle_car_button.on_click = Func(muscle_car)
         limo_button.on_click = Func(limo)
@@ -1837,15 +1862,26 @@ class MainMenu(Entity):
         invoke(self.garage_unlocked_text.disable, delay = 1)
 
     def update(self):
-        if not self.start_menu.enabled and not self.main_menu.enabled and not self.settings_menu.enabled and not self.race_menu.enabled and not self.maps_menu.enabled and not self.settings_menu.enabled and not self.garage_menu.enabled and not self.controls_menu.enabled and not self.host_menu.enabled and not self.server_menu.enabled and not self.created_server_menu.enabled and not self.video_menu.enabled and not self.gameplay_menu.enabled and not self.audio_menu.enabled and not self.quit_menu.enabled:
-            self.car.camera_follow = True
-        else:
-            self.car.camera_follow = False
+        self.car.camera_follow = (not self.start_menu.enabled and
+                                  not self.singleplayer_menu.enabled and
+                                  not self.settings_menu.enabled and
+                                  not self.race_menu.enabled and
+                                  not self.maps_menu.enabled and
+                                  not self.settings_menu.enabled and
+                                  not self.garage_menu.enabled and
+                                  not self.controls_menu.enabled and
+                                  not self.host_menu.enabled and
+                                  not self.server_menu.enabled and
+                                  not self.created_server_menu.enabled and
+                                  not self.video_menu.enabled and
+                                  not self.gameplay_menu.enabled and
+                                  not self.audio_menu.enabled and
+                                  not self.quit_menu.enabled)
 
         # AI Slider
         if self.car.multiplayer_update == False:
             if self.ai_slider.enabled:
-                if self.ai_slider.value == 0: 
+                if self.ai_slider.value == 0:
                     for ai in self.ai_list:
                         ai.set_enabled = False
                 elif self.ai_slider.value == 1:
@@ -1862,7 +1898,11 @@ class MainMenu(Entity):
                     self.ai_list[2].set_enabled = True
 
         # Set the camera's position and make the car rotate
-        if self.start_menu.enabled or self.host_menu.enabled or self.garage_menu.enabled or self.server_menu.enabled or self.quit_menu.enabled:
+        if (self.start_menu.enabled or
+            self.host_menu.enabled or
+            self.garage_menu.enabled or
+            self.server_menu.enabled or
+            self.quit_menu.enabled):
             if not held_keys["right mouse"]:
                 if self.start_spin:
                     self.car.rotation_y += 15 * time.dt
@@ -1905,7 +1945,7 @@ class MainMenu(Entity):
         else:
             for l in self.leaderboard_texts:
                 l.disable()
-            
+
     def start_leaderboard(self):
         for l in self.leaderboard_texts:
             l.enable()
@@ -1915,10 +1955,24 @@ class MainMenu(Entity):
         self.leaderboard_03.text = str(self.car.leaderboard_03)
         self.leaderboard_04.text = str(self.car.leaderboard_04)
         self.leaderboard_05.text = str(self.car.leaderboard_05)
-    
+
     def input(self, key):
+        print
         # Pause menu
-        if not self.start_menu.enabled and not self.main_menu.enabled and not self.server_menu.enabled and not self.settings_menu.enabled and not self.race_menu.enabled and not self.maps_menu.enabled and not self.settings_menu.enabled and not self.garage_menu.enabled and not self.audio_menu.enabled and not self.controls_menu.enabled and not self.host_menu.enabled and not self.created_server_menu.enabled and not self.video_menu.enabled and not self.gameplay_menu.enabled and not self.quit_menu.enabled:
+        if (not self.start_menu.enabled and
+            not self.singleplayer_menu.enabled and
+            not self.server_menu.enabled and
+            not self.race_menu.enabled and
+            not self.maps_menu.enabled and
+            not self.settings_menu.enabled and
+            not self.garage_menu.enabled and
+            not self.audio_menu.enabled and
+            not self.controls_menu.enabled and
+            not self.host_menu.enabled and
+            not self.created_server_menu.enabled and
+            not self.video_menu.enabled and
+            not self.gameplay_menu.enabled and
+            not self.quit_menu.enabled):
             if key == "escape":
                 self.pause_menu.enabled = not self.pause_menu.enabled
                 mouse.locked = not mouse.locked
@@ -1929,7 +1983,7 @@ class MainMenu(Entity):
                 self.car.timer.enable()
             else:
                 self.car.timer.disable()
-             
+
             self.car.highscore.enable()
             if self.car.gamemode == "time trial":
                 self.car.laps_text.enable()
@@ -1954,39 +2008,22 @@ class MainMenu(Entity):
                         if e.hovered and key == "left mouse down":
                             self.click.volume = self.car.volume * 5
                             self.click.play()
-        
+
         if self.audio_menu.enabled:
             self.car.volume = self.volume.value
-
-        # Quit Menu
-        if self.start_menu.enabled or self.quit_menu.enabled:
-            if key == "escape":
-                self.action_quit_menu()
 
         if self.quit_menu.enabled:
             if key == "enter":
                 self.quit_menu_button_selected.on_click()
             elif key == "up arrow" or key == "tab":
-                self.quit_menu_toggle_button(True)
+                self.quit_menu_toggle(True)
             elif key == "down arrow":
-                self.quit_menu_toggle_button(False)
-        # Settings Menu
+                self.quit_menu_toggle(False)
+
         if key == "escape":
-            if self.settings_menu.enabled:
-                self.settings_menu.disable()
-                self.main_menu.enable()
-            elif self.video_menu.enabled:
-                self.video_menu.disable()
-                self.settings_menu.enable()
-            elif self.controls_menu.enabled:
-                self.controls_menu.disable()
-                self.settings_menu.enable()
-            elif self.gameplay_menu.enabled:
-                self.gameplay_menu.disable()
-                self.settings_menu.enable()
-            elif self.audio_menu.enabled:
-                self.audio_menu.disable()
-                self.settings_menu.enable()
+            for menu in (menu for menu in self.menus if (isinstance(menu, Menu) and menu.enabled)):
+                menu.toggle()
+                break
 
         if self.start_spin:
             self.car.copy_normals = False
