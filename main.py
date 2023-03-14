@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from ursina import *
 from direct.stdpy import thread
 
