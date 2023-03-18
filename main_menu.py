@@ -314,7 +314,7 @@ class MainMenu(Entity):
 
         create_server_button = Button(text = "Create Server", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.host_menu)
         join_server_button = Button(text = "Join Server", color = color.hex("0097F5"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.22, parent = self.host_menu)
-        back_button_host = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.host_menu)
+        back_button_host = Button(text = "Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.host_menu)
 
         create_server_button.on_click = Func(create_server)
         join_server_button.on_click = Func(join_server_func)
@@ -393,7 +393,7 @@ class MainMenu(Entity):
         car.ip = InputField(default_value = "IP", limit_content_to = "0123456789.localhost", color = color.black, alpha = 100, y = 0.1, parent = self.server_menu)
         car.port = InputField(default_value = "PORT", limit_content_to = "0123456789", color = color.black, alpha = 100, y = 0.02, parent = self.server_menu)
         join_button = Button(text = "Join Server", color = color.hex("F58300"), highlight_color = color.gray, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.server_menu)
-        back_button_server = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.server_menu)
+        back_button_server = Button(text = "Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.server_menu)
 
         join_button.on_click = Func(join_server)
         back_button_server.on_click = Func(back_server)
@@ -942,7 +942,7 @@ class MainMenu(Entity):
         forest_track_button = Button(text = "Forest Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = -0.5, parent = self.maps_menu)
         savannah_track_button = Button(text = "Savannah Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = 0, parent = self.maps_menu)
         lake_track_button = Button(text = "Lake Track", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.1, x = 0.5, parent = self.maps_menu)
-        back_button = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
+        back_button = Button(text = "Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.maps_menu)
 
         unlocked_text = Text("Get Less Than 20 seconds on Sand Track to Unlock Grass Track", scale = 1.5, color = color.orange, line_height = 2, origin = 0, y = -0.1, parent = self.maps_menu)
         unlocked_text.disable()
@@ -1031,7 +1031,7 @@ class MainMenu(Entity):
         race_button = Button(text = "Race", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0.12, parent = self.race_menu)
         time_trial_button = Button(text = "Time Trial", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.race_menu)
         drift_button = Button(text = "Drift", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.race_menu)
-        back_button_race = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.race_menu)
+        back_button_race = Button(text = "Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.race_menu)
 
         race_button.on_click = Func(race_button_func)
         time_trial_button.on_click = Func(time_trial_func)
@@ -1770,7 +1770,7 @@ class MainMenu(Entity):
 
         garage_button = Button(text = "Garage", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.1, parent = self.singleplayer_menu)
 
-        back_button_garage = Button(text = "<- Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.garage_menu)
+        back_button_garage = Button(text = "Back", color = color.gray, scale_y = 0.05, scale_x = 0.2, y = 0.45, x = -0.65, parent = self.garage_menu)
 
         cars_menu_button = Button(text = "Cars", color = color.black, scale_y = 0.1, scale_x = 0.15, x = -0.7, y = -0.3, parent = self.garage_menu)
         colours_menu_button = Button(text = "Colours", color = color.black, scale_y = 0.1, scale_x = 0.15, x = -0.5, y = -0.3, parent = self.garage_menu)
