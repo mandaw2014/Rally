@@ -210,8 +210,6 @@ def wheel_update():
 Entity(name='wheel_handler', update=wheel_update, eternal=True) # connect update() to an entity so it runs
 
 def update():
-    #print(held_keys["wheel axis1"])
-    #print(held_keys["wheel btn1"])
     # If multiplayer, Call the Multiplayer class
     if car.multiplayer:
         global multiplayer
