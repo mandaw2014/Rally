@@ -21,8 +21,7 @@ from tracks.savannah_track import SavannahTrack
 from tracks.lake_track import LakeTrack
 from panda3d.core import InputDevice
 
-
-Text.default_font = "./assets/Roboto.ttf"
+Text.default_font = './assets/unifont-15.0.01.otf'
 Text.default_resolution = 1080 * Text.size
 
 # Window
