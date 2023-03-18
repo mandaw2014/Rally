@@ -2092,8 +2092,7 @@ class MainMenu(Entity):
             if key.endswith(" up"):
                 return False
             elif self.input_config_mode == KeyboardConfig.DEVICE:
-                #TODO: check input comes from gamepad
-                return True
+                return key.startswith("wheel")
             else:
                 return len(key) == 1 or key == 'space'
 
