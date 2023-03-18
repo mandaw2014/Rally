@@ -524,10 +524,10 @@ class Car(Entity):
                     self.particle_time = 0
                     self.particles = Particles(self, self.particle_pivot.world_position - (0, 1, 0))
                     self.particles.destroy(1)
-            
+
                 # TrailRenderer / Skid Marks
                 if self.graphics != "ultra fast":
-                    if self.drift_speed <= self.min_drift_speed + 2 and self.start_trail:   
+                    if self.drift_speed <= self.min_drift_speed + 2 and self.start_trail:
                         if self.pivot_rotation_distance > 60 or self.pivot_rotation_distance < -60 and self.speed > 10:
                             for trail in self.trails:
                                 trail.start_trail()

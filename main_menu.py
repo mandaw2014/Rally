@@ -696,7 +696,7 @@ class MainMenu(Entity):
                     self.car.highscore.text = str(int(self.car.highscore_count))
             else:
                 unlocked_text.shake()
-            
+
         def lake_track_func():
             if lake_track.unlocked:
                 self.car.visible = True
@@ -835,7 +835,7 @@ class MainMenu(Entity):
                     highscore_text.text = "Highscore: " + str(round(self.car.snow_track_hs, 2)) + "\n Mandaw: 27.41"
                 unlocked_text.disable()
                 snow_track.alpha = 255
-        
+
         def forest_track_hover():
             for track in self.tracks:
                 track.disable()
@@ -963,7 +963,7 @@ class MainMenu(Entity):
         self.leaderboard_03 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = 0, parent = self.leaderboard_background)
         self.leaderboard_04 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = -0.1, parent = self.leaderboard_background)
         self.leaderboard_05 = Text(text = "", color = color.hex("#CCCCCC"), scale = 3, line_height = 2, x = 0, origin = 0, y = -0.2, parent = self.leaderboard_background)
-        
+
         self.leaderboard_texts = [self.leaderboard_background, self.leaderboard_title, self.leaderboard_01, self.leaderboard_02, self.leaderboard_03, self.leaderboard_04, self.leaderboard_05]
 
         self.leaderboard_background.disable()
@@ -1197,13 +1197,13 @@ class MainMenu(Entity):
                 audio_button.text = "Audio: On"
                 self.volume.value = 1
             self.car.audio = not self.car.audio
-        
+
         def back_audio():
             self.audio_menu.toggle()
 
         audio_button = Button("Audio: On", color = color.black, scale_y = 0.1, scale_x = 0.3, y = 0, parent = self.audio_menu)
         back_button_audio = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.12, parent = self.audio_menu)
-        
+
         self.volume = Slider(min = 0, max = 1, default = 1, text = "Volume", y = 0.2, x = -0.3, scale = 1.3, parent = self.audio_menu, dynamic = True)
         self.volume.step = 0.1
 
