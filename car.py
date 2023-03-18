@@ -20,7 +20,9 @@ class Car(Entity):
         self.rotation_parent = Entity()
 
         # Controls
-        self.controls = "wasd"
+        self.controls = ["w", "a", "s", "d"]
+        self.hand_brake_control = "space"
+        self.respawn_control = "g"
 
         # Car's values
         self.speed = 0
@@ -593,7 +595,7 @@ class Car(Entity):
                     self.skid_sound.stop(False)
 
             # Hand Braking
-            if held_keys["space"]:
+            if held_keys[self.hand_brake_control]:
                 if self.rotation_speed < 0:
                     self.rotation_speed -= 3 * time.dt
                 elif self.rotation_speed > 0:
@@ -663,7 +665,7 @@ class Car(Entity):
             self.rotation_speed = -self.max_rotation_speed
 
         # Respawn
-        if held_keys["g"]:
+        if held_keys[self.respawn_control]:
             self.reset_car()
 
         # Reset the car's position if y value is less than -100

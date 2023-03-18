@@ -2,10 +2,13 @@ from ursina import *
 from ursina import curve
 from server import Server
 from menu import Menu
-
 import os
+from enum import Enum
 
-Text.default_resolution = 1080 * Text.size
+#Text.default_resolution = 1080 * Text.size
+
+KeyboardConfig = Enum('KeyboardConfig', ['WASD', 'ZQSD', 'KEYBOARD', 'DEVICE'])
+KeyboardInput = Enum('KeyboardInput', ['DRIVE', 'STEERING', 'BRAKING', 'HAND_BRAKE', 'RESPAWN'])
 
 class MainMenu(Entity):
     def quit_menu_toggle(self, up):
@@ -152,6 +155,15 @@ class MainMenu(Entity):
             parent = camera.ui
         )
 
+        self.input_config_mode = KeyboardConfig.WASD
+        self.enable_custom_input = False
+        self.waiting_on_input = False
+        self.input_mode = None
+        self.key_format = []
+        self.input_pos = 0
+        self.input_count = 0
+        self.input_button = None
+        self.input_prefix = None
         # The different menus
         self.start_menu = Menu(parent = self, ignore=False, enabled = True)
         self.host_menu = self.MultiPlayerMenu(parent = self, enabled = False, parent_menu = self.start_menu)
@@ -1212,31 +1224,87 @@ class MainMenu(Entity):
 
         # Controls
 
-        def back_controls():
-            self.controls_menu.toggle()
-
-        def controls_settings():
-            if self.car.controls == "wasd":
-                self.car.controls = "zqsd"
-                controls_settings_button.text = "Controls: ZQSD"
+        def controls_settings(mode):
+            self.input_config_mode = mode
+            if mode == KeyboardConfig.ZQSD:
+                self.enable_custom_input = False
+                self.car.controls = ["z", "q", "s", "d"]
                 drive_controls_text.text = "Drive: Z"
                 steering_controls_text.text = "Steering: Q D"
-            elif self.car.controls == "zqsd":
-                self.car.controls = "wasd"
-                controls_settings_button.text = "Controls: WASD"
+                braking_controls_text.text = "Braking: S"
+            elif mode == KeyboardConfig.WASD:
+                self.enable_custom_input = False
+                self.car.controls = ["w", "a", "s", "d"]
                 drive_controls_text.text = "Drive: W"
                 steering_controls_text.text = "Steering: A D"
-        
+                braking_controls_text.text = "Braking: S"
+
         drive_controls_text = Button("Drive: W", color = color.black, scale_y = 0.1, scale_x = 0.3, x = -0.5, y = 0.3, parent = self.controls_menu)
         steering_controls_text = Button("Steering: A D", color = color.black, scale_y = 0.1, scale_x = 0.3, x = 0, y = 0.3, parent = self.controls_menu)
         braking_controls_text = Button("Braking: S", color = color.black, scale_y = 0.1, scale_x = 0.3, x = 0.5, y = 0.3, parent = self.controls_menu)
         handbraking_controls_text = Button("Hand Brake: SPACE", color = color.black, scale_y = 0.1, scale_x = 0.3, x = -0.5, y = 0.1, parent = self.controls_menu)
         respawn_controls_text = Button("Respawn: G", color = color.black, scale_y = 0.1, scale_x = 0.3, x = 0, y = 0.1, parent = self.controls_menu)
-        controls_settings_button = Button("Controls: WASD", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.2, parent = self.controls_menu)
+        def enable_custom_input(mode):
+            self.input_config_mode = mode
+            self.enable_custom_input = True
+        button_dict = {
+            'Keyboard WASD' : Func(controls_settings, KeyboardConfig.WASD),
+            'Keyboard ZQSD' : Func(controls_settings, KeyboardConfig.ZQSD),
+            'Custom Keyboard' : Func(enable_custom_input, KeyboardConfig.KEYBOARD),
+            'Custom wheel' : Func(enable_custom_input, KeyboardConfig.DEVICE)
+        }
+        class MyButtonList(ButtonList):
+            def __init__(self, button_dict, **kwargs):
+                super().__init__(button_dict, **kwargs)
+            def input(self, key):
+                super().input(key)
+                self.selection_marker.enabled = True
+
+        input_list = MyButtonList(button_dict, font='VeraMono.ttf', button_height=1.5, y = 0, parent = self.controls_menu)
+
         back_button_controls = Button(text = "Back", color = color.black, scale_y = 0.1, scale_x = 0.3, y = -0.32, parent = self.controls_menu)
 
-        back_button_controls.on_click = Func(back_controls)
-        controls_settings_button.on_click = Func(controls_settings)
+        back_button_controls.on_click = Func(controls)
+
+        def read_input(mode):
+            if self.waiting_on_input or not self.enable_custom_input:
+                return
+
+            self.waiting_on_input = True
+            self.input_mode = mode
+            if mode == KeyboardInput.DRIVE:
+                self.input_pos = 0
+                self.input_count = 1
+                self.input_button = drive_controls_text
+                self.input_prefix = "Drive: {}"
+            elif mode == KeyboardInput.STEERING:
+                self.input_pos = 1
+                self.input_count = 2
+                self.input_button = steering_controls_text
+                self.input_prefix = "Steering: {}"
+            elif mode == KeyboardInput.BRAKING:
+                self.input_pos = 2
+                self.input_count = 1
+                self.input_button = braking_controls_text
+                self.input_prefix = "Braking: {}"
+            elif mode == KeyboardInput.HAND_BRAKE:
+                self.input_pos = 0
+                self.input_count = 1
+                self.input_button = handbraking_controls_text
+                self.input_prefix = "Hand Brake: {}"
+            elif mode == KeyboardInput.RESPAWN:
+                self.input_pos = 0
+                self.input_count = 1
+                self.input_button = respawn_controls_text
+                self.input_prefix = "Respawn: {}"
+            self.input_button.color = color.gray
+            self.input_button.highlight_color = color.gray
+
+        drive_controls_text.on_click = Func(read_input, KeyboardInput.DRIVE)
+        steering_controls_text.on_click = Func(read_input, KeyboardInput.STEERING)
+        braking_controls_text.on_click = Func(read_input, KeyboardInput.BRAKING)
+        handbraking_controls_text.on_click = Func(read_input, KeyboardInput.HAND_BRAKE)
+        respawn_controls_text.on_click = Func(read_input, KeyboardInput.RESPAWN)
 
         # Pause Menu
 
@@ -2020,6 +2088,54 @@ class MainMenu(Entity):
             elif key == "down arrow":
                 self.quit_menu_toggle(False)
 
+        def valid_input(key):
+            if key.endswith(" up"):
+                return False
+            elif self.input_config_mode == KeyboardConfig.DEVICE:
+                #TODO: check input comes from gamepad
+                return True
+            else:
+                return len(key) == 1 or key == 'space'
+
+        if self.controls_menu.enabled:
+            if self.enable_custom_input and self.waiting_on_input and valid_input(key):
+                if self.input_mode == KeyboardInput.HAND_BRAKE:
+                    self.car.hand_brake_control = key
+                elif self.input_mode == KeyboardInput.RESPAWN:
+                    self.car.respawn_control = key
+                else:
+                    self.car.controls[self.input_pos] = key
+
+                def transform_key(key):
+                    if self.input_config_mode == KeyboardConfig.DEVICE:
+                        if key.endswith("hap"):
+                            return '⬆'
+                        elif key.endswith("hleft"):
+                            return '⬅'
+                        elif key.endswith("hright"):
+                            return '➡'
+                        elif key.endswith("hdown"):
+                            return '⬇'
+                        else:
+                            return key.upper()
+                    else:
+                        return key.upper()
+
+                self.key_format.append(transform_key(key))
+                self.input_button.text = self.input_prefix.format(" ".join(self.key_format))
+                self.input_count -= 1
+                if self.input_count == 0:
+                    self.input_count = 0
+                    self.input_pos = 0
+                    self.key_format = []
+                    self.input_mode = None
+                    self.waiting_on_input =False
+                    self.input_button.color = color.black
+                    self.input_button.highlight_color = self.input_button.color.tint(.2)
+                    self.input_button = None
+                    self.input_prefix = None
+                else:
+                    self.input_pos += 2
         if key == "escape":
             for menu in (menu for menu in self.menus if (isinstance(menu, Menu) and menu.enabled)):
                 menu.toggle()
