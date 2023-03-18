@@ -155,6 +155,7 @@ class MainMenu(Entity):
             parent = camera.ui
         )
 
+        #TODO: Can we read from component?
         self.input_config_mode = KeyboardConfig.WASD
         self.enable_custom_input = False
         self.waiting_on_input = False
@@ -2025,7 +2026,6 @@ class MainMenu(Entity):
         self.leaderboard_05.text = str(self.car.leaderboard_05)
 
     def input(self, key):
-        print
         # Pause menu
         if (not self.start_menu.enabled and
             not self.singleplayer_menu.enabled and
