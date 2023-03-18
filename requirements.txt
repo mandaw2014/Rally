@@ -1,2 +1,2 @@
-ursina==4.1.1
+ursina==5.0.0
 ursinanetworking==2.1.4

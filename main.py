@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from ursina import *
 from direct.stdpy import thread
 
@@ -17,8 +19,9 @@ from tracks.snow_track import SnowTrack
 from tracks.forest_track import ForestTrack
 from tracks.savannah_track import SavannahTrack
 from tracks.lake_track import LakeTrack
+from panda3d.core import InputDevice
 
-Text.default_font = "./assets/Roboto.ttf"
+Text.default_font = './assets/unifont-15.0.01.otf'
 Text.default_resolution = 1080 * Text.size
 
 # Window
@@ -26,7 +29,7 @@ Text.default_resolution = 1080 * Text.size
 app = Ursina()
 window.title = "Rally"
 window.borderless = False
-window.show_ursina_splash = True
+window.show_ursina_splash = False
 window.cog_button.disable()
 window.fps_counter.disable()
 window.exit_button.disable()
@@ -151,6 +154,61 @@ main_menu.sun = sun
 # Sky
 Sky(texture = "sky")
 
+base = app
+
+input_handler.wheel = None
+input_handler.wheels = base.devices.getDevices()
+if input_handler.wheels:
+    input_handler.wheel = input_handler.wheels[0]
+
+
+for i, wheel in enumerate(input_handler.wheels):
+    wheel_name = 'wheel'
+    if i > 0:
+        wheel_name += f'_{i}'
+
+    base.attachInputDevice(wheel, prefix=wheel_name)
+    buttons = {
+        'trigger' : 'btn1',
+        'joystick2' : 'btn2',
+        'joystick3' : 'btn3',
+        'joystick4' : 'btn4',
+        'joystick5' : 'btn5',
+        'joystick6' : 'btn6',
+        'joystick7' : 'btn7',
+        'joystick8' : 'btn8',
+        'joystick9' : 'btn9',
+        'joystick10' : 'btn10',
+        'joystick11' : 'btn11',
+        'joystick12' : 'btn12',
+        'joystick13' : 'btn13',
+        'hat_left' : 'hleft',
+        'hat_right' : 'hright',
+        'hat_down' : 'hdown',
+        'hat_up' : 'hap',
+    }
+
+    for original_name, new_name in buttons.items():
+        base.accept(f'{wheel_name}-{original_name}', base.input, extraArgs=[f'{wheel_name} {new_name}'])
+        base.accept(f'{wheel_name}-{original_name}-up', base.input, extraArgs=[f'{wheel_name} {new_name} up'])
+
+def wheel_update():
+    axes = {
+        'roll' : 'axis1',
+        'pitch' : 'axis2',
+        'yaw' : 'axis3',
+        'throttle' : 'axis4',
+    }
+    for i, wheels in enumerate(input_handler.wheels):
+        wheel_name = 'wheel'
+        if i > 0:
+            wheel_name += f'_{i}'
+
+        for key, value in axes.items():
+            held_keys[f'{wheel_name} {value}'] = wheel.findAxis(InputDevice.Axis[key]).value
+
+Entity(name='wheel_handler', update=wheel_update, eternal=True) # connect update() to an entity so it runs
+
 def update():
     # If multiplayer, Call the Multiplayer class
     if car.multiplayer:
@@ -158,7 +216,7 @@ def update():
         multiplayer = Multiplayer(car)
         car.multiplayer_update = True
         car.multiplayer = False
-    
+
     # Update the multiplayer and check whether the client is connected
     if car.multiplayer_update:
         multiplayer.update_multiplayer()
@@ -182,7 +240,7 @@ def update():
         car.server.update_server()
         if car.server.server_update:
             car.server.easy.process_net_events()
-    
+
     if achievements.time_spent < 10:
         achievements.time_spent += time.dt
 

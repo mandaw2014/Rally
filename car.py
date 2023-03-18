@@ -20,7 +20,9 @@ class Car(Entity):
         self.rotation_parent = Entity()
 
         # Controls
-        self.controls = "wasd"
+        self.controls = ["w", "a", "s", "d"]
+        self.hand_brake_control = "space"
+        self.respawn_control = "g"
 
         # Car's values
         self.speed = 0
@@ -524,10 +526,10 @@ class Car(Entity):
                     self.particle_time = 0
                     self.particles = Particles(self, self.particle_pivot.world_position - (0, 1, 0))
                     self.particles.destroy(1)
-            
+
                 # TrailRenderer / Skid Marks
                 if self.graphics != "ultra fast":
-                    if self.drift_speed <= self.min_drift_speed + 2 and self.start_trail:   
+                    if self.drift_speed <= self.min_drift_speed + 2 and self.start_trail:
                         if self.pivot_rotation_distance > 60 or self.pivot_rotation_distance < -60 and self.speed > 10:
                             for trail in self.trails:
                                 trail.start_trail()
@@ -559,7 +561,7 @@ class Car(Entity):
                 self.camera_rotation += self.friction * 20 * time.dt
 
             # Braking
-            if held_keys[self.controls[2] or held_keys["down arrow"]]:
+            if held_keys[self.controls[2]] or held_keys["down arrow"]:
                 self.speed -= self.braking_strenth * time.dt
                 self.drift_speed -= 20 * time.dt
                 self.braking = True
@@ -593,7 +595,7 @@ class Car(Entity):
                     self.skid_sound.stop(False)
 
             # Hand Braking
-            if held_keys["space"]:
+            if held_keys[self.hand_brake_control]:
                 if self.rotation_speed < 0:
                     self.rotation_speed -= 3 * time.dt
                 elif self.rotation_speed > 0:
@@ -663,7 +665,7 @@ class Car(Entity):
             self.rotation_speed = -self.max_rotation_speed
 
         # Respawn
-        if held_keys["g"]:
+        if held_keys[self.respawn_control]:
             self.reset_car()
 
         # Reset the car's position if y value is less than -100
