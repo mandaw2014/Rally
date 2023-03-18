@@ -559,7 +559,7 @@ class Car(Entity):
                 self.camera_rotation += self.friction * 20 * time.dt
 
             # Braking
-            if held_keys[self.controls[2] or held_keys["down arrow"]]:
+            if held_keys[self.controls[2]] or held_keys["down arrow"]:
                 self.speed -= self.braking_strenth * time.dt
                 self.drift_speed -= 20 * time.dt
                 self.braking = True
