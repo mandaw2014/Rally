@@ -185,7 +185,7 @@ for i, wheel in enumerate(input_handler.wheels):
         'hat_left' : 'hleft',
         'hat_right' : 'hright',
         'hat_down' : 'hdown',
-        'hat_up' : 'hup',
+        'hat_up' : 'hap',
     }
 
     for original_name, new_name in buttons.items():
