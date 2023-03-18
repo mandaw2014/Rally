@@ -29,7 +29,7 @@ Text.default_resolution = 1080 * Text.size
 app = Ursina()
 window.title = "Rally"
 window.borderless = False
-window.show_ursina_splash = True
+window.show_ursina_splash = False
 window.cog_button.disable()
 window.fps_counter.disable()
 window.exit_button.disable()
